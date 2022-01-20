@@ -32,6 +32,7 @@
 package frc.robot;
 
 import frc.Hardware.Hardware;
+import frc.Utils.drive.Drive.BrakeType;
 
 /**
  * An Autonomous class. This class <b>beautifully</b> uses state machines in
@@ -58,6 +59,7 @@ public class Autonomous
  */
 public static void init ()
 {
+    // System.out.println("Six position switch position = " + Hardware.autoSixPosSwitch.getPosition());
     switch(Hardware.autoSixPosSwitch.getPosition())
     {
         case(0):
@@ -76,7 +78,9 @@ public static void init ()
 
     Hardware.autoTimer.stop();
     Hardware.autoTimer.reset(); 
-    delaySeconds = Hardware.delayPot.get();
+    delaySeconds = Hardware.delayPot.get(0, MAX_DELAY_SECONDS);
+    onlyDriveState = ONLY_DRIVE_STATE.INIT;
+    dropAndDriveState = DROP_AND_DRIVE_STATE.INIT;
 } // end Init
 
 /**
@@ -94,6 +98,7 @@ public static void init ()
 
 public static void periodic ()
 {
+    // System.out.println("AUTO_PATH = " + autoPath);
     switch(autoPath)
     {
         case DRIVE_ONLY:
@@ -114,27 +119,70 @@ public static void periodic ()
 // Methods
 // =====================================================================
 
-public static void driveToWall()
+public static void dropAndDrive()
 {
-    
-}
-
-public static void driveOnly()
-{
-    switch (onlyDriveState)
+    System.out.println("DROP_AND_DRIVE_STATE = " + dropAndDriveState);
+    switch(dropAndDriveState)
     {
         case INIT:
             Hardware.autoTimer.start();
+            dropAndDriveState = DROP_AND_DRIVE_STATE.DELAY;
             break;
         case DELAY:
-            if(Hardware.autoTimer.get() <= delaySeconds)
+            if(Hardware.autoTimer.get() >= delaySeconds)
             {
-
+                dropAndDriveState = DROP_AND_DRIVE_STATE.PREPARE_TO_DROP;
             }
+            break;
+        case PREPARE_TO_DROP:
+            if (Hardware.drive.driveStraightInches(DISTANCE_TO_WALL_INCHES_PREV_YEAR, DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_PREV_YEAR) == true)
+            {
+                dropAndDriveState = DROP_AND_DRIVE_STATE.DROP;
+            }
+            break;
+        case DROP:
+            
             break;
         case DRIVE:
             break;
         case STOP:
+            break;
+        case END:
+            break;
+        default:
+            break;
+    }
+}
+
+public static void driveOnly()
+{
+    // System.out.println("ONLY_DRIVE_STATE = " + onlyDriveState);
+    switch (onlyDriveState)
+    {
+        case INIT:
+            Hardware.autoTimer.start();
+            onlyDriveState = ONLY_DRIVE_STATE.DELAY;
+            break;
+        case DELAY:
+            // TODO test
+            if(Hardware.autoTimer.get() >= delaySeconds)
+            {
+                onlyDriveState = ONLY_DRIVE_STATE.DRIVE;
+            }
+            break;
+        case DRIVE:
+            if(Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_PREV_YEAR, DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_PREV_YEAR) == true)
+            {
+                onlyDriveState = ONLY_DRIVE_STATE.STOP;
+            }
+            break;
+        case STOP:
+            if(Hardware.drive.brake(BrakeType.AFTER_DRIVE) == true)
+            {
+                onlyDriveState = ONLY_DRIVE_STATE.END;
+            }
+            break;
+        case END:
             break;
         default:
             break;
@@ -151,28 +199,28 @@ public static void driveOnly()
      DRIVE_ONLY, DRIVE_AND_DROP, DROP_AND_DRIVE, DISABLE;
  }
 
- public static enum DRIVE_ONLY_STATE
+ public static enum ONLY_DRIVE_STATE
  {
-     INIT, DELAY, DRIVE, STOP;
+     INIT, DELAY, DRIVE, STOP, END;
  }
 
- public static enum DRIVE_AND_SCORE_STATE
+ public static enum DRIVE_AND_DROP_STATE
  {
-     INIT, DELAY, DRIVE, LOAD, SCORE, STOP;
+     INIT, DELAY, DRIVE, LOAD, DROP, STOP, END;
  }
 
- public static enum SCORE_AND_DRIVE_STATE
+ public static enum DROP_AND_DRIVE_STATE
  {
-     INIT, DELAY, LOAD, SCORE, DRIVE, STOP;
+     INIT, DELAY, PREPARE_TO_DROP, DROP, DRIVE, STOP, END;
  }
 
  public static AUTO_PATH autoPath;
 
- public static DRIVE_ONLY_STATE onlyDriveState;
+ public static ONLY_DRIVE_STATE onlyDriveState;
 
- public static DRIVE_AND_SCORE_STATE driveAndScoreState;
+ public static DRIVE_AND_DROP_STATE driveAndDropState;
 
- public static SCORE_AND_DRIVE_STATE scoreAndDriveState;
+ public static DROP_AND_DRIVE_STATE dropAndDriveState;
 
  public static double delaySeconds;
 /*
@@ -181,7 +229,19 @@ public static void driveOnly()
  * ==============================================================
  */
 
- public static final double DISTANCE_FROM_HUB_INCHES = 36; // TODO TBD
+ public static final double DISTANCE_TO_WALL_INCHES_PREV_YEAR = 30.0; // TODO test
 
- public static final double DRIVE_SPEED = .7; // TODO TBD
+ public static final double DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_PREV_YEAR = 95.0; // TODO test
+
+ public static final double DISTANCE_TO_LEAVE_TARMAC_FROM_WALL_INCHES_PREV_YEAR = 129.0; // TODO test
+
+ public static final double DRIVE_SPEED_POSITIVE_PREV_YEAR = .4; // TODO test
+
+ public static final double DRIVE_SPEED_NEGATIVE_PREV_YEAR = .4; // TODO test
+
+ public static final double ACCELERATION_PREV_YEAR = .5; // TODO test
+
+ public static final boolean USING_GYRO_PREV_YEAR = false;
+
+ public static final double MAX_DELAY_SECONDS = 5.0;
 }
