@@ -220,6 +220,12 @@ public class Hardware
 
     public static LightSensor infraredSensor = null;
 
+    public static LightSensor ballPickup1 = new LightSensor (21);
+    public static LightSensor ballPickup2 = new LightSensor (22, true);
+    public static LightSensor ballPickup3 = new LightSensor (23);
+    public static LightSensor ballPickup4 = new LightSensor (24);
+    public static LightSensor floorLight = new LightSensor (9);
+
     // **********************************************************
     // ANALOG I/O
     // **********************************************************
