@@ -25,13 +25,18 @@ import frc.HardwareInterfaces.MomentarySwitch;
 import frc.HardwareInterfaces.Potentiometer;
 import frc.HardwareInterfaces.SingleThrowSwitch;
 import frc.HardwareInterfaces.SixPositionSwitch;
+import frc.HardwareInterfaces.UltraSonic;
+import frc.HardwareInterfaces.Transmission.TankTransmission;
+import frc.HardwareInterfaces.Transmission.TransmissionBase;
 import edu.wpi.first.util.sendable.SendableRegistry;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import frc.Utils.drive.DrivePID;
+import frc.Utils.drive.Drive;
 import edu.wpi.first.wpilibj.Timer;
 
 /**
@@ -167,6 +172,13 @@ public class Hardware
         rightDriveEncoder.setDistancePerPulse(PREV_YEAR_DISTANCE_PER_TICK);
         rightDriveEncoder.setReverseDirection(true);
 
+        // ------------------------------------
+        // Drive System
+        // ------------------------------------
+        tankTransmission = new TankTransmission(leftDriveGroup, rightDriveGroup);
+
+        drive = new Drive(tankTransmission, leftDriveEncoder, rightDriveEncoder, gyro);
+
     } // end of initializePrevYear()
 
     // **********************************************************
@@ -196,6 +208,8 @@ public class Hardware
     // ANALOG I/O
     // **********************************************************
     public static Potentiometer delayPot = new Potentiometer(2);
+
+    public static UltraSonic ultraSonic;
 
     // **********************************************************
     // PNEUMATIC DEVICES
@@ -232,6 +246,12 @@ public class Hardware
     // Drive system
     // ------------------------------------
     public final static double PREV_YEAR_DISTANCE_PER_TICK = .000746;
+
+    public static Drive drive;
+
+    public static TankTransmission tankTransmission;
+
+    public static ADXRS450_Gyro gyro = new ADXRS450_Gyro();
     // ------------------------------------------
     // Vision stuff
     // ----------------------------
