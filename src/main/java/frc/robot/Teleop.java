@@ -58,11 +58,24 @@ public class Teleop {
      * @author Nathanial Lydick
      * @written Jan 13, 2015
      */
-
     public static void periodic() {
+
+        //Joystick Button/Trigger Variables
+        boolean rightOperatorTriggerPressed = Hardware.rightOperator.getTrigger();
+        boolean rightDriverTiggerPressed = Hardware.rightDriver.getTrigger();
+        boolean rightDriverCameraSwitchButtonPressed = Hardware.rightDriverCameraSwitchButton.get();
+        boolean rightOperatorCameraSwitchButtonPressed = Hardware.rightOperatorCameraSwitchButton.get();
+
+        //Switch Camera
+        if (rightOperatorCameraSwitchButtonPressed || rightDriverCameraSwitchButtonPressed) {
+            Hardware.KilroyUSBCameras.switchCameras();
+        }
+        
+
         // =============== AUTOMATED SUBSYSTEMS ===============
 
         // ================= OPERATOR CONTROLS ================
+
 
         // ================== DRIVER CONTROLS =================
 

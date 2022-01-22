@@ -15,11 +15,14 @@
 package frc.Hardware;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANEncoder;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import frc.HardwareInterfaces.DoubleSolenoid;
 import frc.HardwareInterfaces.DoubleThrowSwitch;
+import frc.HardwareInterfaces.KilroyCamera;
 import frc.HardwareInterfaces.KilroyEncoder;
+import frc.HardwareInterfaces.KilroyUSBCamera;
 import frc.HardwareInterfaces.LightSensor;
 import frc.HardwareInterfaces.MomentarySwitch;
 import frc.HardwareInterfaces.Potentiometer;
@@ -28,6 +31,8 @@ import frc.HardwareInterfaces.SixPositionSwitch;
 import frc.HardwareInterfaces.UltraSonic;
 import frc.HardwareInterfaces.Transmission.TankTransmission;
 import frc.HardwareInterfaces.Transmission.TransmissionBase;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.UsbCameraInfo;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -38,6 +43,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import frc.Utils.drive.DrivePID;
 import frc.Utils.drive.Drive;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
  * ------------------------------------------------------- puts all of the
@@ -155,6 +161,9 @@ public class Hardware
         rightRearMotor = new WPI_TalonFX(14);
         rightRearMotor.setInverted(true);
 
+        leftClimbMotor = new WPI_TalonSRX(10);
+        rightClimbMotor = new WPI_TalonSRX(24);
+
         // -----------------------------------
         // initialize the drive speed controllers
         // -----------------------------------
@@ -171,7 +180,7 @@ public class Hardware
         rightDriveEncoder = new KilroyEncoder((WPI_TalonFX) rightFrontMotor);
         rightDriveEncoder.setDistancePerPulse(PREV_YEAR_DISTANCE_PER_TICK);
         rightDriveEncoder.setReverseDirection(true);
-
+        
         // ------------------------------------
         // Drive System
         // ------------------------------------
@@ -194,6 +203,13 @@ public class Hardware
 
     public static KilroyEncoder leftDriveEncoder = null;
     public static KilroyEncoder rightDriveEncoder = null;
+
+    public static MotorController rightClimbMotor = null;
+    public static MotorController leftClimbMotor = null;
+
+    public static MotorControllerGroup ClimbGroup = null;
+
+    public static KilroyEncoder climbEncoder = null;
 
     // **********************************************************
     // DIGITAL I/O
@@ -232,6 +248,9 @@ public class Hardware
     public static Joystick leftOperator = new Joystick(2);
     public static Joystick rightOperator = new Joystick(3);
 
+    public static JoystickButton rightOperatorCameraSwitchButton = new JoystickButton(rightOperator, 10);
+    public static JoystickButton rightDriverCameraSwitchButton = new JoystickButton(rightDriver, 3);
+
     // **********************************************************
     // Kilroy's Ancillary classes
     // **********************************************************
@@ -255,6 +274,10 @@ public class Hardware
     // ------------------------------------------
     // Vision stuff
     // ----------------------------
+    public static int KilroyUSBCamerasRotation = 180;
+    public static boolean usingTwoCameras = true;
+    public static KilroyUSBCamera KilroyUSBCameras = new KilroyUSBCamera(usingTwoCameras);
+    
 
     // -------------------
     // Subassemblies
