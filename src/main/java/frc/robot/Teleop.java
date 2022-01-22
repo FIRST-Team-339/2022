@@ -61,7 +61,11 @@ public class Teleop {
 
     public static void periodic() {
         // =============== AUTOMATED SUBSYSTEMS ===============
-
+    System.out.println("ballPickup1 = " + Hardware.ballPickup1.isOn());
+    System.out.println("ballPickup2 = " + Hardware.ballPickup2.isOn());
+    System.out.println("ballPickup3 = " + Hardware.ballPickup3.isOn());
+    System.out.println("ballPickup4 = " + Hardware.ballPickup4.isOn());
+    System.out.println("floorLight = " + Hardware.floorLight.isOn());
         // ================= OPERATOR CONTROLS ================
 
         // ================== DRIVER CONTROLS =================
