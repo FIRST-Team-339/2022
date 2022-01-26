@@ -108,25 +108,28 @@ public class LightSensor extends DigitalInput
         {
             super(channel);
         } // end LightSensor
-
+        
     // -------------------------------------------------------
     /**
-     * Create an instance of a LightSensor class. Creates a digital input given a
-     * channel and the module passed in.
-     *
-     * @method LightSensor()
-     * @param channel
-     *                    - the port for the digital input
-     * @param slot
-     *                    - the slot where the digital board is located
-     * @author S. V. Pakington
-     * @written Feb 3, 2010 -------------------------------------------------------
-     */
+    * Create an instance of a LightSensor class.
+    * Creates a digital input given a channel and uses the default module.
+    *
+    * @method LightSensor()
+    * @param channel
+    *                            - the port for the digital input
+    * @param reversePolarity
+    *                            - denotes that the sensor sends back false when ON
+    *                            instead of true
+    * @author S. V. Pakington
+    * @written Feb 3, 2010
+    *          -------------------------------------------------------
+    */
+    public LightSensor (final int channel, boolean reversePolarity)
+    {
+        super(channel);
+        this.isReversed = reversePolarity;
+    } // end LightSensor
 
-    /*
-     * public LightSensor (final int slot, final int channel) { super(slot,
-     * channel); } // end LightSensor
-     */
     // -------------------------------------------------------
     /**
      * This function tells us whether there is something blocking the red light
@@ -139,6 +142,47 @@ public class LightSensor extends DigitalInput
      */
     public boolean isOn()
     {
-        return (this.get());
-    } // end isOn
+            if (this.isReversed == true)
+                {
+                if (this.get() == true)
+                    return false;
+                else return true;
+                }
+            return (this.get());
+    
+       } // end isOn
+
+    // -------------------------------------------------------
+    /**
+     * This function tells us whether this ;oght sensor returns false instead of
+     * true for ON.
+     *
+     * @method isReversed
+     * @return Is reversed, true or false
+     * @author S. R. Brown
+     * @written Feb 22,2020 -------------------------------------------------------
+     */
+
+    public boolean isReversed()
+    {
+        return this.isReversed;
+    }
+
+    // -------------------------------------------------------
+    /**
+     * This function tells us whether this ;oght sensor returns false instead of
+     * true for ON.
+     *
+     * @method isReversed
+     * @return Is reversed, true or false
+     * @author S. R. Brown
+     * @written Feb 22,2020 -------------------------------------------------------
+     */
+
+    public boolean setReversed(boolean reversed)
+    {
+        return (this.isReversed = reversed);
+    }
+
+    private boolean isReversed = false;
     } // end LightSensor

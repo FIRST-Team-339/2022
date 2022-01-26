@@ -6,9 +6,9 @@
   "configurations": [
     {
       "type": "java",
-      "name": "Launch test1",
+      "name": "Launch Main",
       "request": "launch",
-      "mainClass": "frc.Hardware.test1",
+      "mainClass": "frc.robot.Main",
       "projectName": "2022"
     },
     {

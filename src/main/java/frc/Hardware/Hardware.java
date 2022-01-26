@@ -15,24 +15,35 @@
 package frc.Hardware;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANEncoder;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import frc.HardwareInterfaces.DoubleSolenoid;
 import frc.HardwareInterfaces.DoubleThrowSwitch;
+import frc.HardwareInterfaces.KilroyCamera;
 import frc.HardwareInterfaces.KilroyEncoder;
+import frc.HardwareInterfaces.KilroyUSBCamera;
 import frc.HardwareInterfaces.LightSensor;
 import frc.HardwareInterfaces.MomentarySwitch;
 import frc.HardwareInterfaces.Potentiometer;
 import frc.HardwareInterfaces.SingleThrowSwitch;
 import frc.HardwareInterfaces.SixPositionSwitch;
+import frc.HardwareInterfaces.UltraSonic;
+import frc.HardwareInterfaces.Transmission.TankTransmission;
+import frc.HardwareInterfaces.Transmission.TransmissionBase;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.UsbCameraInfo;
 import edu.wpi.first.util.sendable.SendableRegistry;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import frc.Utils.drive.DrivePID;
+import frc.Utils.drive.Drive;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
  * ------------------------------------------------------- puts all of the
@@ -145,16 +156,26 @@ public class Hardware
         rightFrontMotor = new WPI_TalonFX(12);
         rightFrontMotor.setInverted(true);
 
+        colorWheelMotor = new WPI_TalonSRX(25);
+
         leftRearMotor = new WPI_TalonFX(15);
         leftRearMotor.setInverted(false);
         rightRearMotor = new WPI_TalonFX(14);
         rightRearMotor.setInverted(true);
+
+        leftClimbMotor = new WPI_TalonSRX(10);
+        rightClimbMotor = new WPI_TalonSRX(24);
 
         // -----------------------------------
         // initialize the drive speed controllers
         // -----------------------------------
         leftDriveGroup = new MotorControllerGroup(leftRearMotor, leftFrontMotor);
         rightDriveGroup = new MotorControllerGroup(rightRearMotor, rightFrontMotor);
+
+        // -----------------------------------
+        // initalize the climb controller groups
+        // -----------------------------------
+        climbGroup = new MotorControllerGroup(leftClimbMotor, rightClimbMotor);
 
         // -----------------------------------
         // configure the drive system encoders
@@ -166,6 +187,23 @@ public class Hardware
         rightDriveEncoder = new KilroyEncoder((WPI_TalonFX) rightFrontMotor);
         rightDriveEncoder.setDistancePerPulse(PREV_YEAR_DISTANCE_PER_TICK);
         rightDriveEncoder.setReverseDirection(true);
+        
+        // ------------------------------------
+        // configure climb encoders
+        // ------------------------------------
+        climbEncoder = new KilroyEncoder((WPI_TalonSRX) leftClimbMotor);
+        climbEncoder.setDistancePerPulse(PREV_YEAR_CLIMB_DISTANCE_PER_TICK);
+        climbEncoder.setReverseDirection(true);
+
+        // ------------------------------------
+        // Drive System
+        // ------------------------------------
+        tankTransmission = new TankTransmission(leftDriveGroup, rightDriveGroup);
+
+        drive = new Drive(tankTransmission, leftDriveEncoder, rightDriveEncoder, gyro);
+
+        tankTransmission.setGearPercentage(PREV_YEAR_GEAR_1, PREV_YEAR_GEAR_1_PERCENTAGE);
+        tankTransmission.setGearPercentage(PREV_YEAR_GEAR_2, PREV_YEAR_GEAR_2_PERCENTAGE);
 
     } // end of initializePrevYear()
 
@@ -177,11 +215,21 @@ public class Hardware
     public static MotorController leftFrontMotor = null;
     public static MotorController rightFrontMotor = null;
 
+    public static MotorController colorWheelMotor = null;
+
     public static MotorControllerGroup leftDriveGroup = null;
     public static MotorControllerGroup rightDriveGroup = null;
 
     public static KilroyEncoder leftDriveEncoder = null;
     public static KilroyEncoder rightDriveEncoder = null;
+
+    public static MotorController rightClimbMotor = null;
+    public static MotorController leftClimbMotor = null;
+
+    public static MotorControllerGroup climbGroup = null;
+
+    public static KilroyEncoder climbEncoder = null;
+    public static double PREV_YEAR_CLIMB_DISTANCE_PER_TICK = .004507692;
 
     // **********************************************************
     // DIGITAL I/O
@@ -192,10 +240,18 @@ public class Hardware
 
     public static LightSensor infraredSensor = null;
 
+    public static LightSensor ballPickup1 = new LightSensor (21);
+    public static LightSensor ballPickup2 = new LightSensor (22, true);
+    public static LightSensor ballPickup3 = new LightSensor (23);
+    public static LightSensor ballPickup4 = new LightSensor (24);
+    public static LightSensor floorLight = new LightSensor (9);
+
     // **********************************************************
     // ANALOG I/O
     // **********************************************************
     public static Potentiometer delayPot = new Potentiometer(2);
+
+    public static UltraSonic ultraSonic;
 
     // **********************************************************
     // PNEUMATIC DEVICES
@@ -218,6 +274,9 @@ public class Hardware
     public static Joystick leftOperator = new Joystick(2);
     public static Joystick rightOperator = new Joystick(3);
 
+    public static JoystickButton rightOperatorCameraSwitchButton = new JoystickButton(rightOperator, 10);
+    public static JoystickButton rightDriverCameraSwitchButton = new JoystickButton(rightDriver, 3);
+
     // **********************************************************
     // Kilroy's Ancillary classes
     // **********************************************************
@@ -228,13 +287,31 @@ public class Hardware
 
     public static Timer autoTimer = new Timer();
 
+    public static Timer autoShootPlaceholderTimer = new Timer();
+
     // ------------------------------------
     // Drive system
     // ------------------------------------
     public final static double PREV_YEAR_DISTANCE_PER_TICK = .000746;
+
+    public static Drive drive;
+
+    public static TankTransmission tankTransmission;
+
+    public static ADXRS450_Gyro gyro = new ADXRS450_Gyro();
+
+    public static int PREV_YEAR_GEAR_1 = 1;
+    public static double PREV_YEAR_GEAR_1_PERCENTAGE = 0.5;
+    public static int PREV_YEAR_GEAR_2 = 1;
+    public static double PREV_YEAR_GEAR_2_PERCENTAGE = 0.7;
+
     // ------------------------------------------
     // Vision stuff
     // ----------------------------
+    //public static int KilroyUSBCamerasRotation = 180;
+    public static boolean usingTwoCameras = true;
+    public static KilroyUSBCamera KilroyUSBCameras = new KilroyUSBCamera(usingTwoCameras);
+    
 
     // -------------------
     // Subassemblies
