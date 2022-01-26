@@ -171,6 +171,11 @@ public class Hardware
         rightDriveGroup = new MotorControllerGroup(rightRearMotor, rightFrontMotor);
 
         // -----------------------------------
+        // initalize the climb controller groups
+        // -----------------------------------
+        climbGroup = new MotorControllerGroup(leftClimbMotor, rightClimbMotor);
+
+        // -----------------------------------
         // configure the drive system encoders
         // -----------------------------------
         leftDriveEncoder = new KilroyEncoder((WPI_TalonFX) leftFrontMotor);
@@ -182,11 +187,21 @@ public class Hardware
         rightDriveEncoder.setReverseDirection(true);
         
         // ------------------------------------
+        // configure climb encoders
+        // ------------------------------------
+        climbEncoder = new KilroyEncoder((WPI_TalonSRX) leftClimbMotor);
+        climbEncoder.setDistancePerPulse(PREV_YEAR_CLIMB_DISTANCE_PER_TICK);
+        climbEncoder.setReverseDirection(true);
+
+        // ------------------------------------
         // Drive System
         // ------------------------------------
         tankTransmission = new TankTransmission(leftDriveGroup, rightDriveGroup);
 
         drive = new Drive(tankTransmission, leftDriveEncoder, rightDriveEncoder, gyro);
+
+        tankTransmission.setGearPercentage(PREV_YEAR_GEAR_1, PREV_YEAR_GEAR_1_PERCENTAGE);
+        tankTransmission.setGearPercentage(PREV_YEAR_GEAR_2, PREV_YEAR_GEAR_2_PERCENTAGE);
 
     } // end of initializePrevYear()
 
@@ -207,9 +222,10 @@ public class Hardware
     public static MotorController rightClimbMotor = null;
     public static MotorController leftClimbMotor = null;
 
-    public static MotorControllerGroup ClimbGroup = null;
+    public static MotorControllerGroup climbGroup = null;
 
     public static KilroyEncoder climbEncoder = null;
+    public static double PREV_YEAR_CLIMB_DISTANCE_PER_TICK = .004507692;
 
     // **********************************************************
     // DIGITAL I/O
@@ -277,10 +293,16 @@ public class Hardware
     public static TankTransmission tankTransmission;
 
     public static ADXRS450_Gyro gyro = new ADXRS450_Gyro();
+
+    public static int PREV_YEAR_GEAR_1 = 1;
+    public static double PREV_YEAR_GEAR_1_PERCENTAGE = 0.5;
+    public static int PREV_YEAR_GEAR_2 = 1;
+    public static double PREV_YEAR_GEAR_2_PERCENTAGE = 0.7;
+
     // ------------------------------------------
     // Vision stuff
     // ----------------------------
-    public static int KilroyUSBCamerasRotation = 180;
+    //public static int KilroyUSBCamerasRotation = 180;
     public static boolean usingTwoCameras = true;
     public static KilroyUSBCamera KilroyUSBCameras = new KilroyUSBCamera(usingTwoCameras);
     

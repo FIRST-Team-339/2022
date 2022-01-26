@@ -62,9 +62,14 @@ public class Teleop {
 
         //Joystick Button/Trigger Variables
         boolean rightOperatorTriggerPressed = Hardware.rightOperator.getTrigger();
-        boolean rightDriverTiggerPressed = Hardware.rightDriver.getTrigger();
+        boolean driverGearUpPressed = Hardware.rightDriver.getTrigger();
+        boolean driverGearDownPressed = Hardware.rightDriver.getTrigger();
         boolean rightDriverCameraSwitchButtonPressed = Hardware.rightDriverCameraSwitchButton.get();
         boolean rightOperatorCameraSwitchButtonPressed = Hardware.rightOperatorCameraSwitchButton.get();
+
+        //Drive Variables
+        double leftDriverJoystickY = Hardware.leftDriver.getY() * -1;
+        double rightDriverJoystickY = Hardware.rightDriver.getY() * -1;
 
         //Switch Camera
         if (rightOperatorCameraSwitchButtonPressed || rightDriverCameraSwitchButtonPressed) {
@@ -82,8 +87,14 @@ public class Teleop {
 
 
         // ================== DRIVER CONTROLS =================
+        Hardware.drive.drive(Hardware.leftDriver, Hardware.rightDriver);
 
-        
+        Hardware.tankTransmission.shiftGears(driverGearUpPressed, driverGearDownPressed);
+
+        System.out.println("ltJoy" + leftDriverJoystickY + "ltMotorGroup" + Hardware.leftDriveGroup.get());
+        System.out.println("rtJoy" + rightDriverJoystickY + "rtMotorGroup" +  Hardware.rightDriveGroup.get());
+        System.out.println(Hardware.drive.getCurrentGear());
+
 
         individualTest();
     } // end Periodic()
