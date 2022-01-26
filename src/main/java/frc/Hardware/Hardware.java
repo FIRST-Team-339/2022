@@ -156,6 +156,8 @@ public class Hardware
         rightFrontMotor = new WPI_TalonFX(12);
         rightFrontMotor.setInverted(true);
 
+        colorWheelMotor = new WPI_TalonSRX(25);
+
         leftRearMotor = new WPI_TalonFX(15);
         leftRearMotor.setInverted(false);
         rightRearMotor = new WPI_TalonFX(14);
@@ -197,6 +199,8 @@ public class Hardware
     public static MotorController rightRearMotor = null;
     public static MotorController leftFrontMotor = null;
     public static MotorController rightFrontMotor = null;
+
+    public static MotorController colorWheelMotor = null;
 
     public static MotorControllerGroup leftDriveGroup = null;
     public static MotorControllerGroup rightDriveGroup = null;
@@ -266,6 +270,8 @@ public class Hardware
     // ------------------------------------
 
     public static Timer autoTimer = new Timer();
+
+    public static Timer autoShootPlaceholderTimer = new Timer();
 
     // ------------------------------------
     // Drive system

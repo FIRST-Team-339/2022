@@ -78,6 +78,8 @@ public static void init ()
 
     Hardware.autoTimer.stop();
     Hardware.autoTimer.reset(); 
+    Hardware.autoShootPlaceholderTimer.stop();
+    Hardware.autoShootPlaceholderTimer.reset();
     delaySeconds = Hardware.delayPot.get(0, MAX_DELAY_SECONDS);
     onlyDriveState = ONLY_DRIVE_STATE.INIT;
     dropAndDriveState = DROP_AND_DRIVE_STATE.INIT;
@@ -107,6 +109,7 @@ public static void periodic ()
         case DRIVE_AND_DROP:
             break;
         case DROP_AND_DRIVE:
+            dropAndDrive();
             break;
         case DISABLE:
             break;
@@ -135,17 +138,30 @@ public static void dropAndDrive()
             }
             break;
         case PREPARE_TO_DROP:
-            if (Hardware.drive.driveStraightInches(DISTANCE_TO_WALL_INCHES_PREV_YEAR, DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_PREV_YEAR) == true)
+            if (Hardware.drive.driveStraightInches(DISTANCE_TO_WALL_INCHES_PREV_YEAR, DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_PREV_YEAR) == true)
             {
                 dropAndDriveState = DROP_AND_DRIVE_STATE.DROP;
             }
             break;
         case DROP:
-            
+            Hardware.autoShootPlaceholderTimer.start();
+            if(Hardware.autoShootPlaceholderTimer.get() <= TIME_OF_MOTOR_SPINNING_SECONDS_PREV_YEAR)
+            {
+                Hardware.colorWheelMotor.set(TEST_MOTOR_SPEED_PREV_YEAR);
+            }
+            dropAndDriveState = DROP_AND_DRIVE_STATE.DRIVE;
             break;
         case DRIVE:
+            if(Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_WALL_INCHES_PREV_YEAR, DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_PREV_YEAR) == true)
+            {
+                dropAndDriveState = DROP_AND_DRIVE_STATE.STOP;
+            }
             break;
         case STOP:
+            if(Hardware.drive.brake(BrakeType.AFTER_DRIVE) == true)
+            {
+                dropAndDriveState = DROP_AND_DRIVE_STATE.END;
+            }
             break;
         case END:
             break;
@@ -156,7 +172,7 @@ public static void dropAndDrive()
 
 public static void driveOnly()
 {
-    // System.out.println("ONLY_DRIVE_STATE = " + onlyDriveState);
+    System.out.println("ONLY_DRIVE_STATE = " + onlyDriveState);
     switch (onlyDriveState)
     {
         case INIT:
@@ -171,12 +187,13 @@ public static void driveOnly()
             }
             break;
         case DRIVE:
-            if(Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_PREV_YEAR, DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_PREV_YEAR) == true)
+            if(Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_PREV_YEAR, DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_PREV_YEAR) == true)
             {
                 onlyDriveState = ONLY_DRIVE_STATE.STOP;
             }
             break;
         case STOP:
+            Hardware.drive.resetEncoders();
             if(Hardware.drive.brake(BrakeType.AFTER_DRIVE) == true)
             {
                 onlyDriveState = ONLY_DRIVE_STATE.END;
@@ -231,17 +248,21 @@ public static void driveOnly()
 
  public static final double DISTANCE_TO_WALL_INCHES_PREV_YEAR = 30.0; // TODO test
 
- public static final double DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_PREV_YEAR = 95.0; // TODO test
+ public static final double DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_PREV_YEAR = 90.0; // TODO test
 
  public static final double DISTANCE_TO_LEAVE_TARMAC_FROM_WALL_INCHES_PREV_YEAR = 129.0; // TODO test
 
  public static final double DRIVE_SPEED_POSITIVE_PREV_YEAR = .4; // TODO test
 
- public static final double DRIVE_SPEED_NEGATIVE_PREV_YEAR = .4; // TODO test
+ public static final double DRIVE_SPEED_NEGATIVE_PREV_YEAR = -.4; // TODO test
 
  public static final double ACCELERATION_PREV_YEAR = .5; // TODO test
 
  public static final boolean USING_GYRO_PREV_YEAR = false;
 
  public static final double MAX_DELAY_SECONDS = 5.0;
+
+ public static final double TIME_OF_MOTOR_SPINNING_SECONDS_PREV_YEAR = 3.0;
+
+ public static final double TEST_MOTOR_SPEED_PREV_YEAR = .4;
 }
