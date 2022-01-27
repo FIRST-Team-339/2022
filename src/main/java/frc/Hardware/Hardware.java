@@ -151,17 +151,17 @@ public class Hardware
     {
         // ==============CAN INIT=============
         // Motor Controllers
-        leftFrontMotor = new WPI_TalonFX(13);
-        leftFrontMotor.setInverted(false);
-        rightFrontMotor = new WPI_TalonFX(12);
-        rightFrontMotor.setInverted(true);
+        leftTopMotor = new WPI_TalonFX(13);
+        leftTopMotor.setInverted(false);
+        rightBottomMotor = new WPI_TalonFX(12);
+        rightBottomMotor.setInverted(true);
 
         colorWheelMotor = new WPI_TalonSRX(25);
 
-        leftRearMotor = new WPI_TalonFX(15);
-        leftRearMotor.setInverted(false);
-        rightRearMotor = new WPI_TalonFX(14);
-        rightRearMotor.setInverted(true);
+        leftBottomMotor = new WPI_TalonFX(15);
+        leftBottomMotor.setInverted(false);
+        rightTopMotor = new WPI_TalonFX(14);
+        rightTopMotor.setInverted(true);
 
         leftClimbMotor = new WPI_TalonSRX(10);
         rightClimbMotor = new WPI_TalonSRX(24);
@@ -169,8 +169,8 @@ public class Hardware
         // -----------------------------------
         // initialize the drive speed controllers
         // -----------------------------------
-        leftDriveGroup = new MotorControllerGroup(leftRearMotor, leftFrontMotor);
-        rightDriveGroup = new MotorControllerGroup(rightRearMotor, rightFrontMotor);
+        leftDriveGroup = new MotorControllerGroup(leftBottomMotor, leftTopMotor);
+        rightDriveGroup = new MotorControllerGroup(rightBottomMotor, rightTopMotor);
 
         // -----------------------------------
         // initalize the climb controller groups
@@ -180,11 +180,11 @@ public class Hardware
         // -----------------------------------
         // configure the drive system encoders
         // -----------------------------------
-        leftDriveEncoder = new KilroyEncoder((WPI_TalonFX) leftFrontMotor);
+        leftDriveEncoder = new KilroyEncoder((WPI_TalonFX) leftBottomMotor);
         leftDriveEncoder.setDistancePerPulse(PREV_YEAR_DISTANCE_PER_TICK);
         leftDriveEncoder.setReverseDirection(true);
 
-        rightDriveEncoder = new KilroyEncoder((WPI_TalonFX) rightFrontMotor);
+        rightDriveEncoder = new KilroyEncoder((WPI_TalonFX) rightBottomMotor);
         rightDriveEncoder.setDistancePerPulse(PREV_YEAR_DISTANCE_PER_TICK);
         rightDriveEncoder.setReverseDirection(true);
         
@@ -210,10 +210,10 @@ public class Hardware
     // **********************************************************
     // CAN DEVICES
     // **********************************************************
-    public static MotorController leftRearMotor = null;
-    public static MotorController rightRearMotor = null;
-    public static MotorController leftFrontMotor = null;
-    public static MotorController rightFrontMotor = null;
+    public static MotorController leftBottomMotor = null;
+    public static MotorController rightTopMotor = null;
+    public static MotorController leftTopMotor = null;
+    public static MotorController rightBottomMotor = null;
 
     public static MotorController colorWheelMotor = null;
 

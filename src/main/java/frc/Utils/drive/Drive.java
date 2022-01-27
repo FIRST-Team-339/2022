@@ -437,6 +437,7 @@ public class Drive {
         newSpeed[1] = -brakeMotorDirection[1] * this.brakeInitialDirection[1] * power;
         transmission.getMotorController(MotorPosition.LEFT_REAR).set(newSpeed[0]);
         transmission.getMotorController(MotorPosition.RIGHT_REAR).set(newSpeed[1]);
+        // TODO check encoder values (maybe only need to look at the above print statement)
         if (this.isDebugOn(debugType.DEBUG_BRAKING) == true)
             System.out.print("MC new speed LR RR LF RF = " + newSpeed[0] + " " + newSpeed[1]);
 

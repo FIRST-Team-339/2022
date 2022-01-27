@@ -33,6 +33,7 @@ package frc.robot;
 
 import frc.Hardware.Hardware;
 import frc.Utils.drive.Drive.BrakeType;
+import frc.Utils.drive.Drive.debugType;
 
 /**
  * An Autonomous class. This class <b>beautifully</b> uses state machines in
@@ -81,6 +82,7 @@ public static void init ()
     Hardware.autoShootPlaceholderTimer.stop();
     Hardware.autoShootPlaceholderTimer.reset();
     delaySeconds = Hardware.delayPot.get(0, MAX_DELAY_SECONDS);
+    Hardware.drive.setDebugOnStatus(debugType.DEBUG_BRAKING);
     onlyDriveState = ONLY_DRIVE_STATE.INIT;
     dropAndDriveState = DROP_AND_DRIVE_STATE.INIT;
 } // end Init
@@ -100,11 +102,14 @@ public static void init ()
 
 public static void periodic ()
 {
-    // System.out.println("AUTO_PATH = " + autoPath);
+    System.out.println("AUTO_PATH = " + autoPath);
     switch(autoPath)
     {
         case DRIVE_ONLY:
-            driveOnly();
+            if(driveOnly() == true)
+            {
+                autoPath = AUTO_PATH.DISABLE;
+            }
             break;
         case DRIVE_AND_DROP:
             break;
@@ -138,7 +143,8 @@ public static void dropAndDrive()
             }
             break;
         case PREPARE_TO_DROP:
-            if (Hardware.drive.driveStraightInches(DISTANCE_TO_WALL_INCHES_PREV_YEAR, DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_PREV_YEAR) == true)
+            if (Hardware.drive.driveStraightInches(DISTANCE_TO_WALL_INCHES_PREV_YEAR, 
+                DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_PREV_YEAR) == true)
             {
                 dropAndDriveState = DROP_AND_DRIVE_STATE.DROP;
             }
@@ -152,7 +158,8 @@ public static void dropAndDrive()
             dropAndDriveState = DROP_AND_DRIVE_STATE.DRIVE;
             break;
         case DRIVE:
-            if(Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_WALL_INCHES_PREV_YEAR, DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_PREV_YEAR) == true)
+            if(Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_WALL_INCHES_PREV_YEAR, 
+                DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_PREV_YEAR) == true)
             {
                 dropAndDriveState = DROP_AND_DRIVE_STATE.STOP;
             }
@@ -170,7 +177,7 @@ public static void dropAndDrive()
     }
 }
 
-public static void driveOnly()
+public static boolean driveOnly()
 {
     System.out.println("ONLY_DRIVE_STATE = " + onlyDriveState);
     switch (onlyDriveState)
@@ -178,31 +185,32 @@ public static void driveOnly()
         case INIT:
             Hardware.autoTimer.start();
             onlyDriveState = ONLY_DRIVE_STATE.DELAY;
-            break;
+            return false;
         case DELAY:
             // TODO test
             if(Hardware.autoTimer.get() >= delaySeconds)
             {
                 onlyDriveState = ONLY_DRIVE_STATE.DRIVE;
             }
-            break;
+            return false;
         case DRIVE:
-            if(Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_PREV_YEAR, DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_PREV_YEAR) == true)
+            if(Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_PREV_YEAR, 
+                DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_PREV_YEAR) == true)
             {
+                Hardware.drive.resetEncoders();
                 onlyDriveState = ONLY_DRIVE_STATE.STOP;
             }
-            break;
+            return false;
         case STOP:
-            Hardware.drive.resetEncoders();
             if(Hardware.drive.brake(BrakeType.AFTER_DRIVE) == true)
             {
                 onlyDriveState = ONLY_DRIVE_STATE.END;
             }
-            break;
+            return false;
         case END:
-            break;
+            return true;
         default:
-            break;
+            return false;
     }
 }
 
