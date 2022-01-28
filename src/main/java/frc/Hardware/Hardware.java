@@ -202,8 +202,8 @@ public class Hardware
 
         drive = new Drive(tankTransmission, leftDriveEncoder, rightDriveEncoder, gyro);
 
-        tankTransmission.setGearPercentage(PREV_YEAR_GEAR_1, PREV_YEAR_GEAR_1_PERCENTAGE);
-        tankTransmission.setGearPercentage(PREV_YEAR_GEAR_2, PREV_YEAR_GEAR_2_PERCENTAGE);
+        // tankTransmission.setGearPercentage(PREV_YEAR_GEAR_1, PREV_YEAR_GEAR_1_PERCENTAGE);
+        // tankTransmission.setGearPercentage(PREV_YEAR_GEAR_2, PREV_YEAR_GEAR_2_PERCENTAGE);
 
     } // end of initializePrevYear()
 
@@ -302,7 +302,7 @@ public class Hardware
 
     public static int PREV_YEAR_GEAR_1 = 1;
     public static double PREV_YEAR_GEAR_1_PERCENTAGE = 0.5;
-    public static int PREV_YEAR_GEAR_2 = 1;
+    public static int PREV_YEAR_GEAR_2 = 2;
     public static double PREV_YEAR_GEAR_2_PERCENTAGE = 0.7;
 
     // ------------------------------------------
