@@ -49,6 +49,8 @@ public class Teleop {
      */
     public static void init() {
 
+        Hardware.tankTransmission.setGear(1);
+
     } // end Init
 
     /**
@@ -63,13 +65,21 @@ public class Teleop {
         //Joystick Button/Trigger Variables
         boolean rightOperatorTriggerPressed = Hardware.rightOperator.getTrigger();
         boolean driverGearUpPressed = Hardware.rightDriver.getTrigger();
-        boolean driverGearDownPressed = Hardware.rightDriver.getTrigger();
+        boolean driverGearDownPressed = Hardware.leftDriver.getTrigger();
         boolean rightDriverCameraSwitchButtonPressed = Hardware.rightDriverCameraSwitchButton.get();
         boolean rightOperatorCameraSwitchButtonPressed = Hardware.rightOperatorCameraSwitchButton.get();
 
         //Drive Variables
-        double leftDriverJoystickY = Hardware.leftDriver.getY() * -1;
-        double rightDriverJoystickY = Hardware.rightDriver.getY() * -1;
+        int invertControllerAxis = -1;
+
+        double leftDriverJoystickY = Hardware.leftDriver.getY() * invertControllerAxis;
+        double rightDriverJoystickY = Hardware.rightDriver.getY() * invertControllerAxis;
+
+        int currentGear = Hardware.drive.getCurrentGear();
+
+        //Setting Gears
+        Hardware.tankTransmission.setGearPercentage(Hardware.PREV_YEAR_GEAR_1, Hardware.PREV_YEAR_GEAR_1_PERCENTAGE);
+        Hardware.tankTransmission.setGearPercentage(Hardware.PREV_YEAR_GEAR_2, Hardware.PREV_YEAR_GEAR_2_PERCENTAGE);
 
         //Switch Camera
         if (rightOperatorCameraSwitchButtonPressed || rightDriverCameraSwitchButtonPressed) {
@@ -84,16 +94,21 @@ public class Teleop {
     System.out.println("ballPickup4 = " + Hardware.ballPickup4.isOn());
     System.out.println("floorLight = " + Hardware.floorLight.isOn());
         // ================= OPERATOR CONTROLS ================
-
+        
 
         // ================== DRIVER CONTROLS =================
-        Hardware.drive.drive(Hardware.leftDriver, Hardware.rightDriver);
-
         Hardware.tankTransmission.shiftGears(driverGearUpPressed, driverGearDownPressed);
 
-        System.out.println("ltJoy" + leftDriverJoystickY + "ltMotorGroup" + Hardware.leftDriveGroup.get());
-        System.out.println("rtJoy" + rightDriverJoystickY + "rtMotorGroup" +  Hardware.rightDriveGroup.get());
-        System.out.println(Hardware.drive.getCurrentGear());
+        Hardware.drive.drive(Hardware.leftDriver, Hardware.rightDriver);
+
+        System.out.println("lJ " + leftDriverJoystickY + " lTMG " + Hardware.leftDriveGroup.get());
+        System.out.println("rJ " + rightDriverJoystickY + " rTMG " +  Hardware.rightDriveGroup.get());
+        System.out.println(currentGear);
+
+        //Keeps Gear Locked To One So It Can't Go To Zero (Uncomment If Needed)
+        // if (currentGear < Hardware.PREV_YEAR_GEAR_1) {
+        //     Hardware.tankTransmission.setGear(Hardware.PREV_YEAR_GEAR_1);
+        // }
 
 
         individualTest();
