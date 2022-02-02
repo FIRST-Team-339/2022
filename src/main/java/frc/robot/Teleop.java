@@ -80,6 +80,10 @@ public class Teleop {
         //Setting Gears
         Hardware.tankTransmission.setGearPercentage(Hardware.PREV_YEAR_GEAR_1, Hardware.PREV_YEAR_GEAR_1_PERCENTAGE);
         Hardware.tankTransmission.setGearPercentage(Hardware.PREV_YEAR_GEAR_2, Hardware.PREV_YEAR_GEAR_2_PERCENTAGE);
+        //Keeps Gear Locked To One So It Can't Go To Zero (Uncomment If Needed)
+        // if (currentGear < Hardware.PREV_YEAR_GEAR_1) {
+        //     Hardware.tankTransmission.setGear(Hardware.PREV_YEAR_GEAR_1);
+        // }
 
         //Switch Camera
         if (rightOperatorCameraSwitchButtonPressed || rightDriverCameraSwitchButtonPressed) {
@@ -104,11 +108,6 @@ public class Teleop {
         System.out.println("lJ " + leftDriverJoystickY + " lTMG " + Hardware.leftDriveGroup.get());
         System.out.println("rJ " + rightDriverJoystickY + " rTMG " +  Hardware.rightDriveGroup.get());
         System.out.println(currentGear);
-
-        //Keeps Gear Locked To One So It Can't Go To Zero (Uncomment If Needed)
-        // if (currentGear < Hardware.PREV_YEAR_GEAR_1) {
-        //     Hardware.tankTransmission.setGear(Hardware.PREV_YEAR_GEAR_1);
-        // }
 
 
         individualTest();

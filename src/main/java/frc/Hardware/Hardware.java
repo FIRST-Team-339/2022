@@ -22,6 +22,7 @@ import frc.HardwareInterfaces.DoubleSolenoid;
 import frc.HardwareInterfaces.DoubleThrowSwitch;
 import frc.HardwareInterfaces.KilroyCamera;
 import frc.HardwareInterfaces.KilroyEncoder;
+import frc.HardwareInterfaces.KilroyServo;
 import frc.HardwareInterfaces.KilroyUSBCamera;
 import frc.HardwareInterfaces.LightSensor;
 import frc.HardwareInterfaces.MomentarySwitch;
@@ -151,7 +152,7 @@ public class Hardware
     {
         // ==============CAN INIT=============
         // Motor Controllers
-        leftTopMotor = new WPI_TalonFX(13);
+        leftTopMotor = new WPI_TalonFX(6);
         leftTopMotor.setInverted(false);
         rightBottomMotor = new WPI_TalonFX(12);
         rightBottomMotor.setInverted(true);
@@ -167,10 +168,12 @@ public class Hardware
         rightClimbMotor = new WPI_TalonSRX(24);
 
         // -----------------------------------
-        // initialize the drive speed controllers
+        // initialize the drive speed controllers and servo
         // -----------------------------------
         leftDriveGroup = new MotorControllerGroup(leftBottomMotor, leftTopMotor);
         rightDriveGroup = new MotorControllerGroup(rightBottomMotor, rightTopMotor);
+        climbServo = new KilroyServo(PREV_YEAR_CLIMB_SERVO_PWM_PORT, PREV_YEAR_CLIMB_SERVO_MAX_DEGREES);
+        //climbServo.set(value);
 
         // -----------------------------------
         // initalize the climb controller groups
@@ -228,8 +231,13 @@ public class Hardware
 
     public static MotorControllerGroup climbGroup = null;
 
+    public static KilroyServo climbServo = null;
+
     public static KilroyEncoder climbEncoder = null;
     public static double PREV_YEAR_CLIMB_DISTANCE_PER_TICK = .004507692;
+    public static int PREV_YEAR_CLIMB_SERVO_PWM_PORT = 2;
+    public static double PREV_YEAR_CLIMB_SERVO_MAX_DEGREES = 270.0;
+    // public static double PREV_YEAR_SERVO_INIT_POS = 0;
 
     // **********************************************************
     // DIGITAL I/O
