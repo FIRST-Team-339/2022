@@ -57,33 +57,28 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
  * @written Jan 2, 2011 -------------------------------------------------------
  */
 
-public class Hardware
-    {
+public class Hardware {
 
-    public static enum yearIdentifier
-        {
+    public static enum yearIdentifier {
         CurrentYear("2022"), PrevYear("2020"), TestBoard("Test");
 
         private final String name;
 
-        private yearIdentifier(String s)
-            {
-                this.name = s;
-            }
+        private yearIdentifier(String s) {
+            this.name = s;
+        }
 
-        public boolean equalsName(String otherName)
-        {
+        public boolean equalsName(String otherName) {
             // (otherName == null) check is not needed because name.equals(null)
             // returns
             // false
             return name.equals(otherName);
         }
 
-        public String toString()
-        {
+        public String toString() {
             return this.name;
         }
-        };
+    };
 
     public static yearIdentifier robotIdentity = yearIdentifier.PrevYear;
 
@@ -94,15 +89,11 @@ public class Hardware
      * @author R. Brown
      * @date 12/5/2021
      ***********************************************/
-    public static void generalInit()
-    {
+    public static void generalInit() {
 
         // **********************************************************
         // ANALOG I/O
         // **********************************************************
-
-        
-
 
         // **********************************************************
         // PNEUMATIC DEVICES
@@ -117,17 +108,13 @@ public class Hardware
      * @author R. Brown
      * @date 12/5/2021
      ***********************************************/
-    public static void initialize()
-    {
+    public static void initialize() {
         generalInit();
-        if (robotIdentity.equals(Hardware.yearIdentifier.CurrentYear))
-            {
+        if (robotIdentity.equals(Hardware.yearIdentifier.CurrentYear)) {
             initializeCurrentYear();
-            }
-        else
-            {
+        } else {
             initializePrevYear();
-            }
+        }
     } // end of initialize()
 
     /**********************************************
@@ -173,7 +160,7 @@ public class Hardware
         leftDriveGroup = new MotorControllerGroup(leftBottomMotor, leftTopMotor);
         rightDriveGroup = new MotorControllerGroup(rightBottomMotor, rightTopMotor);
         climbServo = new KilroyServo(PREV_YEAR_CLIMB_SERVO_PWM_PORT, PREV_YEAR_CLIMB_SERVO_MAX_DEGREES);
-        //climbServo.set(value);
+        // climbServo.set(value);
 
         // -----------------------------------
         // initalize the climb controller groups
@@ -190,7 +177,7 @@ public class Hardware
         rightDriveEncoder = new KilroyEncoder((WPI_TalonFX) rightBottomMotor);
         rightDriveEncoder.setDistancePerPulse(PREV_YEAR_DISTANCE_PER_TICK);
         rightDriveEncoder.setReverseDirection(true);
-        
+
         // ------------------------------------
         // configure climb encoders
         // ------------------------------------
@@ -205,8 +192,10 @@ public class Hardware
 
         drive = new Drive(tankTransmission, leftDriveEncoder, rightDriveEncoder, gyro);
 
-        // tankTransmission.setGearPercentage(PREV_YEAR_GEAR_1, PREV_YEAR_GEAR_1_PERCENTAGE);
-        // tankTransmission.setGearPercentage(PREV_YEAR_GEAR_2, PREV_YEAR_GEAR_2_PERCENTAGE);
+        // tankTransmission.setGearPercentage(PREV_YEAR_GEAR_1,
+        // PREV_YEAR_GEAR_1_PERCENTAGE);
+        // tankTransmission.setGearPercentage(PREV_YEAR_GEAR_2,
+        // PREV_YEAR_GEAR_2_PERCENTAGE);
 
     } // end of initializePrevYear()
 
@@ -248,11 +237,11 @@ public class Hardware
 
     public static LightSensor infraredSensor = null;
 
-    public static LightSensor ballPickup1 = new LightSensor (21);
-    public static LightSensor ballPickup2 = new LightSensor (22, true);
-    public static LightSensor ballPickup3 = new LightSensor (23);
-    public static LightSensor ballPickup4 = new LightSensor (24);
-    public static LightSensor floorLight = new LightSensor (9);
+    public static LightSensor ballPickup1 = new LightSensor(21);
+    public static LightSensor ballPickup2 = new LightSensor(22, true);
+    public static LightSensor ballPickup3 = new LightSensor(23);
+    public static LightSensor ballPickup4 = new LightSensor(24);
+    public static LightSensor floorLight = new LightSensor(9);
 
     // **********************************************************
     // ANALOG I/O
@@ -316,13 +305,12 @@ public class Hardware
     // ------------------------------------------
     // Vision stuff
     // ----------------------------
-    //public static int KilroyUSBCamerasRotation = 180;
+    // public static int KilroyUSBCamerasRotation = 180;
     public static boolean usingTwoCameras = true;
     public static KilroyUSBCamera KilroyUSBCameras = new KilroyUSBCamera(usingTwoCameras);
-    
 
     // -------------------
     // Subassemblies
     // -------------------
 
-    } // end class
+} // end class

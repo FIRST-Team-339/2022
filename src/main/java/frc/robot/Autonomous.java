@@ -58,22 +58,29 @@ public class Autonomous {
      * when the autonomous first starts, and will be followed immediately by
      * periodic().
      */
+    // TODO init robot components correctly
     public static void init() {
         // System.out.println("Six position switch position = " +
         // Hardware.autoSixPosSwitch.getPosition());
-        switch (Hardware.autoSixPosSwitch.getPosition()) {
-            case (0):
-                autoPath = AUTO_PATH.DRIVE_ONLY;
-                break;
-            case (1):
-                autoPath = AUTO_PATH.DRIVE_AND_DROP;
-                break;
-            case (2):
-                autoPath = AUTO_PATH.DROP_AND_DRIVE;
-                break;
-            default:
-                autoPath = AUTO_PATH.DISABLE;
-                break;
+        // System.out.println("Auto disable switch: " +
+        // Hardware.autoDisableSwitch.isOn());
+        if (Hardware.autoDisableSwitch.isOn() == false) {
+            autoPath = AUTO_PATH.DISABLE;
+        } else {
+            switch (Hardware.autoSixPosSwitch.getPosition()) {
+                case (0):
+                    autoPath = AUTO_PATH.DRIVE_ONLY;
+                    break;
+                case (1):
+                    autoPath = AUTO_PATH.DRIVE_AND_DROP;
+                    break;
+                case (2):
+                    autoPath = AUTO_PATH.DROP_AND_DRIVE;
+                    break;
+                default:
+                    autoPath = AUTO_PATH.DISABLE;
+                    break;
+            }
         }
 
         Hardware.autoTimer.stop();
@@ -181,12 +188,12 @@ public class Autonomous {
                 return false;
             case DRIVE:
                 if (Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_PREV_YEAR,
-                        DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_PREV_YEAR) == true) {
+                        DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_PREV_YEAR) == true) {
                     Hardware.drive.resetEncoders();
                     System.out.println("Initial encoder values: " +
                             Hardware.drive.getEncoderTicks(MotorPosition.LEFT) + " " +
                             Hardware.drive.getEncoderTicks(MotorPosition.RIGHT));
-                    Hardware.drive.setBrakePower(-.9, BrakeType.AFTER_DRIVE);
+                    Hardware.drive.setBrakePower(.9, BrakeType.AFTER_DRIVE);
                     onlyDriveState = ONLY_DRIVE_STATE.STOP;
                 }
                 return false;

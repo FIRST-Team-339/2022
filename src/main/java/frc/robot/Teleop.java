@@ -62,14 +62,14 @@ public class Teleop {
      */
     public static void periodic() {
 
-        //Joystick Button/Trigger Variables
+        // Joystick Button/Trigger Variables
         boolean rightOperatorTriggerPressed = Hardware.rightOperator.getTrigger();
         boolean driverGearUpPressed = Hardware.rightDriver.getTrigger();
         boolean driverGearDownPressed = Hardware.leftDriver.getTrigger();
         boolean rightDriverCameraSwitchButtonPressed = Hardware.rightDriverCameraSwitchButton.get();
         boolean rightOperatorCameraSwitchButtonPressed = Hardware.rightOperatorCameraSwitchButton.get();
 
-        //Drive Variables
+        // Drive Variables
         int invertControllerAxis = -1;
 
         double leftDriverJoystickY = Hardware.leftDriver.getY() * invertControllerAxis;
@@ -77,28 +77,26 @@ public class Teleop {
 
         int currentGear = Hardware.drive.getCurrentGear();
 
-        //Setting Gears
+        // Setting Gears
         Hardware.tankTransmission.setGearPercentage(Hardware.PREV_YEAR_GEAR_1, Hardware.PREV_YEAR_GEAR_1_PERCENTAGE);
         Hardware.tankTransmission.setGearPercentage(Hardware.PREV_YEAR_GEAR_2, Hardware.PREV_YEAR_GEAR_2_PERCENTAGE);
-        //Keeps Gear Locked To One So It Can't Go To Zero (Uncomment If Needed)
+        // Keeps Gear Locked To One So It Can't Go To Zero (Uncomment If Needed)
         // if (currentGear < Hardware.PREV_YEAR_GEAR_1) {
-        //     Hardware.tankTransmission.setGear(Hardware.PREV_YEAR_GEAR_1);
+        // Hardware.tankTransmission.setGear(Hardware.PREV_YEAR_GEAR_1);
         // }
 
-        //Switch Camera
+        // Switch Camera
         if (rightOperatorCameraSwitchButtonPressed || rightDriverCameraSwitchButtonPressed) {
             Hardware.KilroyUSBCameras.switchCameras();
         }
-        
 
         // =============== AUTOMATED SUBSYSTEMS ===============
-    System.out.println("ballPickup1 = " + Hardware.ballPickup1.isOn());
-    System.out.println("ballPickup2 = " + Hardware.ballPickup2.isOn());
-    System.out.println("ballPickup3 = " + Hardware.ballPickup3.isOn());
-    System.out.println("ballPickup4 = " + Hardware.ballPickup4.isOn());
-    System.out.println("floorLight = " + Hardware.floorLight.isOn());
+        System.out.println("ballPickup1 = " + Hardware.ballPickup1.isOn());
+        System.out.println("ballPickup2 = " + Hardware.ballPickup2.isOn());
+        System.out.println("ballPickup3 = " + Hardware.ballPickup3.isOn());
+        System.out.println("ballPickup4 = " + Hardware.ballPickup4.isOn());
+        System.out.println("floorLight = " + Hardware.floorLight.isOn());
         // ================= OPERATOR CONTROLS ================
-        
 
         // ================== DRIVER CONTROLS =================
         Hardware.tankTransmission.shiftGears(driverGearUpPressed, driverGearDownPressed);
@@ -106,9 +104,8 @@ public class Teleop {
         Hardware.drive.drive(Hardware.leftDriver, Hardware.rightDriver);
 
         System.out.println("lJ " + leftDriverJoystickY + " lTMG " + Hardware.leftDriveGroup.get());
-        System.out.println("rJ " + rightDriverJoystickY + " rTMG " +  Hardware.rightDriveGroup.get());
+        System.out.println("rJ " + rightDriverJoystickY + " rTMG " + Hardware.rightDriveGroup.get());
         System.out.println(currentGear);
-
 
         individualTest();
     } // end Periodic()
@@ -135,7 +132,6 @@ public class Teleop {
         // -------- SUBSYSTEMS ---------
 
         // ---------- OTHER ------------
-
 
         // ========== OUTPUTS ==========
 
