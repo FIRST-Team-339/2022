@@ -38,7 +38,8 @@ import frc.Hardware.Hardware;
  * @author Nathanial Lydick
  * @written Jan 13, 2015
  */
-public class Teleop {
+public class Teleop
+    {
 
     /**
      * User Initialization code for teleop mode should go here. Will be called once
@@ -47,8 +48,10 @@ public class Teleop {
      * @author Nathanial Lydick
      * @written Jan 13, 2015
      */
-    public static void init() {
+    public static void init()
+    {
 
+        // Initializes Transmission To Gear 1
         Hardware.tankTransmission.setGear(1);
 
     } // end Init
@@ -60,7 +63,8 @@ public class Teleop {
      * @author Nathanial Lydick
      * @written Jan 13, 2015
      */
-    public static void periodic() {
+    public static void periodic()
+    {
 
         // Joystick Button/Trigger Variables
         boolean rightOperatorTriggerPressed = Hardware.rightOperator.getTrigger();
@@ -70,25 +74,24 @@ public class Teleop {
         boolean rightOperatorCameraSwitchButtonPressed = Hardware.rightOperatorCameraSwitchButton.get();
 
         // Drive Variables
-        int invertControllerAxis = -1;
-
-        double leftDriverJoystickY = Hardware.leftDriver.getY() * invertControllerAxis;
-        double rightDriverJoystickY = Hardware.rightDriver.getY() * invertControllerAxis;
+        double leftDriverJoystickY = Hardware.leftDriver.getY() * Hardware.invertControllerAxis;
+        double rightDriverJoystickY = Hardware.rightDriver.getY() * Hardware.invertControllerAxis;
 
         int currentGear = Hardware.drive.getCurrentGear();
 
         // Setting Gears
         Hardware.tankTransmission.setGearPercentage(Hardware.PREV_YEAR_GEAR_1, Hardware.PREV_YEAR_GEAR_1_PERCENTAGE);
         Hardware.tankTransmission.setGearPercentage(Hardware.PREV_YEAR_GEAR_2, Hardware.PREV_YEAR_GEAR_2_PERCENTAGE);
-        // Keeps Gear Locked To One So It Can't Go To Zero (Uncomment If Needed)
-        // if (currentGear < Hardware.PREV_YEAR_GEAR_1) {
-        // Hardware.tankTransmission.setGear(Hardware.PREV_YEAR_GEAR_1);
-        // }
+        if (currentGear < Hardware.PREV_YEAR_GEAR_1)
+            {
+            Hardware.tankTransmission.setGear(Hardware.PREV_YEAR_GEAR_1);
+            }
 
         // Switch Camera
-        if (rightOperatorCameraSwitchButtonPressed || rightDriverCameraSwitchButtonPressed) {
+        if (rightOperatorCameraSwitchButtonPressed || rightDriverCameraSwitchButtonPressed)
+            {
             Hardware.KilroyUSBCameras.switchCameras();
-        }
+            }
 
         // =============== AUTOMATED SUBSYSTEMS ===============
         System.out.println("ballPickup1 = " + Hardware.ballPickup1.isOn());
@@ -99,10 +102,12 @@ public class Teleop {
         // ================= OPERATOR CONTROLS ================
 
         // ================== DRIVER CONTROLS =================
+        // Shifts Gears
         Hardware.tankTransmission.shiftGears(driverGearUpPressed, driverGearDownPressed);
 
         Hardware.drive.drive(Hardware.leftDriver, Hardware.rightDriver);
 
+        // Print Statements For Gears
         System.out.println("lJ " + leftDriverJoystickY + " lTMG " + Hardware.leftDriveGroup.get());
         System.out.println("rJ " + rightDriverJoystickY + " rTMG " + Hardware.rightDriveGroup.get());
         System.out.println(currentGear);
@@ -110,11 +115,13 @@ public class Teleop {
         individualTest();
     } // end Periodic()
 
-    public static void individualTest() {
+    public static void individualTest()
+    {
         // people test functions
     }
 
-    public static void printStatements() {
+    public static void printStatements()
+    {
         // ========== INPUTS ==========
 
         // ---------- DIGITAL ----------
@@ -147,4 +154,4 @@ public class Teleop {
 
     }
 
-} // end class
+    } // end class
