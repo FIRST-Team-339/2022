@@ -202,11 +202,6 @@ public class Hardware
 
         drive = new Drive(tankTransmission, leftDriveEncoder, rightDriveEncoder, gyro);
 
-        // tankTransmission.setGearPercentage(PREV_YEAR_GEAR_1,
-        // PREV_YEAR_GEAR_1_PERCENTAGE);
-        // tankTransmission.setGearPercentage(PREV_YEAR_GEAR_2,
-        // PREV_YEAR_GEAR_2_PERCENTAGE);
-
     } // end of initializePrevYear()
 
     // **********************************************************
@@ -281,6 +276,8 @@ public class Hardware
     public static Joystick leftOperator = new Joystick(2);
     public static Joystick rightOperator = new Joystick(3);
 
+    public static int invertControllerAxis = -1;
+
     public static JoystickButton rightOperatorCameraSwitchButton = new JoystickButton(rightOperator, 10);
     public static JoystickButton rightDriverCameraSwitchButton = new JoystickButton(rightDriver, 3);
 
@@ -307,6 +304,7 @@ public class Hardware
 
     public static ADXRS450_Gyro gyro = new ADXRS450_Gyro();
 
+    // Gear Variables
     public static int PREV_YEAR_GEAR_1 = 1;
     public static double PREV_YEAR_GEAR_1_PERCENTAGE = 0.5;
     public static int PREV_YEAR_GEAR_2 = 2;
