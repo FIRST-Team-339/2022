@@ -57,28 +57,33 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
  * @written Jan 2, 2011 -------------------------------------------------------
  */
 
-public class Hardware {
+public class Hardware
+    {
 
-    public static enum yearIdentifier {
+    public static enum yearIdentifier
+        {
         CurrentYear("2022"), PrevYear("2020"), TestBoard("Test");
 
         private final String name;
 
-        private yearIdentifier(String s) {
-            this.name = s;
-        }
+        private yearIdentifier(String s)
+            {
+                this.name = s;
+            }
 
-        public boolean equalsName(String otherName) {
+        public boolean equalsName(String otherName)
+        {
             // (otherName == null) check is not needed because name.equals(null)
             // returns
             // false
             return name.equals(otherName);
         }
 
-        public String toString() {
+        public String toString()
+        {
             return this.name;
         }
-    };
+        };
 
     public static yearIdentifier robotIdentity = yearIdentifier.PrevYear;
 
@@ -89,7 +94,8 @@ public class Hardware {
      * @author R. Brown
      * @date 12/5/2021
      ***********************************************/
-    public static void generalInit() {
+    public static void generalInit()
+    {
 
         // **********************************************************
         // ANALOG I/O
@@ -108,13 +114,17 @@ public class Hardware {
      * @author R. Brown
      * @date 12/5/2021
      ***********************************************/
-    public static void initialize() {
+    public static void initialize()
+    {
         generalInit();
-        if (robotIdentity.equals(Hardware.yearIdentifier.CurrentYear)) {
+        if (robotIdentity.equals(Hardware.yearIdentifier.CurrentYear))
+            {
             initializeCurrentYear();
-        } else {
+            }
+        else
+            {
             initializePrevYear();
-        }
+            }
     } // end of initialize()
 
     /**********************************************
@@ -313,4 +323,4 @@ public class Hardware {
     // Subassemblies
     // -------------------
 
-} // end class
+    } // end class
