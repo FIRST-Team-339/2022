@@ -78,12 +78,14 @@ public class Autonomous
                     autoPath = AUTO_PATH.DRIVE_ONLY;
                     break;
                 case (1):
+                    // TODO test
                     autoPath = AUTO_PATH.DRIVE_AND_DROP;
                     break;
                 case (2):
                     autoPath = AUTO_PATH.DROP_AND_DRIVE;
                     break;
                 case (3):
+                    // TODO test
                     autoPath = AUTO_PATH.DROP_FROM_START_AND_DRIVE;
                 default:
                     autoPath = AUTO_PATH.DISABLE;
@@ -95,6 +97,8 @@ public class Autonomous
         Hardware.autoTimer.reset();
         Hardware.autoShootPlaceholderTimer.stop();
         Hardware.autoShootPlaceholderTimer.reset();
+        Hardware.driveDelayTimer.stop();
+        Hardware.driveDelayTimer.reset();
         delaySeconds = Hardware.delayPot.get(0, MAX_DELAY_SECONDS);
         // Hardware.drive.setDebugOnStatus(debugType.DEBUG_BRAKING);
         Hardware.drive.resetEncoders();
@@ -295,6 +299,13 @@ public class Autonomous
                 if (Hardware.drive.brake(BrakeType.AFTER_DRIVE) == true)
                     {
                     Hardware.drive.resetEncoders();
+                    driveAndDropState = DRIVE_AND_DROP_STATE.WAIT;
+                    }
+                return false;
+            case WAIT:
+                Hardware.driveDelayTimer.start();
+                if (Hardware.driveDelayTimer.get() >= DRIVE_DELAY_SECONDS)
+                    {
                     driveAndDropState = DRIVE_AND_DROP_STATE.PREPARE_TO_DROP;
                     }
                 return false;
@@ -310,19 +321,21 @@ public class Autonomous
             case STOP_DRIVING_BEFORE_DROP:
                 if (Hardware.drive.brake(BrakeType.AFTER_DRIVE) == true)
                     {
+                    Hardware.autoShootPlaceholderTimer.reset();
                     driveAndDropState = DRIVE_AND_DROP_STATE.DROP;
                     }
                 return false;
             case DROP:
-                Hardware.autoShootPlaceholderTimer.reset();
                 Hardware.autoShootPlaceholderTimer.start();
                 if (Hardware.autoShootPlaceholderTimer.get() >= TIME_OF_MOTOR_SPINNING_SECONDS_PREV_YEAR)
                     {
-                    Hardware.colorWheelMotor.set(TEST_MOTOR_SPEED_PREV_YEAR);
+                    Hardware.colorWheelMotor.set(0.0);
+                    driveAndDropState = DRIVE_AND_DROP_STATE.END;
                     }
-                driveAndDropState = DRIVE_AND_DROP_STATE.END;
+                Hardware.colorWheelMotor.set(TEST_MOTOR_SPEED_PREV_YEAR);
                 return false;
             case END:
+                Hardware.colorWheelMotor.set(0.0);
                 return true;
             default:
                 return false;
@@ -331,7 +344,7 @@ public class Autonomous
 
     public static boolean driveOnly()
     {
-        System.out.println("ONLY_DRIVE_STATE = " + onlyDriveState);
+        // System.out.println("ONLY_DRIVE_STATE = " + onlyDriveState);
         switch (onlyDriveState)
             {
             case INIT:
@@ -349,9 +362,6 @@ public class Autonomous
                         DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_PREV_YEAR) == true)
                     {
                     Hardware.drive.resetEncoders();
-                    // System.out.println("Initial encoder values: " +
-                    // Hardware.drive.getEncoderTicks(MotorPosition.LEFT) + " " +
-                    // Hardware.drive.getEncoderTicks(MotorPosition.RIGHT));
                     Hardware.drive.setBrakePower(BRAKE_POWER_POSITIVE, BrakeType.AFTER_DRIVE);
                     onlyDriveState = ONLY_DRIVE_STATE.STOP;
                     }
@@ -386,7 +396,7 @@ public class Autonomous
 
     public static enum DRIVE_AND_DROP_STATE
         {
-        INIT, DELAY, DRIVE, STOP_DRIVING_AFTER_DRIVE, PREPARE_TO_DROP, STOP_DRIVING_BEFORE_DROP, DROP, END;
+        INIT, DELAY, DRIVE, STOP_DRIVING_AFTER_DRIVE, WAIT, PREPARE_TO_DROP, STOP_DRIVING_BEFORE_DROP, DROP, END;
         }
 
     public static enum DROP_AND_DRIVE_STATE
@@ -417,7 +427,7 @@ public class Autonomous
 
     private static final double DISTANCE_TO_WALL_INCHES_PREV_YEAR = 10.0; // TODO test
 
-    private static final double DISTANCE_TO_WALL_FROM_OUTSIDE_OF_TARMAC_PREV_YEAR = 100.0; // TODO test
+    private static final double DISTANCE_TO_WALL_FROM_OUTSIDE_OF_TARMAC_PREV_YEAR = 90.0; // TODO test
 
     private static final double DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_PREV_YEAR = 90.0; // TODO test
 
@@ -426,6 +436,8 @@ public class Autonomous
     private static final double DISTANCE_TO_LEAVE_TARMAC_FROM_WALL_INCHES_PREV_YEAR = 100.0; // TODO test
 
     private static final double DISTANCE_TO_LEAVE_TARMAC_FROM_WALL_INCHES_CURRENT_YEAR = 110.0;
+
+    private static final double DISTANCE_AFTER_RED_LIGHT_PREV_YEAR_INCHES = 40.0; // TODO test
 
     private static final double DRIVE_SPEED_POSITIVE_PREV_YEAR = .4; // TODO test
 
@@ -444,4 +456,6 @@ public class Autonomous
     private static final double TIME_OF_MOTOR_SPINNING_SECONDS_PREV_YEAR = 3.0;
 
     private static final double TEST_MOTOR_SPEED_PREV_YEAR = .4;
+
+    private static final double DRIVE_DELAY_SECONDS = .5;
     }
