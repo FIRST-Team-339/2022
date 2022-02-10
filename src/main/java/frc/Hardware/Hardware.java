@@ -164,6 +164,9 @@ public class Hardware
         leftClimbMotor = new WPI_TalonSRX(10);
         rightClimbMotor = new WPI_TalonSRX(24);
 
+        intakeMotor = new WPI_TalonSRX(23);
+        intakeMotor.setInverted(true);
+
         // -----------------------------------
         // initialize the drive speed controllers and servo
         // -----------------------------------
@@ -222,6 +225,8 @@ public class Hardware
 
     public static MotorController rightClimbMotor = null;
     public static MotorController leftClimbMotor = null;
+
+    public static MotorController intakeMotor = null;
 
     public static MotorControllerGroup climbGroup = null;
 
