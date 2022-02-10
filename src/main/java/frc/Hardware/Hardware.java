@@ -41,6 +41,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.Utils.drive.DrivePID;
 import frc.Utils.drive.Drive;
 import edu.wpi.first.wpilibj.Timer;
@@ -205,6 +207,12 @@ public class Hardware
 
         drive = new Drive(tankTransmission, leftDriveEncoder, rightDriveEncoder, gyro);
 
+        // ------------------------------------
+        // Pnuematics
+        // ------------------------------------
+
+        compressor = new Compressor(PneumaticsModuleType.CTREPCM);
+
     } // end of initializePrevYear()
 
     // **********************************************************
@@ -264,6 +272,8 @@ public class Hardware
     // PNEUMATIC DEVICES
     // **********************************************************
 
+    public static Compressor compressor;
+
     // **********************************************************
     // roboRIO CONNECTIONS CLASSES
     // **********************************************************
@@ -297,6 +307,8 @@ public class Hardware
     public static Timer autoTimer = new Timer();
 
     public static Timer autoShootPlaceholderTimer = new Timer();
+
+    public static Timer driveDelayTimer = new Timer();
 
     // ------------------------------------
     // Drive system
