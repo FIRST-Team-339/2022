@@ -117,9 +117,12 @@ public class Teleop
 
     public static void individualTest()
     {
+        // isaiasTest();
         // people test functions
     }
-
+    public static void isaiasTest() {
+        System.out.print("");
+    }
     public static void printStatements()
     {
         // ========== INPUTS ==========
