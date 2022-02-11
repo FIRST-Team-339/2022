@@ -78,7 +78,6 @@ public class Autonomous
                     autoPath = AUTO_PATH.DRIVE_ONLY;
                     break;
                 case (1):
-                    // TODO test
                     autoPath = AUTO_PATH.DRIVE_AND_DROP;
                     break;
                 case (2):
@@ -87,6 +86,7 @@ public class Autonomous
                 case (3):
                     // TODO test
                     autoPath = AUTO_PATH.DROP_FROM_START_AND_DRIVE;
+                    break;
                 default:
                     autoPath = AUTO_PATH.DISABLE;
                     break;
