@@ -45,6 +45,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.Utils.drive.DrivePID;
+import frc.Utils.ballcounter.BallCounterSwitch;
 import frc.Utils.drive.Drive;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -256,6 +257,7 @@ public class Hardware
     public static SixPositionSwitch autoSixPosSwitch = new SixPositionSwitch(13, 14, 15, 16, 17, 18);
 
     public static SingleThrowSwitch autoDisableSwitch = new SingleThrowSwitch(10);
+    public static SingleThrowSwitch ballCountInitSwitch = new SingleThrowSwitch(4);
 
     public static SingleThrowSwitch spinSwitch = new SingleThrowSwitch(25);
 
@@ -303,6 +305,8 @@ public class Hardware
 
     public static JoystickButton rightOperatorCameraSwitchButton = new JoystickButton(rightOperator, 10);
     public static JoystickButton rightDriverCameraSwitchButton = new JoystickButton(rightDriver, 3);
+    public static BallCounterSwitch subtractBallButton = new BallCounterSwitch(rightOperator, 8, false);
+    public static BallCounterSwitch addBallButton = new BallCounterSwitch(rightOperator, 9, false);
 
     // **********************************************************
     // Kilroy's Ancillary classes
