@@ -29,6 +29,7 @@
 // ====================================================================
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Encoder;
 import frc.Hardware.Hardware;
 
 /**
@@ -93,13 +94,13 @@ public class Teleop
             Hardware.KilroyUSBCameras.switchCameras();
             }
 
-        // =============== AUTOMATED SUBSYSTEMS ===============
+        /* =============== AUTOMATED SUBSYSTEMS ===============
         System.out.println("ballPickup1 = " + Hardware.ballPickup1.isOn());
         System.out.println("ballPickup2 = " + Hardware.ballPickup2.isOn());
         System.out.println("ballPickup3 = " + Hardware.ballPickup3.isOn());
         System.out.println("ballPickup4 = " + Hardware.ballPickup4.isOn());
         System.out.println("floorLight = " + Hardware.floorLight.isOn());
-        // ================= OPERATOR CONTROLS ================
+        */ //================= OPERATOR CONTROLS ================
 
         // ================== DRIVER CONTROLS =================
         // Shifts Gears
@@ -117,12 +118,10 @@ public class Teleop
 
     public static void individualTest()
     {
-        // isaiasTest();
         // people test functions
     }
-    public static void isaiasTest() {
-        System.out.print("");
-    }
+    
+
     public static void printStatements()
     {
         // ========== INPUTS ==========
