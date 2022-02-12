@@ -36,6 +36,7 @@ import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.UsbCameraInfo;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -44,6 +45,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.Utils.drive.DrivePID;
+import frc.Utils.ballcounter.BallCounterSwitch;
 import frc.Utils.drive.Drive;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -207,12 +209,15 @@ public class Hardware
 
         drive = new Drive(tankTransmission, leftDriveEncoder, rightDriveEncoder, gyro);
 
+        gyro.calibrate();
+
         // ------------------------------------
         // Pnuematics
         // ------------------------------------
 
-        compressor = new Compressor(PneumaticsModuleType.CTREPCM);
+        intakePiston = new DoubleSolenoid(5, 4);
 
+        intakePiston.setReverse(true);
     } // end of initializePrevYear()
 
     // **********************************************************
@@ -252,6 +257,9 @@ public class Hardware
     public static SixPositionSwitch autoSixPosSwitch = new SixPositionSwitch(13, 14, 15, 16, 17, 18);
 
     public static SingleThrowSwitch autoDisableSwitch = new SingleThrowSwitch(10);
+    public static SingleThrowSwitch ballCountInitSwitch = new SingleThrowSwitch(4);
+
+    public static SingleThrowSwitch spinSwitch = new SingleThrowSwitch(25);
 
     public static LightSensor infraredSensor = null;
 
@@ -272,7 +280,9 @@ public class Hardware
     // PNEUMATIC DEVICES
     // **********************************************************
 
-    public static Compressor compressor;
+    public static Compressor compressor = new Compressor(PneumaticsModuleType.CTREPCM);
+
+    public static DoubleSolenoid intakePiston;
 
     // **********************************************************
     // roboRIO CONNECTIONS CLASSES
@@ -295,6 +305,8 @@ public class Hardware
 
     public static JoystickButton rightOperatorCameraSwitchButton = new JoystickButton(rightOperator, 10);
     public static JoystickButton rightDriverCameraSwitchButton = new JoystickButton(rightDriver, 3);
+    public static BallCounterSwitch subtractBallButton = new BallCounterSwitch(rightOperator, 8, false);
+    public static BallCounterSwitch addBallButton = new BallCounterSwitch(rightOperator, 9, false);
 
     // **********************************************************
     // Kilroy's Ancillary classes

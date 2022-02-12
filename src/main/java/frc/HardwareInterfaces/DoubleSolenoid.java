@@ -22,36 +22,33 @@ package frc.HardwareInterfaces;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
- * This class is a double solenoid, which in reality is actually
- * two single solenoids. The two solenoids are always opposites
- * of each other
+ * This class is a double solenoid, which in reality is actually two single
+ * solenoids. The two solenoids are always opposites of each other
  *
  * @class DoubleSolenoid
  * @author Bob Brown
- * @written Sep 18, 2009
- *          -------------------------------------------------------
+ * @written Sep 18, 2009 -------------------------------------------------------
  */
+// TODO add constructor to set the initial position of the piston
 public class DoubleSolenoid extends edu.wpi.first.wpilibj.DoubleSolenoid
-{
+    {
     /**
      * -------------------------------------------------------
      *
-     * @description holds the channel number for the forward side
-     *              of the double solenoid
+     * @description holds the channel number for the forward side of the double
+     *              solenoid
      * @author Bob Brown
-     * @written 07 Nov, 2009
-     *          -------------------------------------------------------
+     * @written 07 Nov, 2009 -------------------------------------------------------
      */
     int forwardChannel;
 
     /**
      * -------------------------------------------------------
      *
-     * @description holds the channel number for the reverse side
-     *              of the double solenoid
+     * @description holds the channel number for the reverse side of the double
+     *              solenoid
      * @author Bob Brown
-     * @written 07 Nov, 2009
-     *          -------------------------------------------------------
+     * @written 07 Nov, 2009 -------------------------------------------------------
      */
     int reverseChannel;
 
@@ -65,17 +62,16 @@ public class DoubleSolenoid extends edu.wpi.first.wpilibj.DoubleSolenoid
      * @param channelNumReverse
      *            - reverse channel number
      * @author Bob Brown
-     * @written Sep 18, 2009
-     *          -------------------------------------------------------
+     * @written Sep 18, 2009 -------------------------------------------------------
      */
-    public DoubleSolenoid (final int channelNumForward, // channel number for
-        // the fwrd solenoid
-        final int channelNumReverse) // channel number for the rev solenoid
+    public DoubleSolenoid(final int channelNumForward, // channel number for
+            // the fwrd solenoid
+            final int channelNumReverse) // channel number for the rev solenoid
         {
-        super(PneumaticsModuleType.CTREPCM, channelNumForward, channelNumReverse);
-        this.forwardChannel = channelNumForward;
-        this.reverseChannel = channelNumReverse;
-        this.init();
+            super(PneumaticsModuleType.CTREPCM, channelNumForward, channelNumReverse);
+            this.forwardChannel = channelNumForward;
+            this.reverseChannel = channelNumReverse;
+            this.init();
         } // end DoubleSolenoid
 
     // -------------------------------------------------------
@@ -90,18 +86,17 @@ public class DoubleSolenoid extends edu.wpi.first.wpilibj.DoubleSolenoid
      * @param channelNumReverse
      *            - reverse channel number
      * @author Bob Brown
-     * @written Sep 18, 2009
-     *          -------------------------------------------------------
+     * @written Sep 18, 2009 -------------------------------------------------------
      */
-    public DoubleSolenoid (final int slotNumber,       // slot number for the fwrd
-        // solenoid
-        final int channelNumForward, // channel number for the fwrd solenoid
-        final int channelNumReverse) // channel number for the rev solenoid
+    public DoubleSolenoid(final int slotNumber, // slot number for the fwrd
+            // solenoid
+            final int channelNumForward, // channel number for the fwrd solenoid
+            final int channelNumReverse) // channel number for the rev solenoid
         {
-        super(slotNumber, PneumaticsModuleType.CTREPCM, channelNumForward, channelNumReverse);
-        this.forwardChannel = channelNumForward;
-        this.reverseChannel = channelNumReverse;
-        this.init();
+            super(slotNumber, PneumaticsModuleType.CTREPCM, channelNumForward, channelNumReverse);
+            this.forwardChannel = channelNumForward;
+            this.reverseChannel = channelNumReverse;
+            this.init();
         } // end DoubleSolenoid
 
     // -------------------------------------------------------
@@ -111,15 +106,14 @@ public class DoubleSolenoid extends edu.wpi.first.wpilibj.DoubleSolenoid
      * @method getForward
      * @return the state of the forward solenoid
      * @author Bob Brown
-     * @written Sep 18, 2009
-     *          -------------------------------------------------------
+     * @written Sep 18, 2009 -------------------------------------------------------
      */
-    public boolean getForward ()
-        {
+    public boolean getForward()
+    {
         if (this.get() == Value.kForward)
             return (true);
         return (false);
-        } // end getForward
+    } // end getForward
 
     // -------------------------------------------------------
     /**
@@ -128,13 +122,12 @@ public class DoubleSolenoid extends edu.wpi.first.wpilibj.DoubleSolenoid
      * @method getForwardChannel
      * @return int
      * @author Bob Brown
-     * @written 7 Nov 2009
-     *          -------------------------------------------------------
+     * @written 7 Nov 2009 -------------------------------------------------------
      */
-    public int getForwardChannel ()
-        {
+    public int getForwardChannel()
+    {
         return (this.forwardChannel);
-        } // end getForwardChannel
+    } // end getForwardChannel
 
     // -------------------------------------------------------
     /**
@@ -143,15 +136,14 @@ public class DoubleSolenoid extends edu.wpi.first.wpilibj.DoubleSolenoid
      * @method getReverse
      * @return the state of the reverse side of the solenoid
      * @author Bob Brown
-     * @written Sep 18, 2009
-     *          -------------------------------------------------------
+     * @written Sep 18, 2009 -------------------------------------------------------
      */
-    public boolean getReverse ()
-        {
+    public boolean getReverse()
+    {
         if (this.get() == Value.kReverse)
             return (true);
         return (false);
-        } // end getReverse
+    } // end getReverse
 
     // -------------------------------------------------------
     /**
@@ -160,13 +152,12 @@ public class DoubleSolenoid extends edu.wpi.first.wpilibj.DoubleSolenoid
      * @method getReverseChannel
      * @return int
      * @author Bob Brown
-     * @written 7 Nov 2009
-     *          -------------------------------------------------------
+     * @written 7 Nov 2009 -------------------------------------------------------
      */
-    public int getReverseChannel ()
-        {
+    public int getReverseChannel()
+    {
         return (this.reverseChannel);
-        } // end getReverseChannel
+    } // end getReverseChannel
 
     // -------------------------------------------------------
     /**
@@ -174,83 +165,74 @@ public class DoubleSolenoid extends edu.wpi.first.wpilibj.DoubleSolenoid
      *
      * @method init
      * @author Bob Brown
-     * @written Sep 18, 2009
-     *          -------------------------------------------------------
+     * @written Sep 18, 2009 -------------------------------------------------------
      */
-    private void init ()
-        {
+    private void init()
+    {
         this.setForward(true);
-        } // end init
+    } // end init
 
     // -------------------------------------------------------
     /**
-     * this method runs the double solenoid forward, by setting
-     * the forward solenoid on and the reverse solenoid the
-     * opposite
+     * this method runs the double solenoid forward, by setting the forward solenoid
+     * on and the reverse solenoid the opposite
      *
      * @method: setForward
      * @return boolean - value of what forward now is
      * @param on
-     *            - boolean - denotes whether to set the foward
-     *            Solenoid on or off.
+     *            - boolean - denotes whether to set the foward Solenoid on or off.
      * @author Bob Brown
-     * @written Sep 18, 2009
-     *          -------------------------------------------------------
+     * @written Sep 18, 2009 -------------------------------------------------------
      */
-    public boolean setForward (final boolean on)    // forward on or off
-        {
+    public boolean setForward(final boolean on) // forward on or off
+    {
         if (on == true)
-        {
-        this.set(DoubleSolenoid.Value.kForward);
-        }
+            {
+            this.set(DoubleSolenoid.Value.kForward);
+            }
         else
-        {
-        this.setReverse(!on);
-        }
+            {
+            this.setReverse(!on);
+            }
         return (on);
-        } // end setForward
+    } // end setForward
 
     // -------------------------------------------------------
     /**
-     * this method runs the double solenoid reverse, by setting
-     * the forward() solenoid to the inverse of what the caller
-     * passes in and forward() sets both the forward and reverse
-     * solenoids correctly
+     * this method runs the double solenoid reverse, by setting the forward()
+     * solenoid to the inverse of what the caller passes in and forward() sets both
+     * the forward and reverse solenoids correctly
      *
      * @method setReverse
      * @return boolean - value of what forward now is
      * @param on
-     *            - boolean - denotes whether to set the reverse
-     *            Solenoid on or off.
+     *            - boolean - denotes whether to set the reverse Solenoid on or off.
      * @author Bob Brown
-     * @written Sep 18, 2009
-     *          -------------------------------------------------------
+     * @written Sep 18, 2009 -------------------------------------------------------
      */
-    public boolean setReverse (final boolean on)
-        {
+    public boolean setReverse(final boolean on)
+    {
         if (on == true)
-        {
-        this.set(DoubleSolenoid.Value.kReverse);
-        }
+            {
+            this.set(DoubleSolenoid.Value.kReverse);
+            }
         else
-        {
-        this.setForward(!on);
-        }
+            {
+            this.setForward(!on);
+            }
         return (on);
-        } // end setReverse
+    } // end setReverse
 
     // -------------------------------------------------------
     /**
-     * This method sets both the forward solenoid and sets
-     * the reverse solenoid off.
+     * This method sets both the forward solenoid and sets the reverse solenoid off.
      *
      * @method setToNeutral
      * @author Bob Brown
-     * @written Sep 18 2009
-     *          -------------------------------------------------------
+     * @written Sep 18 2009 -------------------------------------------------------
      */
-    public void setToNeutral ()
-        {
+    public void setToNeutral()
+    {
         this.set(DoubleSolenoid.Value.kOff);
-        } // end setToNeutral
-} // end class
+    } // end setToNeutral
+    } // end class
