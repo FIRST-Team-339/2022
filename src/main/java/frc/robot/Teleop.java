@@ -94,11 +94,6 @@ public class Teleop
             }
 
         // =============== AUTOMATED SUBSYSTEMS ===============
-        System.out.println("ballPickup1 = " + Hardware.ballPickup1.isOn());
-        System.out.println("ballPickup2 = " + Hardware.ballPickup2.isOn());
-        System.out.println("ballPickup3 = " + Hardware.ballPickup3.isOn());
-        System.out.println("ballPickup4 = " + Hardware.ballPickup4.isOn());
-        System.out.println("floorLight = " + Hardware.floorLight.isOn());
         // ================= OPERATOR CONTROLS ================
 
         // ================== DRIVER CONTROLS =================
@@ -106,11 +101,6 @@ public class Teleop
         Hardware.tankTransmission.shiftGears(driverGearUpPressed, driverGearDownPressed);
 
         Hardware.drive.drive(Hardware.leftDriver, Hardware.rightDriver);
-
-        // Print Statements For Gears
-        System.out.println("lJ " + leftDriverJoystickY + " lTMG " + Hardware.leftDriveGroup.get());
-        System.out.println("rJ " + rightDriverJoystickY + " rTMG " + Hardware.rightDriveGroup.get());
-        System.out.println(currentGear);
 
         individualTest();
     } // end Periodic()
@@ -120,9 +110,12 @@ public class Teleop
         // isaiasTest();
         // people test functions
     }
-    public static void isaiasTest() {
+
+    public static void isaiasTest()
+    {
         System.out.print("");
     }
+
     public static void printStatements()
     {
         // ========== INPUTS ==========

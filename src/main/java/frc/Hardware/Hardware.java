@@ -36,6 +36,7 @@ import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.UsbCameraInfo;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -207,12 +208,15 @@ public class Hardware
 
         drive = new Drive(tankTransmission, leftDriveEncoder, rightDriveEncoder, gyro);
 
+        gyro.calibrate();
+
         // ------------------------------------
         // Pnuematics
         // ------------------------------------
 
-        compressor = new Compressor(PneumaticsModuleType.CTREPCM);
+        intakePiston = new DoubleSolenoid(5, 4);
 
+        intakePiston.setReverse(true);
     } // end of initializePrevYear()
 
     // **********************************************************
@@ -253,6 +257,8 @@ public class Hardware
 
     public static SingleThrowSwitch autoDisableSwitch = new SingleThrowSwitch(10);
 
+    public static SingleThrowSwitch spinSwitch = new SingleThrowSwitch(25);
+
     public static LightSensor infraredSensor = null;
 
     public static LightSensor ballPickup1 = new LightSensor(21);
@@ -272,7 +278,9 @@ public class Hardware
     // PNEUMATIC DEVICES
     // **********************************************************
 
-    public static Compressor compressor;
+    public static Compressor compressor = new Compressor(PneumaticsModuleType.CTREPCM);
+
+    public static DoubleSolenoid intakePiston;
 
     // **********************************************************
     // roboRIO CONNECTIONS CLASSES
