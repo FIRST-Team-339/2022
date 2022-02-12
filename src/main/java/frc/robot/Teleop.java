@@ -30,6 +30,8 @@
 package frc.robot;
 
 import frc.Hardware.Hardware;
+import frc.Utils.ballcounter.BallCounter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class contains all of the user code for the Autonomous part of the
@@ -54,6 +56,15 @@ public class Teleop
         // Initializes Transmission To Gear 1
         Hardware.tankTransmission.setGear(1);
 
+        // Sets the ball count initalized on the robot
+        BallCounter.BallCount = 0;
+        SmartDashboard.putString("DB/String 0", "     Ball Count");
+        if (Hardware.ballCountInitSwitch.isOn())
+            {
+            Hardware.addBallButton.add(1);
+            }
+        SmartDashboard.putString("DB/String 5", "     " + BallCounter.BallCount + " ball(s)");
+
     } // end Init
 
     /**
@@ -67,11 +78,17 @@ public class Teleop
     {
 
         // Joystick Button/Trigger Variables
-        boolean rightOperatorTriggerPressed = Hardware.rightOperator.getTrigger();
+        // boolean rightOperatorTriggerPressed = Hardware.rightOperator.getTrigger();
         boolean driverGearUpPressed = Hardware.rightDriver.getTrigger();
         boolean driverGearDownPressed = Hardware.leftDriver.getTrigger();
         boolean rightDriverCameraSwitchButtonPressed = Hardware.rightDriverCameraSwitchButton.get();
         boolean rightOperatorCameraSwitchButtonPressed = Hardware.rightOperatorCameraSwitchButton.get();
+
+        // Joystick Ball Add/Sub Variables
+        boolean addBallButtonOn = Hardware.addBallButton.isOn();
+        boolean addBallButtonOnNow = Hardware.addBallButton.isOnCheckNow();
+        boolean subBallButtonOn = Hardware.subtractBallButton.isOn();
+        boolean subBallButtonOnNow = Hardware.subtractBallButton.isOnCheckNow();
 
         // Drive Variables
         double leftDriverJoystickY = Hardware.leftDriver.getY() * Hardware.invertControllerAxis;
@@ -93,12 +110,27 @@ public class Teleop
             Hardware.KilroyUSBCameras.switchCameras();
             }
 
+        // Ball Count
+        if (subBallButtonOnNow == true)
+            {
+            Hardware.subtractBallButton.subtractCheckCount(1);
+            }
+        if (addBallButtonOnNow == true)
+            {
+            Hardware.addBallButton.addCheckCount(1);
+            }
+        System.out.println("Sub: " + subBallButtonOn + " Add: " + addBallButtonOn);
+
+        // Operator Dashboard Variables
+        SmartDashboard.putString("DB/String 5", "     " + BallCounter.BallCount + " ball(s)");
+        System.out.println("BALL COUNT: " + BallCounter.BallCount);
+
         // =============== AUTOMATED SUBSYSTEMS ===============
-        System.out.println("ballPickup1 = " + Hardware.ballPickup1.isOn());
-        System.out.println("ballPickup2 = " + Hardware.ballPickup2.isOn());
-        System.out.println("ballPickup3 = " + Hardware.ballPickup3.isOn());
-        System.out.println("ballPickup4 = " + Hardware.ballPickup4.isOn());
-        System.out.println("floorLight = " + Hardware.floorLight.isOn());
+        // System.out.println("ballPickup1 = " + Hardware.ballPickup1.isOn());
+        // System.out.println("ballPickup2 = " + Hardware.ballPickup2.isOn());
+        // System.out.println("ballPickup3 = " + Hardware.ballPickup3.isOn());
+        // System.out.println("ballPickup4 = " + Hardware.ballPickup4.isOn());
+        // System.out.println("floorLight = " + Hardware.floorLight.isOn());
         // ================= OPERATOR CONTROLS ================
 
         // ================== DRIVER CONTROLS =================
@@ -120,9 +152,12 @@ public class Teleop
         // isaiasTest();
         // people test functions
     }
-    public static void isaiasTest() {
+
+    public static void isaiasTest()
+    {
         System.out.print("");
     }
+
     public static void printStatements()
     {
         // ========== INPUTS ==========
