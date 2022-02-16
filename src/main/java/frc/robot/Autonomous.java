@@ -80,16 +80,16 @@ public class Autonomous
                     autoPath = AUTO_PATH.DRIVE_ONLY_BACKWARD;
                     break;
                 case (1):
-                    autoPath = AUTO_PATH.DRIVE_AND_DROP;
+                    autoPath = AUTO_PATH.DRIVE_ONLY_FORWARD;
                     break;
                 case (2):
-                    autoPath = AUTO_PATH.DROP_AND_DRIVE;
-                    break;
-                case (3):
                     autoPath = AUTO_PATH.DROP_FROM_START_AND_DRIVE;
                     break;
+                case (3):
+                    autoPath = AUTO_PATH.DROP_AND_DRIVE;
+                    break;
                 case (4):
-                    autoPath = AUTO_PATH.DRIVE_ONLY_FORWARD;
+                    autoPath = AUTO_PATH.DRIVE_AND_DROP;
                     break;
                 case (5):
                     autoPath = AUTO_PATH.DRIVE_AND_DROP_AND_DRIVE_AGAIN;
@@ -159,6 +159,7 @@ public class Autonomous
                     {
                     autoPath = AUTO_PATH.DISABLE;
                     }
+                break;
             case DRIVE_ONLY_FORWARD:
                 if (driveOnlyForward() == true)
                     {
@@ -183,9 +184,9 @@ public class Autonomous
     // Methods
     // =====================================================================
 
-    public static boolean dropAndDrive()
+    private static boolean dropAndDrive()
     {
-        System.out.println("DROP_AND_DRIVE_STATE = " + dropAndDriveState);
+        // System.out.println("DROP_AND_DRIVE_STATE = " + dropAndDriveState);
         switch (dropAndDriveState)
             {
             case INIT:
@@ -210,7 +211,12 @@ public class Autonomous
             case STOP_DRIVING_BEFORE_DROP:
                 if (Hardware.drive.brake(BrakeType.AFTER_DRIVE) == true)
                     {
-                    dropAndDriveState = DROP_AND_DRIVE_STATE.DROP;
+                    if (Hardware.ballCountInitSwitch.isOn() == true)
+                        {
+                        dropAndDriveState = DROP_AND_DRIVE_STATE.DROP;
+                        return false;
+                        }
+                    dropAndDriveState = DROP_AND_DRIVE_STATE.DRIVE; // TODO may need to add a delay here
                     }
                 return false;
             case DROP:
@@ -257,10 +263,10 @@ public class Autonomous
             }
     }
 
-    // TODO test
-    public static boolean dropFromStartAndDrive()
+    private static boolean dropFromStartAndDrive()
     {
-        System.out.println("DROP_FROM_START_AND_DRIVE_STATE = " + dropFromStartAndDriveState);
+        // System.out.println("DROP_FROM_START_AND_DRIVE_STATE = " +
+        // dropFromStartAndDriveState);
         switch (dropFromStartAndDriveState)
             {
             case INIT:
@@ -270,7 +276,12 @@ public class Autonomous
             case DELAY:
                 if (Hardware.autoTimer.get() >= delaySeconds)
                     {
-                    dropFromStartAndDriveState = DROP_FROM_START_AND_DRIVE_STATE.DROP;
+                    if (Hardware.ballCountInitSwitch.isOn() == true)
+                        {
+                        dropFromStartAndDriveState = DROP_FROM_START_AND_DRIVE_STATE.DROP;
+                        return false;
+                        }
+                    dropFromStartAndDriveState = DROP_FROM_START_AND_DRIVE_STATE.DRIVE;
                     }
                 return false;
             case DROP:
@@ -317,10 +328,9 @@ public class Autonomous
             }
     }
 
-    // TODO test
-    public static boolean driveAndDrop()
+    private static boolean driveAndDrop()
     {
-        System.out.println("DRIVE_AND_DROP_STATE = " + driveAndDropState);
+        // System.out.println("DRIVE_AND_DROP_STATE = " + driveAndDropState);
         switch (driveAndDropState)
             {
             case INIT:
@@ -369,7 +379,12 @@ public class Autonomous
                 if (Hardware.drive.brake(BrakeType.AFTER_DRIVE) == true)
                     {
                     Hardware.autoShootPlaceholderTimer.reset();
-                    driveAndDropState = DRIVE_AND_DROP_STATE.DROP;
+                    if (Hardware.ballCountInitSwitch.isOn() == true)
+                        {
+                        driveAndDropState = DRIVE_AND_DROP_STATE.DROP;
+                        return false;
+                        }
+                    driveAndDropState = DRIVE_AND_DROP_STATE.END;
                     }
                 return false;
             case DROP:
@@ -390,7 +405,7 @@ public class Autonomous
             }
     }
 
-    public static boolean driveOnlyBackwards()
+    private static boolean driveOnlyBackwards()
     {
         // System.out.println("ONLY_DRIVE_STATE = " + onlyDriveState);
         switch (onlyDriveBackwardsState)
@@ -439,7 +454,7 @@ public class Autonomous
             }
     }
 
-    public static boolean driveOnlyForward()
+    private static boolean driveOnlyForward()
     {
         // System.out.println("ONLY_DRIVE_STATE = " + onlyDriveState);
         switch (onlyDriveForwardState)
@@ -477,9 +492,10 @@ public class Autonomous
             }
     }
 
-    public static boolean driveDropAndDriveAgain()
+    private static boolean driveDropAndDriveAgain()
     {
-        System.out.println("DRIVE_DROP_AND_DRIVE_AGAIN_STATE = " + driveDropAndDriveAgainState);
+        // System.out.println("DRIVE_DROP_AND_DRIVE_AGAIN_STATE = " +
+        // driveDropAndDriveAgainState);
         switch (driveDropAndDriveAgainState)
             {
             case INIT:
@@ -528,7 +544,13 @@ public class Autonomous
                 if (Hardware.drive.brake(BrakeType.AFTER_DRIVE) == true)
                     {
                     Hardware.autoShootPlaceholderTimer.reset();
-                    driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.DROP;
+                    if (Hardware.ballCountInitSwitch.isOn() == true)
+                        {
+                        driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.DROP;
+                        return false;
+                        }
+                    driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.LEAVE; // TODO may need to add a
+                                                                                          // delay before driving again
                     }
                 return false;
             case DROP:
@@ -555,6 +577,7 @@ public class Autonomous
                     if (Hardware.spinSwitch.isOn() == true)
                         {
                         driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.SPIN;
+                        return false;
                         }
                     driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.END;
                     }
@@ -574,7 +597,7 @@ public class Autonomous
             }
     }
 
-    public static boolean spin()
+    private static boolean spin()
     {
         switch (spinState)
             {
@@ -605,63 +628,63 @@ public class Autonomous
      * Data =====================================================================
      */
 
-    public static enum AUTO_PATH
+    private static enum AUTO_PATH
         {
         DRIVE_ONLY_BACKWARD, DRIVE_AND_DROP, DROP_AND_DRIVE, DROP_FROM_START_AND_DRIVE, DRIVE_ONLY_FORWARD, DRIVE_AND_DROP_AND_DRIVE_AGAIN, DISABLE;
         }
 
-    public static enum ONLY_DRIVE_BACKWARDS_STATE
+    private static enum ONLY_DRIVE_BACKWARDS_STATE
         {
         INIT, DELAY, DRIVE, STOP, SPIN, STOP_SPIN, END;
         }
 
-    public static enum ONLY_DRIVE_FORWARD_STATE
+    private static enum ONLY_DRIVE_FORWARD_STATE
         {
         INIT, DELAY, DRIVE, STOP, END;
         }
 
-    public static enum DRIVE_AND_DROP_STATE
+    private static enum DRIVE_AND_DROP_STATE
         {
         INIT, DELAY, DRIVE, STOP_DRIVING_AFTER_DRIVE, WAIT, PREPARE_TO_DROP, STOP_DRIVING_BEFORE_DROP, DROP, END;
         }
 
-    public static enum DROP_AND_DRIVE_STATE
+    private static enum DROP_AND_DRIVE_STATE
         {
         INIT, DELAY, PREPARE_TO_DROP, STOP_DRIVING_BEFORE_DROP, DROP, DRIVE, STOP, SPIN, STOP_SPIN, END;
         }
 
-    public static enum DROP_FROM_START_AND_DRIVE_STATE
+    private static enum DROP_FROM_START_AND_DRIVE_STATE
         {
         INIT, DELAY, DROP, DRIVE, STOP, SPIN, STOP_SPIN, END;
         }
 
-    public static enum DRIVE_DROP_AND_DRIVE_AGAIN_STATE
+    private static enum DRIVE_DROP_AND_DRIVE_AGAIN_STATE
         {
         INIT, DELAY, DRIVE_ONE, STOP_DRIVING_AFTER_DRIVE_ONE, WAIT, PREPARE_TO_DROP, STOP_DRIVING_BEFORE_DROP, DROP, LEAVE, STOP, SPIN, STOP_SPIN, END;
         }
 
-    public static enum SPIN_STATE
+    private static enum SPIN_STATE
         {
         SPIN, STOP_SPIN, END;
         }
 
-    public static AUTO_PATH autoPath;
+    private static AUTO_PATH autoPath;
 
-    public static ONLY_DRIVE_BACKWARDS_STATE onlyDriveBackwardsState;
+    private static ONLY_DRIVE_BACKWARDS_STATE onlyDriveBackwardsState;
 
-    public static ONLY_DRIVE_FORWARD_STATE onlyDriveForwardState;
+    private static ONLY_DRIVE_FORWARD_STATE onlyDriveForwardState;
 
-    public static DRIVE_AND_DROP_STATE driveAndDropState;
+    private static DRIVE_AND_DROP_STATE driveAndDropState;
 
-    public static DROP_AND_DRIVE_STATE dropAndDriveState;
+    private static DROP_AND_DRIVE_STATE dropAndDriveState;
 
-    public static DROP_FROM_START_AND_DRIVE_STATE dropFromStartAndDriveState;
+    private static DROP_FROM_START_AND_DRIVE_STATE dropFromStartAndDriveState;
 
-    public static DRIVE_DROP_AND_DRIVE_AGAIN_STATE driveDropAndDriveAgainState;
+    private static DRIVE_DROP_AND_DRIVE_AGAIN_STATE driveDropAndDriveAgainState;
 
-    public static SPIN_STATE spinState;
+    private static SPIN_STATE spinState;
 
-    public static double delaySeconds;
+    private static double delaySeconds;
     /*
      * ============================================================== Constants
      * ==============================================================
