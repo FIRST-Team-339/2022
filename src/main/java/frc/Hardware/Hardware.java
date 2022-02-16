@@ -228,7 +228,7 @@ public class Hardware
     public static MotorController leftTopMotor = null;
     public static MotorController rightBottomMotor = null;
 
-    public static MotorController colorWheelMotor = null;
+    public static MotorController colorWheelMotor = null; // remove this later
 
     public static MotorControllerGroup leftDriveGroup = null;
     public static MotorControllerGroup rightDriveGroup = null;
