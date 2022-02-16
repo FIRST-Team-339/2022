@@ -142,7 +142,6 @@ public class Teleop
     {
         // people test functions
     }
-    
 
     public static void printStatements()
     {
