@@ -120,11 +120,11 @@ public class Teleop
             {
             Hardware.addBallButton.addCheckCount(1);
             }
-        System.out.println("Sub: " + subBallButtonOn + " Add: " + addBallButtonOn);
+        // System.out.println("Sub: " + subBallButtonOn + " Add: " + addBallButtonOn);
 
         // Operator Dashboard Variables
-        SmartDashboard.putString("DB/String 5", "     " + BallCounter.BallCount + " ball(s)");
-        System.out.println("BALL COUNT: " + BallCounter.BallCount);
+        SmartDashboard.putString("DB/String 5", " " + BallCounter.BallCount + " ball(s)");
+        // System.out.println("BALL COUNT: " + BallCounter.BallCount);
 
         // =============== AUTOMATED SUBSYSTEMS ===============
         // ================= OPERATOR CONTROLS ================
@@ -135,14 +135,14 @@ public class Teleop
 
         Hardware.drive.drive(Hardware.leftDriver, Hardware.rightDriver);
 
-        individualTest();
+        // printStatements();
+        // individualTest();
     } // end Periodic()
 
     public static void individualTest()
     {
         // people test functions
     }
-    
 
     public static void printStatements()
     {
@@ -167,6 +167,9 @@ public class Teleop
         // ========== OUTPUTS ==========
 
         // ---------- DIGITAL ----------
+
+        // System.out.println("Ball init switch = " +
+        // Hardware.ballCountInitSwitch.isOn());
 
         // ---------- ANALOG -----------
 
