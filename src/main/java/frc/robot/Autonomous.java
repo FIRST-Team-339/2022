@@ -68,6 +68,9 @@ public class Autonomous
         // Hardware.autoSixPosSwitch.getPosition());
         // System.out.println("Auto disable switch: " +
         // Hardware.autoDisableSwitch.isOn());
+
+        // Checks if the auto disable switch is pressed. It will disable auto if the
+        // switch returns a value of false
         if (Hardware.autoDisableSwitch.isOn() == false)
             {
             autoPath = AUTO_PATH.DISABLE;
@@ -184,6 +187,15 @@ public class Autonomous
     // Methods
     // =====================================================================
 
+    /**
+     * Auto path to drive into position to drop the ball into the low goal and then
+     * drive out of the starting area after dropping the ball
+     * 
+     * @return true when the method finishes
+     * 
+     * @Author Dion Marchant
+     * @Written February 16th, 2022
+     */
     private static boolean dropAndDrive()
     {
         // System.out.println("DROP_AND_DRIVE_STATE = " + dropAndDriveState);
@@ -194,6 +206,8 @@ public class Autonomous
                 dropAndDriveState = DROP_AND_DRIVE_STATE.DELAY;
                 return false;
             case DELAY:
+                // Waits until the delay timer reaches a given time inputted from the
+                // potentiometer to move on to the next state
                 if (Hardware.autoTimer.get() >= delaySeconds)
                     {
                     dropAndDriveState = DROP_AND_DRIVE_STATE.PREPARE_TO_DROP;
@@ -204,19 +218,22 @@ public class Autonomous
                         DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
                     {
                     Hardware.drive.resetEncoders();
+                    // Sets the brake power to the opposite of the drive direction
                     Hardware.drive.setBrakePower(BRAKE_POWER_NEGATIVE, BrakeType.AFTER_DRIVE);
-                    dropAndDriveState = DROP_AND_DRIVE_STATE.DROP;
+                    dropAndDriveState = DROP_AND_DRIVE_STATE.STOP_DRIVING_BEFORE_DROP;
                     }
                 return false;
             case STOP_DRIVING_BEFORE_DROP:
                 if (Hardware.drive.brake(BrakeType.AFTER_DRIVE) == true)
                     {
+                    // If the ball count switch returns true, move on to the drop state, otherwise,
+                    // skip and go to a waiting state
                     if (Hardware.ballCountInitSwitch.isOn() == true)
                         {
                         dropAndDriveState = DROP_AND_DRIVE_STATE.DROP;
                         return false;
                         }
-                    dropAndDriveState = DROP_AND_DRIVE_STATE.DRIVE; // TODO may need to add a delay here
+                    dropAndDriveState = DROP_AND_DRIVE_STATE.WAIT;
                     }
                 return false;
             case DROP:
@@ -228,12 +245,21 @@ public class Autonomous
                     }
                 Hardware.colorWheelMotor.set(TEST_MOTOR_SPEED_PREV_YEAR);
                 return false;
+            case WAIT:
+                // Exists to let the motors rest before driving after braking
+                Hardware.driveDelayTimer.start();
+                if (Hardware.driveDelayTimer.get() >= DRIVE_DELAY_SECONDS)
+                    {
+                    dropAndDriveState = DROP_AND_DRIVE_STATE.DRIVE;
+                    }
+                return false;
             case DRIVE:
                 Hardware.colorWheelMotor.set(0.0);
                 if (Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_WALL_INCHES_PREV_YEAR,
                         DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
                     {
                     Hardware.drive.resetEncoders();
+                    // Set the brake power to opposite the drive direction
                     Hardware.drive.setBrakePower(BRAKE_POWER_POSITIVE, BrakeType.AFTER_DRIVE);
                     dropAndDriveState = DROP_AND_DRIVE_STATE.STOP;
                     }
@@ -241,6 +267,8 @@ public class Autonomous
             case STOP:
                 if (Hardware.drive.brake(BrakeType.AFTER_DRIVE) == true)
                     {
+                    // If the spin switch returns true, move on to the spin state to turn the robot
+                    // around, otherwise, end the path
                     if (Hardware.spinSwitch.isOn() == true)
                         {
                         dropAndDriveState = DROP_AND_DRIVE_STATE.SPIN;
@@ -263,6 +291,15 @@ public class Autonomous
             }
     }
 
+    /**
+     * Auto path that drops the fall from the starting location and then drives out
+     * of the area
+     * 
+     * @return true when the path completes
+     * 
+     * @Author Dion Marchant
+     * @Written February 16th, 2022
+     */
     private static boolean dropFromStartAndDrive()
     {
         // System.out.println("DROP_FROM_START_AND_DRIVE_STATE = " +
@@ -274,8 +311,12 @@ public class Autonomous
                 dropFromStartAndDriveState = DROP_FROM_START_AND_DRIVE_STATE.DELAY;
                 return false;
             case DELAY:
+                // Wait until the delay timer reaches the delay seconds from the potentiometer
+                // input to move on to the next state
                 if (Hardware.autoTimer.get() >= delaySeconds)
                     {
+                    // Check if the ball count switch is true to know if the drop state should be
+                    // run or skipped
                     if (Hardware.ballCountInitSwitch.isOn() == true)
                         {
                         dropFromStartAndDriveState = DROP_FROM_START_AND_DRIVE_STATE.DROP;
@@ -286,6 +327,9 @@ public class Autonomous
                 return false;
             case DROP:
                 Hardware.autoShootPlaceholderTimer.start();
+                // Waits until the placeholder timer acting reachs a certain time to move on to
+                // the next state. During which, the color wheel, which is a stand-in for the
+                // launch mechanism will run
                 if (Hardware.autoShootPlaceholderTimer.get() >= TIME_OF_MOTOR_SPINNING_SECONDS_PREV_YEAR)
                     {
                     Hardware.drive.resetEncoders();
@@ -299,6 +343,7 @@ public class Autonomous
                         DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
                     {
                     Hardware.drive.resetEncoders();
+                    // Sets the brake power to opposite the drive direction
                     Hardware.drive.setBrakePower(BRAKE_POWER_POSITIVE, BrakeType.AFTER_DRIVE);
                     dropFromStartAndDriveState = DROP_FROM_START_AND_DRIVE_STATE.STOP;
                     }
@@ -306,6 +351,8 @@ public class Autonomous
             case STOP:
                 if (Hardware.drive.brake(BrakeType.AFTER_DRIVE) == true)
                     {
+                    // Checks if the spin switch is true to go to the spin state, or skip if it is
+                    // false
                     if (Hardware.spinSwitch.isOn() == true)
                         {
                         dropFromStartAndDriveState = DROP_FROM_START_AND_DRIVE_STATE.SPIN;
@@ -328,6 +375,15 @@ public class Autonomous
             }
     }
 
+    /**
+     * Auto path that drives out of the starting area and then drives into the area
+     * to score in the low goal
+     * 
+     * @return true when the path completes
+     * 
+     * @Author Dion Marchant
+     * @Written February 16th, 2022
+     */
     private static boolean driveAndDrop()
     {
         // System.out.println("DRIVE_AND_DROP_STATE = " + driveAndDropState);
@@ -338,6 +394,8 @@ public class Autonomous
                 driveAndDropState = DRIVE_AND_DROP_STATE.DELAY;
                 return false;
             case DELAY:
+                // Waits until the delay timer reaches the time inputted from the potentiometer
+                // to move on to the next state
                 if (Hardware.autoTimer.get() >= delaySeconds)
                     {
                     driveAndDropState = DRIVE_AND_DROP_STATE.DRIVE;
@@ -348,6 +406,7 @@ public class Autonomous
                         DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
                     {
                     Hardware.drive.resetEncoders();
+                    // Sets the brake power to be in the opposite direction of the drive direction
                     Hardware.drive.setBrakePower(BRAKE_POWER_POSITIVE, BrakeType.AFTER_DRIVE);
                     driveAndDropState = DRIVE_AND_DROP_STATE.STOP_DRIVING_AFTER_DRIVE;
                     }
@@ -360,6 +419,7 @@ public class Autonomous
                     }
                 return false;
             case WAIT:
+                // Delays the robot to allow the motors to rest before driving after braking
                 Hardware.driveDelayTimer.start();
                 if (Hardware.driveDelayTimer.get() >= DRIVE_DELAY_SECONDS)
                     {
@@ -371,6 +431,7 @@ public class Autonomous
                         DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
                     {
                     Hardware.drive.resetEncoders();
+                    // Sets the brake power to be opposite the drive direction
                     Hardware.drive.setBrakePower(BRAKE_POWER_NEGATIVE, BrakeType.AFTER_DRIVE);
                     driveAndDropState = DRIVE_AND_DROP_STATE.STOP_DRIVING_BEFORE_DROP;
                     }
@@ -379,6 +440,8 @@ public class Autonomous
                 if (Hardware.drive.brake(BrakeType.AFTER_DRIVE) == true)
                     {
                     Hardware.autoShootPlaceholderTimer.reset();
+                    // Checks if the ball count switch on to determine if the drop state should be
+                    // skipped
                     if (Hardware.ballCountInitSwitch.isOn() == true)
                         {
                         driveAndDropState = DRIVE_AND_DROP_STATE.DROP;
@@ -389,6 +452,8 @@ public class Autonomous
                 return false;
             case DROP:
                 Hardware.autoShootPlaceholderTimer.start();
+                // Spins the color wheel motor (stand-in for launch mechanism) until the
+                // placeholder timer reaches a certain time
                 if (Hardware.autoShootPlaceholderTimer.get() >= TIME_OF_MOTOR_SPINNING_SECONDS_PREV_YEAR)
                     {
                     Hardware.colorWheelMotor.set(0.0);
@@ -405,6 +470,14 @@ public class Autonomous
             }
     }
 
+    /**
+     * Auto path to back out of the starting area
+     * 
+     * @return true when the path finishes
+     * 
+     * @Author Dion Marchant
+     * @Written February 16th, 2022
+     */
     private static boolean driveOnlyBackwards()
     {
         // System.out.println("ONLY_DRIVE_STATE = " + onlyDriveState);
@@ -415,6 +488,8 @@ public class Autonomous
                 onlyDriveBackwardsState = ONLY_DRIVE_BACKWARDS_STATE.DELAY;
                 return false;
             case DELAY:
+                // Waits until the auto delay timer reaches the time from the potentiometer
+                // input to move on to the next state
                 if (Hardware.autoTimer.get() >= delaySeconds)
                     {
                     onlyDriveBackwardsState = ONLY_DRIVE_BACKWARDS_STATE.DRIVE;
@@ -425,6 +500,7 @@ public class Autonomous
                         DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
                     {
                     Hardware.drive.resetEncoders();
+                    // Sets the brake power to be opposite the drive direction
                     Hardware.drive.setBrakePower(BRAKE_POWER_POSITIVE, BrakeType.AFTER_DRIVE);
                     onlyDriveBackwardsState = ONLY_DRIVE_BACKWARDS_STATE.STOP;
                     }
@@ -432,6 +508,8 @@ public class Autonomous
             case STOP:
                 if (Hardware.drive.brake(BrakeType.AFTER_DRIVE) == true)
                     {
+                    // Checks if the spin switch is true to send to the spin state, otherwise, go to
+                    // the end state
                     if (Hardware.spinSwitch.isOn() == true)
                         {
                         onlyDriveBackwardsState = ONLY_DRIVE_BACKWARDS_STATE.SPIN;
@@ -454,6 +532,14 @@ public class Autonomous
             }
     }
 
+    /**
+     * Auto path to drive forward out of the starting area
+     * 
+     * @return true when the path completes
+     * 
+     * @Author Dion Marchant
+     * @Written February 16th, 2022
+     */
     private static boolean driveOnlyForward()
     {
         // System.out.println("ONLY_DRIVE_STATE = " + onlyDriveState);
@@ -464,6 +550,8 @@ public class Autonomous
                 onlyDriveForwardState = ONLY_DRIVE_FORWARD_STATE.DELAY;
                 return false;
             case DELAY:
+                // Wait until the auto delay timer reaches the time from the potentiometer input
+                // to move on to the next state
                 if (Hardware.autoTimer.get() >= delaySeconds)
                     {
                     onlyDriveForwardState = ONLY_DRIVE_FORWARD_STATE.DRIVE;
@@ -474,6 +562,7 @@ public class Autonomous
                         DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
                     {
                     Hardware.drive.resetEncoders();
+                    // Sets the brake power to be opposite the drive direction
                     Hardware.drive.setBrakePower(BRAKE_POWER_NEGATIVE, BrakeType.AFTER_DRIVE);
                     onlyDriveForwardState = ONLY_DRIVE_FORWARD_STATE.STOP;
                     }
@@ -492,6 +581,15 @@ public class Autonomous
             }
     }
 
+    /**
+     * Auto path to drive out of the starting area, drive back in, and then leave
+     * the starting area after scoring in the low goal
+     * 
+     * @return true when the path in completed
+     * 
+     * @Author Dion Marchant
+     * @Written February 16th, 2022
+     */
     private static boolean driveDropAndDriveAgain()
     {
         // System.out.println("DRIVE_DROP_AND_DRIVE_AGAIN_STATE = " +
@@ -503,6 +601,8 @@ public class Autonomous
                 driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.DELAY;
                 return false;
             case DELAY:
+                // Waits until the auto delay timer reaches the time from the potentiometer
+                // input to move on to the next state
                 if (Hardware.autoTimer.get() >= delaySeconds)
                     {
                     driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.DRIVE_ONE;
@@ -513,6 +613,7 @@ public class Autonomous
                         DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
                     {
                     Hardware.drive.resetEncoders();
+                    // Sets the brake power to be opposite the drive direction
                     Hardware.drive.setBrakePower(BRAKE_POWER_POSITIVE, BrakeType.AFTER_DRIVE);
                     driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.STOP_DRIVING_AFTER_DRIVE_ONE;
                     }
@@ -521,10 +622,11 @@ public class Autonomous
                 if (Hardware.drive.brake(BrakeType.AFTER_DRIVE) == true)
                     {
                     Hardware.drive.resetEncoders();
-                    driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.WAIT;
+                    driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.WAIT_AFTER_DRIVE_ONE;
                     }
                 return false;
-            case WAIT:
+            case WAIT_AFTER_DRIVE_ONE:
+                // Brief delay to let the motors rest after braking
                 Hardware.driveDelayTimer.start();
                 if (Hardware.driveDelayTimer.get() >= DRIVE_DELAY_SECONDS)
                     {
@@ -536,6 +638,7 @@ public class Autonomous
                         DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
                     {
                     Hardware.drive.resetEncoders();
+                    // Sets the brake power to be opposite the drive direction
                     Hardware.drive.setBrakePower(BRAKE_POWER_NEGATIVE, BrakeType.AFTER_DRIVE);
                     driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.STOP_DRIVING_BEFORE_DROP;
                     }
@@ -544,13 +647,16 @@ public class Autonomous
                 if (Hardware.drive.brake(BrakeType.AFTER_DRIVE) == true)
                     {
                     Hardware.autoShootPlaceholderTimer.reset();
+                    // If the ball count switch is true, move on to the drop state, otherwise, move
+                    // on to a waiting state before leaving the area
                     if (Hardware.ballCountInitSwitch.isOn() == true)
                         {
                         driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.DROP;
                         return false;
                         }
-                    driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.LEAVE; // TODO may need to add a
-                                                                                          // delay before driving again
+                    Hardware.driveDelayTimer.stop();
+                    Hardware.driveDelayTimer.reset();
+                    driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.WAIT_AFTER_DRIVE_TWO;
                     }
                 return false;
             case DROP:
@@ -562,11 +668,21 @@ public class Autonomous
                     }
                 Hardware.colorWheelMotor.set(TEST_MOTOR_SPEED_PREV_YEAR);
                 return false;
+            case WAIT_AFTER_DRIVE_TWO:
+                // Short delay after driving if the launch does not run to let the motors rest
+                // after braking
+                Hardware.driveDelayTimer.start();
+                if (Hardware.driveDelayTimer.get() >= DRIVE_DELAY_SECONDS)
+                    {
+                    driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.LEAVE;
+                    }
+                return false;
             case LEAVE:
                 Hardware.colorWheelMotor.set(0.0);
                 if (Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_WALL_INCHES_PREV_YEAR,
                         DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
                     {
+                    // Sets the brake power to be opposite the drive direction
                     Hardware.drive.setBrakePower(BRAKE_POWER_POSITIVE, BrakeType.AFTER_DRIVE);
                     driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.STOP;
                     }
@@ -574,6 +690,8 @@ public class Autonomous
             case STOP:
                 if (Hardware.drive.brake(BrakeType.AFTER_DRIVE) == true)
                     {
+                    // Checks if the spin switch is true to send the robot to the spin state,
+                    // otherwise, end the path
                     if (Hardware.spinSwitch.isOn() == true)
                         {
                         driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.SPIN;
@@ -597,6 +715,14 @@ public class Autonomous
             }
     }
 
+    /**
+     * Method to cause the robot to turn around in auto
+     * 
+     * @return true when the robot has turned 180 degrees
+     * 
+     * @Author Dion Marchant
+     * @Written February 16th, 2022
+     */
     private static boolean spin()
     {
         switch (spinState)
@@ -650,7 +776,7 @@ public class Autonomous
 
     private static enum DROP_AND_DRIVE_STATE
         {
-        INIT, DELAY, PREPARE_TO_DROP, STOP_DRIVING_BEFORE_DROP, DROP, DRIVE, STOP, SPIN, STOP_SPIN, END;
+        INIT, DELAY, PREPARE_TO_DROP, STOP_DRIVING_BEFORE_DROP, DROP, WAIT, DRIVE, STOP, SPIN, STOP_SPIN, END;
         }
 
     private static enum DROP_FROM_START_AND_DRIVE_STATE
@@ -660,7 +786,7 @@ public class Autonomous
 
     private static enum DRIVE_DROP_AND_DRIVE_AGAIN_STATE
         {
-        INIT, DELAY, DRIVE_ONE, STOP_DRIVING_AFTER_DRIVE_ONE, WAIT, PREPARE_TO_DROP, STOP_DRIVING_BEFORE_DROP, DROP, LEAVE, STOP, SPIN, STOP_SPIN, END;
+        INIT, DELAY, DRIVE_ONE, STOP_DRIVING_AFTER_DRIVE_ONE, WAIT_AFTER_DRIVE_ONE, PREPARE_TO_DROP, STOP_DRIVING_BEFORE_DROP, WAIT_AFTER_DRIVE_TWO, DROP, LEAVE, STOP, SPIN, STOP_SPIN, END;
         }
 
     private static enum SPIN_STATE
