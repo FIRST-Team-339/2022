@@ -62,7 +62,7 @@ public class Teleop
         SmartDashboard.putString("DB/String 0", "     Ball Count");
         if (Hardware.ballCountInitSwitch.isOn())
             {
-            Hardware.addBallButton.add(1);
+            BallCounter.add(1);
             }
         SmartDashboard.putString("DB/String 5", "     " + BallCounter.BallCount + " ball(s)");
 
@@ -114,13 +114,14 @@ public class Teleop
         // Ball Count
         if (subBallButtonOnNow == true)
             {
-            Hardware.subtractBallButton.subtractCheckCount(1);
+            BallCounter.subtractCheckCount(1);
             }
         if (addBallButtonOnNow == true)
             {
-            Hardware.addBallButton.addCheckCount(1);
+            BallCounter.addCheckCount(1);
             }
-        // System.out.println("Sub: " + subBallButtonOn + " Add: " + addBallButtonOn);
+        System.out.println("BALL COUNT: " + BallCounter.BallCount);
+        System.out.println("Subtract: " + subBallButtonOnNow + " Add: " + addBallButtonOnNow);
 
         // Operator Dashboard Variables
         SmartDashboard.putString("DB/String 5", " " + BallCounter.BallCount + " ball(s)");
