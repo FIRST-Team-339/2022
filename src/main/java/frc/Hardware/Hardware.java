@@ -160,6 +160,8 @@ public class Hardware
 
         colorWheelMotor = new WPI_TalonSRX(25);
 
+        launchMotorGroup = new MotorControllerGroup(colorWheelMotor);
+
         leftBottomMotor = new WPI_TalonFX(15);
         leftBottomMotor.setInverted(false);
         rightTopMotor = new WPI_TalonFX(14);
@@ -195,6 +197,12 @@ public class Hardware
         rightDriveEncoder.setDistancePerPulse(PREV_YEAR_DISTANCE_PER_TICK);
         rightDriveEncoder.setReverseDirection(true);
 
+        // -----------------------------------
+        // Configure launch encoders
+        // -----------------------------------
+
+        launchMotorEncoder = new KilroyEncoder((WPI_TalonSRX) colorWheelMotor);
+
         // ------------------------------------
         // configure climb encoders
         // ------------------------------------
@@ -228,7 +236,11 @@ public class Hardware
     public static MotorController leftTopMotor = null;
     public static MotorController rightBottomMotor = null;
 
-    public static MotorController colorWheelMotor = null; // remove this later
+    public static MotorControllerGroup launchMotorGroup = null;
+
+    public static MotorController colorWheelMotor = null; // TODO replace with launch motor
+
+    public static KilroyEncoder launchMotorEncoder = null;
 
     public static MotorControllerGroup leftDriveGroup = null;
     public static MotorControllerGroup rightDriveGroup = null;
