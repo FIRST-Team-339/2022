@@ -120,8 +120,18 @@ public class Teleop
             {
             BallCounter.addCheckCount(1);
             }
-        System.out.println("BALL COUNT: " + BallCounter.BallCount);
-        System.out.println("Subtract: " + subBallButtonOnNow + " Add: " + addBallButtonOnNow);
+        // System.out.println("BALL COUNT: " + BallCounter.BallCount);
+        // System.out.println("Subtract: " + subBallButtonOnNow + " Add: " +
+        // addBallButtonOnNow);
+        System.out.println(Hardware.climbServo.getAngle());
+        if (SmartDashboard.getBoolean("DB/Button 2", false))
+            {
+            Hardware.climbServo.set(.3);
+            }
+        else
+            {
+            Hardware.climbServo.set(.6);
+            }
 
         // Operator Dashboard Variables
         SmartDashboard.putString("DB/String 5", " " + BallCounter.BallCount + " ball(s)");
