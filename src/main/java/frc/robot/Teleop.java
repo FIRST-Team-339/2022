@@ -134,7 +134,7 @@ public class Teleop
             {
             Hardware.climbServo.set(.6);
             }
-
+        // 27 INCHES STUFF
         if (climbUpButtonPressed && !climbDownButtonPressed)
             {
                 Hardware.climbGroup.set(.3);
