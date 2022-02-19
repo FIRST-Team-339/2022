@@ -80,11 +80,10 @@ public class Teleop
     {
 
         // Joystick Button/Trigger Variables
-        // boolean rightOperatorTriggerPressed = Hardware.rightOperator.getTrigger();
-        boolean driverGearUpPressed = Hardware.rightDriver.getTrigger();
-        boolean driverGearDownPressed = Hardware.leftDriver.getTrigger();
         boolean rightDriverCameraSwitchButtonPressed = Hardware.rightDriverCameraSwitchButton.get();
         boolean rightOperatorCameraSwitchButtonPressed = Hardware.rightOperatorCameraSwitchButton.get();
+        boolean climbUpButtonPressed = Hardware.climbUpButton.get();
+        boolean climbDownButtonPressed = Hardware.climbDownButton.get();
 
         // Joystick Ball Add/Sub Variables
         boolean addBallButtonOn = Hardware.addBallButton.isOn();
@@ -133,6 +132,19 @@ public class Teleop
             {
             Hardware.climbServo.set(.6);
             }
+        // 27 INCHES STUFF
+        if (climbUpButtonPressed && !climbDownButtonPressed)
+            {
+                Hardware.climbGroup.set(.3);
+            }
+        else if (climbDownButtonPressed)
+            {
+                Hardware.climbGroup.set(-.3);
+            }
+        else
+            {
+                Hardware.climbGroup.set(0);
+            }
 
         // Operator Dashboard Variables
         SmartDashboard.putString("DB/String 5", " " + BallCounter.BallCount + " ball(s)");
@@ -152,7 +164,7 @@ public class Teleop
         // }
         // ================== DRIVER CONTROLS =================
         // Shifts Gears
-        Hardware.tankTransmission.shiftGears(driverGearUpPressed, driverGearDownPressed);
+        Hardware.tankTransmission.shiftGears(Hardware.driverGearUpPressed, Hardware.driverGearDownPressed);
 
         Hardware.drive.drive(Hardware.leftDriver, Hardware.rightDriver);
 

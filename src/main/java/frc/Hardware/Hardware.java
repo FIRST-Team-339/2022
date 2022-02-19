@@ -331,8 +331,13 @@ public class Hardware
 
     public static int invertControllerAxis = -1;
 
+    public static boolean driverGearUpPressed = rightDriver.getTrigger();
+    public static boolean driverGearDownPressed = leftDriver.getTrigger();
+    public static boolean operatorIntakeButtonPressed = leftOperator.getTrigger();
     public static JoystickButton rightOperatorCameraSwitchButton = new JoystickButton(rightOperator, 10);
     public static JoystickButton rightDriverCameraSwitchButton = new JoystickButton(rightDriver, 3);
+    public static JoystickButton climbUpButton = new JoystickButton(rightOperator, 3);
+    public static JoystickButton climbDownButton = new JoystickButton(rightOperator, 2);
     public static MomentarySwitch subtractBallButton = new MomentarySwitch(rightOperator, 8, false);
     public static MomentarySwitch addBallButton = new MomentarySwitch(rightOperator, 9, false);
 
