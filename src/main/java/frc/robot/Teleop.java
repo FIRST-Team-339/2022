@@ -79,9 +79,6 @@ public class Teleop
     {
 
         // Joystick Button/Trigger Variables
-        // boolean rightOperatorTriggerPressed = Hardware.rightOperator.getTrigger();
-        boolean driverGearUpPressed = Hardware.rightDriver.getTrigger();
-        boolean driverGearDownPressed = Hardware.leftDriver.getTrigger();
         boolean rightDriverCameraSwitchButtonPressed = Hardware.rightDriverCameraSwitchButton.get();
         boolean rightOperatorCameraSwitchButtonPressed = Hardware.rightOperatorCameraSwitchButton.get();
 
@@ -142,7 +139,7 @@ public class Teleop
 
         // ================== DRIVER CONTROLS =================
         // Shifts Gears
-        Hardware.tankTransmission.shiftGears(driverGearUpPressed, driverGearDownPressed);
+        Hardware.tankTransmission.shiftGears(Hardware.driverGearUpPressed, Hardware.driverGearDownPressed);
 
         Hardware.drive.drive(Hardware.leftDriver, Hardware.rightDriver);
 
