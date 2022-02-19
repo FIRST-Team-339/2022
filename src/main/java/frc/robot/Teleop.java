@@ -84,6 +84,8 @@ public class Teleop
         boolean driverGearDownPressed = Hardware.leftDriver.getTrigger();
         boolean rightDriverCameraSwitchButtonPressed = Hardware.rightDriverCameraSwitchButton.get();
         boolean rightOperatorCameraSwitchButtonPressed = Hardware.rightOperatorCameraSwitchButton.get();
+        boolean climbUpButtonPressed = Hardware.climbUpButton.get();
+        boolean climbDownButtonPressed = Hardware.climbDownButton.get();
 
         // Joystick Ball Add/Sub Variables
         boolean addBallButtonOn = Hardware.addBallButton.isOn();
@@ -131,6 +133,19 @@ public class Teleop
         else
             {
             Hardware.climbServo.set(.6);
+            }
+
+        if (climbUpButtonPressed && !climbDownButtonPressed)
+            {
+                Hardware.climbGroup.set(.3);
+            }
+        else if (climbDownButtonPressed)
+            {
+                Hardware.climbGroup.set(-.3);
+            }
+        else
+            {
+                Hardware.climbGroup.set(0);
             }
 
         // Operator Dashboard Variables
