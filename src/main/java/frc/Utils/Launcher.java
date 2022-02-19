@@ -11,42 +11,63 @@ public class Launcher
         {
             this.launchMotors = launchMotors;
             this.launchEncoder = launchEncoder;
+            this.launchEncoder.setDistancePerPulse(DISTANCE_PER_PULSE_PREV);
+            this.launchEncoder.reset();
         }
 
-    public boolean launchAuto()
+    public boolean launchGeneral(LAUNCH_TYPE type)
     {
-        switch (this.launchState)
+        switch (type)
             {
-            case SPINNING_UP:
+            case LOW:
+                if (launch(LAUNCH_MOTOR_SPEED_LOW_PREV, TARGET_MOTOR_RPM_LOW_PREV) == true)
+                    {
+                    return true;
+                    }
                 return false;
-            case FIRING:
+            case HIGH:
+                if (launch(LAUNCH_MOTOR_SPEED_HIGH_PREV, TARGET_MOTOR_RPM_HIGH_PREV) == true)
+                    {
+                    return true;
+                    }
                 return false;
-            case RESTING:
-                this.launchMotors.set(0.0);
-                return true;
+            case AUTO:
+                if (launch(LAUNCH_MOTOR_SPEED_AUTO_PREV, TARGET_MOTOR_RPM_AUTO_PREV) == true)
+                    {
+                    return true;
+                    }
+                return false;
+            case OFF:
+                this.launchState = LAUNCH_STATE.SPINNING_UP;
+                return false;
             default:
                 return false;
             }
     }
 
-    public boolean launchTeleop()
+    private boolean launch(double motorSpeed, double target)
     {
+        System.out.println("Launch state: " + this.launchState);
         switch (this.launchState)
             {
             case SPINNING_UP:
-                this.launchMotors.set(LAUNCH_MOTOR_SPEED);
-                if (this.launchEncoder.getRate() >= TARGET_MOTOR_RPM_PREV_YEAR)
+                this.launchMotors.set(motorSpeed);
+                // System.out.println("Motor rpm: " + launchEncoder.getRPM());
+                if (this.launchEncoder.getRPM() >= target)
                     {
-                    launchState = LAUNCH_STATE.AT_SPEED;
+                    this.launchState = LAUNCH_STATE.AT_SPEED;
                     }
                 return false;
             case AT_SPEED:
-                if (this.maintainSpeed() == true)
+                if (maintainSpeed(motorSpeed, target) == true)
                     {
-                    launchState = LAUNCH_STATE.FIRING;
+                    this.launchState = LAUNCH_STATE.FIRING;
                     }
                 return false;
             case FIRING:
+                // System.out.println("Motor rpm: " + launchEncoder.getRPM());
+                System.out.println("Motor speed: " + this.newMotorSpeed);
+                this.launchMotors.set(this.newMotorSpeed);
                 return false;
             case RESTING:
                 this.launchMotors.set(0.0);
@@ -56,43 +77,57 @@ public class Launcher
             }
     }
 
-    private boolean maintainSpeed()
+    private boolean maintainSpeed(double initalSpeed, double targetRPM)
     {
-        switch (this.maintainingIterations)
+        System.out.println("Maintaining speed iterations: " + this.maintainingIterations);
+        System.out.println("Motor RPM: " + this.launchEncoder.getRPM());
+        System.out.println("Motor speed: " + this.newMotorSpeed);
+        if (this.maintainingIterations >= MAX_ITERATIONS_PREV)
             {
-            case (1):
-                if (this.launchEncoder.getRate() <= (TARGET_MOTOR_RPM_PREV_YEAR - LAUNCH_DEADBAND))
-                    {
-                    launchMotorSpeed += CORRECTION_VALUE;
-                    return false;
-                    }
-                if (this.launchEncoder.getRate() >= (TARGET_MOTOR_RPM_PREV_YEAR + LAUNCH_DEADBAND))
-                    {
-                    launchMotorSpeed -= CORRECTION_VALUE;
-                    return false;
-                    }
-                if (Math.abs(this.launchEncoder.getRate() - TARGET_MOTOR_RPM_PREV_YEAR) <= LAUNCH_DEADBAND)
-                    {
-                    this.launchMotors.set(this.launchMotorSpeed);
-                    this.maintainingIterations++;
-                    return false;
-                    }
-                this.launchMotors.set(this.launchMotorSpeed);
-                return false;
-            case (2):
-                return false;
-            case (3):
-                return false;
-            case (4):
-                return false;
-            case (5):
-                return true;
-            default:
-                return false;
+            this.firstCorrectionInteration = true;
+            this.launchMotors.set(this.newMotorSpeed);
+            return true;
             }
+        // TODO don't use the corrected motor voltage if the passed in one worked
+        if (Math.abs(this.launchEncoder.getRPM() - targetRPM) <= LAUNCH_DEADBAND_PREV)
+            {
+            if (this.firstCorrectionInteration == true)
+                {
+                this.newMotorSpeed = initalMotorSpeed;
+                firstCorrectionInteration = false;
+                }
+            this.maintainingIterations++;
+            }
+        else
+            {
+            this.launchMotors.set(correctSpeed(initalSpeed, targetRPM));
+            this.maintainingIterations = 0;
+            }
+        return false;
     }
 
-    public LAUNCH_STATE getState()
+    private double correctSpeed(double initalSpeed, double target)
+    {
+        // System.out.println("Correcting speed");
+        if (this.firstCorrectionInteration == true)
+            {
+            this.newMotorSpeed = initalSpeed;
+            this.firstCorrectionInteration = false;
+            }
+        if (Hardware.launchMotorEncoder.getRPM() > target + LAUNCH_DEADBAND_PREV)
+            {
+            this.newMotorSpeed = this.newMotorSpeed - CORRECTION_VALUE_PREV;
+            return this.newMotorSpeed;
+            }
+        if (Hardware.launchMotorEncoder.getRPM() < target - LAUNCH_DEADBAND_PREV)
+            {
+            this.newMotorSpeed = this.newMotorSpeed + CORRECTION_VALUE_PREV;
+            return this.newMotorSpeed;
+            }
+        return this.newMotorSpeed;
+    }
+
+    private LAUNCH_STATE getState()
     {
         return this.launchState;
     }
@@ -102,9 +137,9 @@ public class Launcher
         return this.launchStatus;
     }
 
-    public boolean setState(LAUNCH_STATE state)
+    public boolean stopFiring()
     {
-        this.launchState = state;
+        this.launchState = LAUNCH_STATE.RESTING;
         return true;
     }
 
@@ -118,13 +153,18 @@ public class Launcher
         SPINNING_UP, AT_SPEED, FIRING, RESTING;
         }
 
+    public enum LAUNCH_TYPE
+        {
+        LOW, HIGH, AUTO, TEST, OFF;
+        }
+
     // Variables
 
-    private LAUNCH_STATE launchState;
+    private LAUNCH_STATE launchState = LAUNCH_STATE.SPINNING_UP;
 
     private LAUNCH_STATUS launchStatus;
 
-    private int maintainingIterations = 1;
+    private int maintainingIterations = 0;
 
     private double launchMotorSpeed;
 
@@ -136,13 +176,31 @@ public class Launcher
 
     private KilroyEncoder launchEncoder;
 
+    private double initalMotorSpeed;
+
+    private double newMotorSpeed;
+
+    private boolean firstCorrectionInteration = true;
+
     // Constants
 
-    private double TARGET_MOTOR_RPM_PREV_YEAR = 100;
+    private double TARGET_MOTOR_RPM_LOW_PREV = 1000.0; // TODO find
 
-    private double LAUNCH_MOTOR_SPEED = .4;
+    private double TARGET_MOTOR_RPM_HIGH_PREV = 3000.0; // TODO find
 
-    private double LAUNCH_DEADBAND = 10;
+    private double TARGET_MOTOR_RPM_AUTO_PREV = 2000.0; // TODO find
 
-    private double CORRECTION_VALUE = .05;
+    private double LAUNCH_MOTOR_SPEED_LOW_PREV = .2; // TODO find
+
+    private double LAUNCH_MOTOR_SPEED_HIGH_PREV = .4; // TODO find
+
+    private double LAUNCH_MOTOR_SPEED_AUTO_PREV = .35; // TODO find
+
+    private double LAUNCH_DEADBAND_PREV = 50.0; // TODO find
+
+    private double CORRECTION_VALUE_PREV = .02; // TODO find
+
+    private int MAX_ITERATIONS_PREV = 10;
+
+    private double DISTANCE_PER_PULSE_PREV = 1.0;
     }

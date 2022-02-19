@@ -16,6 +16,8 @@ package frc.Hardware;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANEncoder;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import frc.HardwareInterfaces.DoubleSolenoid;
@@ -46,6 +48,7 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.Utils.drive.DrivePID;
 import frc.Utils.drive.Drive;
+import frc.Utils.Launcher;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
@@ -159,7 +162,10 @@ public class Hardware
 
         colorWheelMotor = new WPI_TalonSRX(25);
 
-        launchMotorGroup = new MotorControllerGroup(colorWheelMotor);
+        launchMotorForward = new CANSparkMax(27, MotorType.kBrushless);
+        launchMotorBackward = new CANSparkMax(26, MotorType.kBrushless);
+
+        launchMotorGroup = new MotorControllerGroup(launchMotorForward, launchMotorBackward);
 
         leftBottomMotor = new WPI_TalonFX(15);
         leftBottomMotor.setInverted(false);
@@ -200,7 +206,7 @@ public class Hardware
         // Configure launch encoders
         // -----------------------------------
 
-        launchMotorEncoder = new KilroyEncoder((WPI_TalonSRX) colorWheelMotor);
+        launchMotorEncoder = new KilroyEncoder((CANSparkMax) launchMotorForward, 1);
 
         // ------------------------------------
         // configure climb encoders
@@ -225,6 +231,12 @@ public class Hardware
         intakePiston = new DoubleSolenoid(5, 4);
 
         intakePiston.setReverse(true);
+
+        // --------------------------------------
+        // Launch system
+        // --------------------------------------
+
+        launcher = new Launcher(launchMotorGroup, launchMotorEncoder);
     } // end of initializePrevYear()
 
     // **********************************************************
@@ -235,7 +247,12 @@ public class Hardware
     public static MotorController leftTopMotor = null;
     public static MotorController rightBottomMotor = null;
 
+    public static MotorController launchMotorForward = null;
+    public static MotorController launchMotorBackward = null;
+
     public static MotorControllerGroup launchMotorGroup = null;
+
+    public static Launcher launcher = null;
 
     public static MotorController colorWheelMotor = null; // TODO replace with launch motor
 
@@ -319,6 +336,9 @@ public class Hardware
     public static MomentarySwitch subtractBallButton = new MomentarySwitch(rightOperator, 8, false);
     public static MomentarySwitch addBallButton = new MomentarySwitch(rightOperator, 9, false);
 
+    public static JoystickButton launchButton = new JoystickButton(rightOperator, 1);
+
+    public static JoystickButton launchDisableButton = new JoystickButton(rightOperator, 5);
     // **********************************************************
     // Kilroy's Ancillary classes
     // **********************************************************

@@ -31,6 +31,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Encoder;
 import frc.Hardware.Hardware;
+import frc.Utils.Launcher.LAUNCH_TYPE;
 import frc.Utils.ballcounter.BallCounter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -123,7 +124,7 @@ public class Teleop
         // System.out.println("BALL COUNT: " + BallCounter.BallCount);
         // System.out.println("Subtract: " + subBallButtonOnNow + " Add: " +
         // addBallButtonOnNow);
-        System.out.println(Hardware.climbServo.getAngle());
+        // System.out.println(Hardware.climbServo.getAngle());
         if (SmartDashboard.getBoolean("DB/Button 2", false))
             {
             Hardware.climbServo.set(.3);
@@ -140,6 +141,15 @@ public class Teleop
         // =============== AUTOMATED SUBSYSTEMS ===============
         // ================= OPERATOR CONTROLS ================
 
+        // if (Hardware.launchButton.get() == true)
+        // {
+        // Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW);
+        // }
+        // if (Hardware.launchButton.get() == false)
+        // {
+        // Hardware.launcher.stopFiring();
+        // Hardware.launcher.launchGeneral(LAUNCH_TYPE.OFF);
+        // }
         // ================== DRIVER CONTROLS =================
         // Shifts Gears
         Hardware.tankTransmission.shiftGears(driverGearUpPressed, driverGearDownPressed);
@@ -164,6 +174,9 @@ public class Teleop
         // Encoder Distances
 
         // Encoder Raw Values
+
+        // System.out.println("Launch motor encoder raw = " +
+        // Hardware.launchMotorEncoder.getRaw());
 
         // Switch Values
 
