@@ -67,7 +67,6 @@ public class Launcher
             case FIRING:
                 // System.out.println("Motor rpm: " + launchEncoder.getRPM());
                 System.out.println("Motor speed: " + this.newMotorSpeed);
-                this.launchMotors.set(this.newMotorSpeed);
                 return false;
             case RESTING:
                 this.launchMotors.set(0.0);
@@ -81,21 +80,22 @@ public class Launcher
     {
         System.out.println("Maintaining speed iterations: " + this.maintainingIterations);
         System.out.println("Motor RPM: " + this.launchEncoder.getRPM());
-        System.out.println("Motor speed: " + this.newMotorSpeed);
+        if (this.newMotorSpeed == 0.0)
+            {
+            System.out.println("Motor speed: " + initalSpeed);
+            }
+        if (this.newMotorSpeed != 0.0)
+            {
+            System.out.println("Motor speed: " + this.newMotorSpeed);
+            }
         if (this.maintainingIterations >= MAX_ITERATIONS_PREV)
             {
             this.firstCorrectionInteration = true;
-            this.launchMotors.set(this.newMotorSpeed);
+            // this.launchMotors.set(this.newMotorSpeed);
             return true;
             }
-        // TODO don't use the corrected motor voltage if the passed in one worked
         if (Math.abs(this.launchEncoder.getRPM() - targetRPM) <= LAUNCH_DEADBAND_PREV)
             {
-            if (this.firstCorrectionInteration == true)
-                {
-                this.newMotorSpeed = initalMotorSpeed;
-                firstCorrectionInteration = false;
-                }
             this.maintainingIterations++;
             }
         else
