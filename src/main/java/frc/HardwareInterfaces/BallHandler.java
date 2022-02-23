@@ -8,67 +8,49 @@
 
 package frc.HardwareInterfaces;
 
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.Hardware.Hardware;
 
 /** Add your docs here. */
 public class BallHandler
     {
-    // ---------------------------------------
-    // Keep Code Commented Until Ready To Test
-    // ---------------------------------------
-    // public boolean intakeTeleop()
-    // {
-    // switch (this.currentIntakeState)
-    // {
-    // case INTAKE_RESTING:
-    // if (Hardware.operatorIntakeButtonPressed == true)
-    // {
-    // currentIntakeState = INTAKE.PISTON_DOWN_INTAKE;
-    // }
-    // return false;
-    // case PISTON_DOWN_INTAKE:
-    // if (Hardware.operatorIntakeButtonPressed == false)
-    // {
-    // currentIntakeState = INTAKE.INTAKE_RESTING;
-    // }
-    // else
-    // {
-    // Hardware.intakePiston.setForward(true);
-    // }
-    // return false;
-    // case INTAKE_SPINNING:
-    // if (Hardware.operatorIntakeButtonPressed == false)
-    // {
-    // Hardware.intakePiston.setReverse(true);
-    // currentIntakeState = INTAKE.INTAKE_RESTING;
-    // }
-    // else
-    // {
-    // Hardware.intakeMotor.set(0.3);
-    // currentIntakeState = INTAKE.INTAKE_SPINNING;
-    // }
-    // return false;
-    // case PISTON_UP_INTAKE:
-    // Hardware.intakePiston.setReverse(true);
-    // currentIntakeState = INTAKE.INTAKE_RESTING;
-    // return false;
-    // default:
-    // System.out.println("!!!!SOMETHING'S BROKEN!!!!");
-    // return false;
-    // }
-    // }
 
-    public static enum EJECT
+    public BallHandler(boolean intakeTrigger, JoystickButton outtakeButton)
         {
-        EJECTING_RESTING, PISTON_DOWN_EJECTING, INTAKE_SPINNING_UP_BACKWARDS, WHEEL_EJECTING_BALLS, STOP_EJECTING, PISTON_UP_EJECTING, EJECTING_END;
+            if (outtakeButton.get() == true)
+                {
+                PROCESS currentProcessState = PROCESS.OUTTAKE;
+                }
         }
 
-    public static enum INTAKE
+    public static enum PROCESS
         {
-        INTAKE_RESTING, PISTON_DOWN_INTAKE, INTAKE_SPINNING_UP, INTAKE_SPINNING, INTAKE_STOPPING, PISTON_UP_INTAKE, INTAKE_END;
+        RESTING, OUTTAKE
+            {
+
+            },
+        STOP;
         }
 
-    INTAKE currentIntakeState = INTAKE.INTAKE_RESTING;
-    public static double possibleIntakeMotorEjectingSpeed = -1.0;
-    public static double stillIntakeMotor = 0.0;
+    public static enum INTAKE_MOTOR
+        {
+        INTAKE_MOTOR_UP
+            {
+
+            },
+        INTAKE_MOTOR_DOWN
+            {
+
+            };
+        }
+
+    public static enum WHEEL_MOTOR
+        {
+        WHEEL_MOTOR_RESTING, WHEEL_MOTOR_SPINNING_BACKWARDS, WHEEL_MOTOR_SPINNING_FORWARD;
+        }
+
+    public static enum FIRE
+        {
+        TEST;
+        }
     }

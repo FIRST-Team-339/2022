@@ -289,8 +289,6 @@ public class Hardware
 
     public static SingleThrowSwitch spinSwitch = new SingleThrowSwitch(25);
 
-    public static LightSensor infraredSensor = null;
-
     public static LightSensor ballPickup1 = new LightSensor(21);
     public static LightSensor ballPickup2 = new LightSensor(22, true);
     public static LightSensor ballPickup3 = new LightSensor(23);
@@ -338,6 +336,7 @@ public class Hardware
     public static JoystickButton rightDriverCameraSwitchButton = new JoystickButton(rightDriver, 3);
     public static JoystickButton climbUpButton = new JoystickButton(rightOperator, 3);
     public static JoystickButton climbDownButton = new JoystickButton(rightOperator, 2);
+    public static JoystickButton outtakeButton = new JoystickButton(leftOperator, 2);
     public static MomentarySwitch subtractBallButton = new MomentarySwitch(rightOperator, 8, false);
     public static MomentarySwitch addBallButton = new MomentarySwitch(rightOperator, 9, false);
 
