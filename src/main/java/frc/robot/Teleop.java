@@ -31,8 +31,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Encoder;
 import frc.Hardware.Hardware;
+import frc.Utils.BallCounter;
 import frc.Utils.Launcher.LAUNCH_TYPE;
-import frc.Utils.ballcounter.BallCounter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -44,6 +44,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Teleop
     {
+
+    static BallCounter BallCounter = null;
 
     /**
      * User Initialization code for teleop mode should go here. Will be called once
@@ -57,6 +59,10 @@ public class Teleop
 
         // Initializes Transmission To Gear 1
         Hardware.tankTransmission.setGear(1);
+
+        // INITIALIZE BALL COUNTER
+
+        BallCounter = new BallCounter(2, 0, Hardware.addBallButton, Hardware.subtractBallButton);
 
         // Sets the ball count initalized on the robot
         BallCounter.BallCount = 0;
@@ -132,20 +138,25 @@ public class Teleop
             {
             Hardware.climbServo.set(.6);
             }
+
         // 27 INCHES STUFF
         if (climbUpButtonPressed && !climbDownButtonPressed)
             {
-                Hardware.climbGroup.set(.3);
+            if (Hardware.climbEncoder.getDistance() >= 21)
+                {
+                Hardware.climbGroup.set(0);
+                } else {
+                    Hardware.climbGroup.set(.35);
+                }
             }
         else if (climbDownButtonPressed)
             {
-                Hardware.climbGroup.set(-.3);
+                Hardware.climbGroup.set(-.35);
             }
         else
             {
-                Hardware.climbGroup.set(0);
+            Hardware.climbGroup.set(0);
             }
-
         // Operator Dashboard Variables
         SmartDashboard.putString("DB/String 5", " " + BallCounter.BallCount + " ball(s)");
         // System.out.println("BALL COUNT: " + BallCounter.BallCount);
