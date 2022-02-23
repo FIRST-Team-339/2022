@@ -55,8 +55,8 @@ public class BallCounter
      */
     public BallCounter(final int setMinimumBallCount, final int setMaximumBallCount)
         {
-            MinimumBallCount = setMinimumBallCount;
-            MaximumBallCount = setMaximumBallCount;
+            if (!(setMinimumBallCount > setMaximumBallCount)) MinimumBallCount = setMinimumBallCount;
+            if (!(setMaximumBallCount < setMinimumBallCount)) MaximumBallCount = setMaximumBallCount;
         }
     
     /**
@@ -87,8 +87,8 @@ public class BallCounter
      */
     public BallCounter(final int setMinimumBallCount, final int setMaximumBallCount, final MomentarySwitch setAddBallButton, final MomentarySwitch setSubtractBallButton)
         {
-            MinimumBallCount = setMinimumBallCount;
-            MaximumBallCount = setMaximumBallCount;
+            if (!(setMinimumBallCount > setMaximumBallCount)) MinimumBallCount = setMinimumBallCount;
+            if (!(setMaximumBallCount < setMinimumBallCount)) MaximumBallCount = setMaximumBallCount;
             addBallButton = setAddBallButton;
             subtractBallButton = setSubtractBallButton;
         }
@@ -134,14 +134,14 @@ public class BallCounter
     }
 
     // TODO JAVA DOC IT
-    public int add(int addBy)
+    public int uncheckedAdd(int addBy)
     {
         BallCount = BallCount + addBy;
         return BallCount;
     }
 
     // TODO JAVA DOC IT
-    public int subtract(int subtractBy)
+    public int uncheckedSubtract(int subtractBy)
     {
         BallCount = BallCount - subtractBy;
         return BallCount;
