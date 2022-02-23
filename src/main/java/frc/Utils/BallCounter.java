@@ -94,6 +94,18 @@ public class BallCounter
         }
 
     // TODO JAVA DOC IT
+    public int getMinimumBallCount() 
+    {
+        return MinimumBallCount;
+    }
+
+    // TODO JAVA DOC IT
+    public int getMaximumBallCount() 
+    {
+        return MaximumBallCount;
+    }
+
+    // TODO JAVA DOC IT
     public int setMinimumBallCount(int newMinimum) 
     {
         MinimumBallCount = newMinimum;
