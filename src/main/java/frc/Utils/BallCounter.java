@@ -21,7 +21,7 @@ public class BallCounter
     {
         
     // BALL COUNTS
-    public int BallCount = 0;
+    protected int BallCount = 0;
     private int MinimumBallCount = 0;
     private int MaximumBallCount = 2;
 
