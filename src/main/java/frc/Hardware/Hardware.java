@@ -289,8 +289,6 @@ public class Hardware
 
     public static SingleThrowSwitch spinSwitch = new SingleThrowSwitch(25);
 
-    public static LightSensor infraredSensor = null;
-
     public static LightSensor ballPickup1 = new LightSensor(21);
     public static LightSensor ballPickup2 = new LightSensor(22, true);
     public static LightSensor ballPickup3 = new LightSensor(23);

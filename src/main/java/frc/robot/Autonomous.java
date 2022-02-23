@@ -215,7 +215,8 @@ public class Autonomous
                 return false;
             case PREPARE_TO_DROP:
                 if (Hardware.drive.driveStraightInches(DISTANCE_TO_WALL_INCHES_PREV_YEAR,
-                        DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
+                        DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_SECONDS_PREV_YEAR,
+                        USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
                     {
                     Hardware.drive.resetEncoders();
                     // Sets the brake power to the opposite of the drive direction
@@ -256,7 +257,8 @@ public class Autonomous
             case DRIVE:
                 Hardware.colorWheelMotor.set(0.0);
                 if (Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_WALL_INCHES_PREV_YEAR,
-                        DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
+                        DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_SECONDS_PREV_YEAR,
+                        USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
                     {
                     Hardware.drive.resetEncoders();
                     // Set the brake power to opposite the drive direction
@@ -340,7 +342,8 @@ public class Autonomous
             case DRIVE:
                 Hardware.colorWheelMotor.set(0.0);
                 if (Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_WALL_INCHES_PREV_YEAR,
-                        DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
+                        DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_SECONDS_PREV_YEAR,
+                        USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
                     {
                     Hardware.drive.resetEncoders();
                     // Sets the brake power to opposite the drive direction
@@ -403,7 +406,8 @@ public class Autonomous
                 return false;
             case DRIVE:
                 if (Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_PREV_YEAR,
-                        DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
+                        DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_SECONDS_PREV_YEAR,
+                        USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
                     {
                     Hardware.drive.resetEncoders();
                     // Sets the brake power to be in the opposite direction of the drive direction
@@ -427,8 +431,9 @@ public class Autonomous
                     }
                 return false;
             case PREPARE_TO_DROP:
-                if (Hardware.drive.driveStraightInches(DISTANCE_TO_WALL_FROM_OUTSIDE_OF_TARMAC_PREV_YEAR,
-                        DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
+                if (Hardware.drive.driveStraightInches(DISTANCE_TO_WALL_FROM_OUTSIDE_OF_TARMAC_INCHES_PREV_YEAR,
+                        DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_SECONDS_PREV_YEAR,
+                        USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
                     {
                     Hardware.drive.resetEncoders();
                     // Sets the brake power to be opposite the drive direction
@@ -497,7 +502,8 @@ public class Autonomous
                 return false;
             case DRIVE:
                 if (Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_PREV_YEAR,
-                        DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
+                        DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_SECONDS_PREV_YEAR,
+                        USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
                     {
                     Hardware.drive.resetEncoders();
                     // Sets the brake power to be opposite the drive direction
@@ -559,7 +565,8 @@ public class Autonomous
                 return false;
             case DRIVE:
                 if (Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_PREV_YEAR,
-                        DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
+                        DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_SECONDS_PREV_YEAR,
+                        USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
                     {
                     Hardware.drive.resetEncoders();
                     // Sets the brake power to be opposite the drive direction
@@ -610,7 +617,8 @@ public class Autonomous
                 return false;
             case DRIVE_ONE:
                 if (Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_PREV_YEAR,
-                        DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
+                        DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_SECONDS_PREV_YEAR,
+                        USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
                     {
                     Hardware.drive.resetEncoders();
                     // Sets the brake power to be opposite the drive direction
@@ -634,8 +642,9 @@ public class Autonomous
                     }
                 return false;
             case PREPARE_TO_DROP:
-                if (Hardware.drive.driveStraightInches(DISTANCE_TO_WALL_FROM_OUTSIDE_OF_TARMAC_PREV_YEAR,
-                        DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
+                if (Hardware.drive.driveStraightInches(DISTANCE_TO_WALL_FROM_OUTSIDE_OF_TARMAC_INCHES_PREV_YEAR,
+                        DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_SECONDS_PREV_YEAR,
+                        USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
                     {
                     Hardware.drive.resetEncoders();
                     // Sets the brake power to be opposite the drive direction
@@ -680,7 +689,8 @@ public class Autonomous
             case LEAVE:
                 Hardware.colorWheelMotor.set(0.0);
                 if (Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_WALL_INCHES_PREV_YEAR,
-                        DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_PREV_YEAR, USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
+                        DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_SECONDS_PREV_YEAR,
+                        USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
                     {
                     // Sets the brake power to be opposite the drive direction
                     Hardware.drive.setBrakePower(BRAKE_POWER_POSITIVE, BrakeType.AFTER_DRIVE);
@@ -729,8 +739,8 @@ public class Autonomous
             {
             case SPIN:
 
-                if (Hardware.drive.turnDegrees(TURN_AROUND_DEGREES, TURN_SPEED_PREV_YEAR, TURN_ACCELERATION_PREV_YEAR,
-                        USING_GYRO_FOR_TURN_PREV_YEAR) == true)
+                if (Hardware.drive.turnDegrees(TURN_AROUND_DEGREES, TURN_SPEED_PREV_YEAR,
+                        TURN_ACCELERATION_SECONDS_PREV_YEAR, USING_GYRO_FOR_TURN_PREV_YEAR) == true)
                     {
                     spinState = SPIN_STATE.STOP_SPIN;
                     }
@@ -812,13 +822,13 @@ public class Autonomous
 
     private static double delaySeconds;
     /*
-     * ============================================================== Constants
-     * ==============================================================
+     * ========================================= Constants
+     * =========================================
      */
 
     private static final double DISTANCE_TO_WALL_INCHES_PREV_YEAR = 10.0; // TODO test
 
-    private static final double DISTANCE_TO_WALL_FROM_OUTSIDE_OF_TARMAC_PREV_YEAR = 90.0; // TODO test
+    private static final double DISTANCE_TO_WALL_FROM_OUTSIDE_OF_TARMAC_INCHES_PREV_YEAR = 90.0; // TODO test
 
     private static final double DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_PREV_YEAR = 90.0; // TODO test
 
@@ -838,7 +848,7 @@ public class Autonomous
 
     private static final double BRAKE_POWER_NEGATIVE = -.9;
 
-    private static final double ACCELERATION_PREV_YEAR = .5; // TODO test
+    private static final double ACCELERATION_SECONDS_PREV_YEAR = .5;
 
     private static final boolean USING_GYRO_FOR_TURN_PREV_YEAR = true;
 
@@ -854,7 +864,7 @@ public class Autonomous
 
     private static final double TURN_SPEED_PREV_YEAR = .45;
 
-    private static final double TURN_ACCELERATION_PREV_YEAR = .5;
+    private static final double TURN_ACCELERATION_SECONDS_PREV_YEAR = .5;
 
     private static final int TURN_AROUND_DEGREES = 180;
     }
