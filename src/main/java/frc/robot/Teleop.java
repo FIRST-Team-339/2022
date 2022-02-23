@@ -135,16 +135,17 @@ public class Teleop
         // 27 INCHES STUFF
         if (climbUpButtonPressed && !climbDownButtonPressed)
             {
-                Hardware.climbGroup.set(.3);
-            }
-        else if (climbDownButtonPressed)
-            {
-                Hardware.climbGroup.set(-.3);
+            Hardware.climbGroup.set(.3);
             }
         else
-            {
+            if (climbDownButtonPressed)
+                {
+                Hardware.climbGroup.set(-.3);
+                }
+            else
+                {
                 Hardware.climbGroup.set(0);
-            }
+                }
 
         // Operator Dashboard Variables
         SmartDashboard.putString("DB/String 5", " " + BallCounter.BallCount + " ball(s)");
@@ -153,15 +154,14 @@ public class Teleop
         // =============== AUTOMATED SUBSYSTEMS ===============
         // ================= OPERATOR CONTROLS ================
 
-        // if (Hardware.launchButton.get() == true)
-        // {
-        // Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW);
-        // }
-        // if (Hardware.launchButton.get() == false)
-        // {
-        // Hardware.launcher.stopFiring();
-        // Hardware.launcher.launchGeneral(LAUNCH_TYPE.OFF);
-        // }
+        if (Hardware.launchButton.get() == true)
+            {
+            Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW);
+            }
+        if (Hardware.launchButton.get() == false)
+            {
+            Hardware.launcher.launchGeneral(LAUNCH_TYPE.OFF);
+            }
         // ================== DRIVER CONTROLS =================
         // Shifts Gears
         Hardware.tankTransmission.shiftGears(Hardware.driverGearUpPressed, Hardware.driverGearDownPressed);
