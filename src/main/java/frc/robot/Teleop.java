@@ -62,7 +62,7 @@ public class Teleop
 
         // INITIALIZE BALL COUNTER
 
-        BallCounter = new BallCounter(2, 0, Hardware.addBallButton, Hardware.subtractBallButton);
+        BallCounter = new BallCounter(0, 2, Hardware.addBallButton, Hardware.subtractBallButton);
 
         // Sets the ball count initalized on the robot
         BallCounter.BallCount = 0;
