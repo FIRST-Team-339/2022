@@ -154,11 +154,11 @@ public class BallCounter
             {
             BallCount = BallCount + addBy;
             // Associated Switch goes off
-            addBallButton.setValue(false);
+            if (addBallButton != null) addBallButton.setValue(false);
             }
         if (subtractBallButton.isOn() == true)
             // Alt Switch goes off
-            subtractBallButton.setValue(false);
+            if (subtractBallButton != null) subtractBallButton.setValue(false);
         return BallCount;
     }
 
@@ -169,11 +169,11 @@ public class BallCounter
             {
             BallCount = BallCount - subtractBy;
             // Associated Switch goes off
-            subtractBallButton.setValue(false);
+            if (subtractBallButton != null) subtractBallButton.setValue(false);
             }
         if (addBallButton.isOn() == true)
             // Alt Switch goes off
-            addBallButton.setValue(false);
+            if (addBallButton != null) addBallButton.setValue(false);
         return BallCount;
     }
     }
