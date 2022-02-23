@@ -69,7 +69,7 @@ public class Teleop
         SmartDashboard.putString("DB/String 0", "     Ball Count");
         if (Hardware.ballCountInitSwitch.isOn())
             {
-            BallCounter.add(1);
+            BallCounter.uncheckedAdd(1);
             }
         SmartDashboard.putString("DB/String 5", "     " + BallCounter.BallCount + " ball(s)");
 
