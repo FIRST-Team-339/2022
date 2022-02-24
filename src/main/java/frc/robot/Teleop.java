@@ -145,18 +145,21 @@ public class Teleop
             if (Hardware.climbEncoder.getDistance() >= 21)
                 {
                 Hardware.climbGroup.set(0);
-                } else {
-                    Hardware.climbGroup.set(.35);
+                }
+            else
+                {
+                Hardware.climbGroup.set(.35);
                 }
             }
-        else if (climbDownButtonPressed)
-            {
-                Hardware.climbGroup.set(-.35);
-            }
         else
-            {
-            Hardware.climbGroup.set(0);
-            }
+            if (climbDownButtonPressed)
+                {
+                Hardware.climbGroup.set(-.35);
+                }
+            else
+                {
+                Hardware.climbGroup.set(0);
+                }
         // Operator Dashboard Variables
         SmartDashboard.putString("DB/String 5", " " + BallCounter.BallCount + " ball(s)");
         // System.out.println("BALL COUNT: " + BallCounter.BallCount);
@@ -166,19 +169,22 @@ public class Teleop
 
         if (Hardware.launchButton.get() == true)
             {
-            Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW);
+            Hardware.launcher.setDoneFiring(false);
+            Hardware.launcher.setResting(true);
             }
         if (Hardware.launchButton.get() == false)
             {
-            Hardware.launcher.launchGeneral(LAUNCH_TYPE.OFF);
+            Hardware.launcher.disallowLaunching();
+            Hardware.launcher.stopFiring();
             }
+        Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW);
         // ================== DRIVER CONTROLS =================
         // Shifts Gears
         Hardware.tankTransmission.shiftGears(Hardware.driverGearUpPressed, Hardware.driverGearDownPressed);
 
         Hardware.drive.drive(Hardware.leftDriver, Hardware.rightDriver);
 
-        // printStatements();
+        printStatements();
         // individualTest();
     } // end Periodic()
 
@@ -213,6 +219,8 @@ public class Teleop
         // ========== OUTPUTS ==========
 
         // ---------- DIGITAL ----------
+
+        System.out.println("Ball pickup 4: " + Hardware.ballPickup4.isOn());
 
         // System.out.println("Ball init switch = " +
         // Hardware.ballCountInitSwitch.isOn());

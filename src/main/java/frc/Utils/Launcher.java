@@ -61,6 +61,37 @@ public class Launcher
             }
     }
 
+    public boolean launchGeneral()
+    {
+        switch (launchType)
+            {
+            case LOW:
+                if (launch(LAUNCH_MOTOR_SPEED_LOW_PREV, TARGET_MOTOR_RPM_LOW_PREV) == true)
+                    {
+                    return true;
+                    }
+                return false;
+            case HIGH:
+                if (launch(LAUNCH_MOTOR_SPEED_HIGH_PREV, TARGET_MOTOR_RPM_HIGH_PREV) == true)
+                    {
+                    return true;
+                    }
+                return false;
+            case AUTO:
+                if (launch(LAUNCH_MOTOR_SPEED_AUTO_PREV, TARGET_MOTOR_RPM_AUTO_PREV) == true)
+                    {
+                    return true;
+                    }
+                return false;
+            case OFF:
+                this.launchState = LAUNCH_STATE.SPINNING_UP;
+                this.launchMotors.set(0.0);
+                return false;
+            default:
+                return false;
+            }
+    }
+
     // TODO may need to run through the whole launcher method each time a ball is
     // launched
     /**
@@ -77,11 +108,18 @@ public class Launcher
         System.out.println("Launch state: " + this.launchState);
         switch (this.launchState)
             {
+            case RESTING:
+                launchMotors.set(0.0);
+                if (this.doneResting == true)
+                    {
+                    this.launchState = LAUNCH_STATE.SPINNING_UP;
+                    }
+                return false;
             case SPINNING_UP:
                 this.launchMotors.set(motorSpeed);
-                // System.out.println("Motor rpm: " + launchEncoder.getRPM());
+                System.out.println("Motor rpm: " + launchEncoder.getRPM());
                 // Checks when the motor RPM exceedes the target
-                if (this.launchEncoder.getRPM() >= target)
+                if (this.launchEncoder.getRPM() >= target && this.doneSpinning == true)
                     {
                     this.launchStatus = LAUNCH_STATUS.AT_SPEED;
                     this.launchState = LAUNCH_STATE.AT_SPEED;
@@ -89,22 +127,23 @@ public class Launcher
                 return false;
             case AT_SPEED:
                 // Checks if the motor voltage is correct
-                if (maintainSpeed(motorSpeed, target) == true)
+                if (maintainSpeed(motorSpeed, target) == true && this.doneCheckingSpeed == true)
                     {
                     this.launchStatus = LAUNCH_STATUS.FIRING;
                     this.launchState = LAUNCH_STATE.FIRING;
                     }
                 return false;
             case FIRING:
-                // System.out.println("Motor rpm: " + launchEncoder.getRPM());
-                // System.out.println("Motor speed: " + this.newMotorSpeed);
+                System.out.println("Motor rpm: " + launchEncoder.getRPM());
+                System.out.println("Motor speed: " + this.newMotorSpeed);
                 this.maintainingIterations = 0;
+                if (this.doneFiring == true)
+                    {
+                    this.launchState = LAUNCH_STATE.RESTING;
+                    this.launchStatus = LAUNCH_STATUS.RESTING;
+                    return true;
+                    }
                 return false;
-            case RESTING:
-                this.launchMotors.set(0.0);
-                this.launchStatus = LAUNCH_STATUS.SPINNING_UP;
-                this.launchState = LAUNCH_STATE.SPINNING_UP;
-                return true;
             default:
                 return false;
             }
@@ -211,13 +250,42 @@ public class Launcher
         return this.launchStatus;
     }
 
-    /**
-     * @return sets the launchState to the off state
-     */
-    // TODO see if this should be kept
+    public boolean setDoneStates(boolean resting, boolean spinning, boolean atSpeed, boolean firing)
+    {
+        this.doneSpinning = spinning;
+        this.doneCheckingSpeed = atSpeed;
+        this.doneFiring = firing;
+        this.doneResting = resting;
+        return true;
+    }
+
     public boolean stopFiring()
     {
-        this.launchState = LAUNCH_STATE.RESTING;
+        this.doneFiring = true;
+        return true;
+    }
+
+    public boolean setDoneFiring(boolean firing)
+    {
+        this.doneFiring = firing;
+        return true;
+    }
+
+    public boolean setResting(boolean resting)
+    {
+        this.doneResting = resting;
+        return true;
+    }
+
+    public boolean disallowLaunching()
+    {
+        this.doneResting = false;
+        return true;
+    }
+
+    public boolean setLaunchType(LAUNCH_TYPE type)
+    {
+        this.launchType = type;
         return true;
     }
 
@@ -238,7 +306,7 @@ public class Launcher
 
     // Variables
 
-    private LAUNCH_STATE launchState = LAUNCH_STATE.SPINNING_UP;
+    private LAUNCH_STATE launchState = LAUNCH_STATE.RESTING;
 
     private LAUNCH_STATUS launchStatus;
 
@@ -260,6 +328,16 @@ public class Launcher
 
     private boolean firstCorrectionInteration = true;
 
+    private boolean doneSpinning = true;
+
+    private boolean doneCheckingSpeed = true;
+
+    private boolean doneFiring = false;
+
+    private boolean doneResting = false;
+
+    private LAUNCH_TYPE launchType;
+
     // Constants
 
     private double TARGET_MOTOR_RPM_LOW_PREV = 1000.0; // TODO find
@@ -270,7 +348,7 @@ public class Launcher
 
     private double LAUNCH_MOTOR_SPEED_LOW_PREV = .21; // TODO find
 
-    private double LAUNCH_MOTOR_SPEED_HIGH_PREV = .4; // TODO find
+    private double LAUNCH_MOTOR_SPEED_HIGH_PREV = .6; // TODO find
 
     private double LAUNCH_MOTOR_SPEED_AUTO_PREV = .35; // TODO find
 

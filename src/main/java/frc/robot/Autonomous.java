@@ -35,6 +35,7 @@ import javax.swing.DropMode;
 
 import frc.Hardware.Hardware;
 import frc.HardwareInterfaces.Transmission.TransmissionBase.MotorPosition;
+import frc.Utils.Launcher.LAUNCH_TYPE;
 import frc.Utils.drive.Drive.BrakeType;
 import frc.Utils.drive.Drive.debugType;
 
@@ -634,6 +635,8 @@ public class Autonomous
                     }
                 return false;
             case WAIT_AFTER_DRIVE_ONE:
+                Hardware.launcher.setDoneStates(true, true, false, false);
+                Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW);
                 // Brief delay to let the motors rest after braking
                 Hardware.driveDelayTimer.start();
                 if (Hardware.driveDelayTimer.get() >= DRIVE_DELAY_SECONDS)
@@ -642,6 +645,7 @@ public class Autonomous
                     }
                 return false;
             case PREPARE_TO_DROP:
+                Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW);
                 if (Hardware.drive.driveStraightInches(DISTANCE_TO_WALL_FROM_OUTSIDE_OF_TARMAC_INCHES_PREV_YEAR,
                         DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_SECONDS_PREV_YEAR,
                         USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
@@ -653,6 +657,7 @@ public class Autonomous
                     }
                 return false;
             case STOP_DRIVING_BEFORE_DROP:
+                Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW);
                 if (Hardware.drive.brake(BrakeType.AFTER_DRIVE) == true)
                     {
                     Hardware.autoShootPlaceholderTimer.reset();
@@ -669,7 +674,10 @@ public class Autonomous
                     }
                 return false;
             case DROP:
+                Hardware.launcher.setDoneStates(true, true, true, false);
+                Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW);
                 Hardware.autoShootPlaceholderTimer.start();
+                // TODO add stopping the firing process after rl triggers + a delay
                 if (Hardware.autoShootPlaceholderTimer.get() >= TIME_OF_MOTOR_SPINNING_SECONDS_PREV_YEAR)
                     {
                     Hardware.colorWheelMotor.set(0.0);
@@ -738,7 +746,6 @@ public class Autonomous
         switch (spinState)
             {
             case SPIN:
-
                 if (Hardware.drive.turnDegrees(TURN_AROUND_DEGREES, TURN_SPEED_PREV_YEAR,
                         TURN_ACCELERATION_SECONDS_PREV_YEAR, USING_GYRO_FOR_TURN_PREV_YEAR) == true)
                     {
