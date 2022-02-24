@@ -665,7 +665,7 @@ public class Autonomous
                     // on to a waiting state before leaving the area
                     if (Hardware.ballCountInitSwitch.isOn() == true)
                         {
-                        driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.DROP;
+                        driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.START_DROP;
                         return false;
                         }
                     Hardware.driveDelayTimer.stop();
@@ -673,7 +673,7 @@ public class Autonomous
                     driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.WAIT_AFTER_DRIVE_TWO;
                     }
                 return false;
-            case DROP:
+            case START_DROP:
                 Hardware.launcher.setDoneStates(true, true, true, false);
                 Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW);
                 Hardware.autoShootPlaceholderTimer.start();
@@ -684,6 +684,14 @@ public class Autonomous
                     driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.LEAVE;
                     }
                 Hardware.colorWheelMotor.set(TEST_MOTOR_SPEED_PREV_YEAR);
+                return false;
+            case RL_OFF1:
+                return false;
+            case RL_TRIGGERED:
+                return false;
+            case RL_OFF2:
+                return false;
+            case FIRING_DELAY:
                 return false;
             case WAIT_AFTER_DRIVE_TWO:
                 // Short delay after driving if the launch does not run to let the motors rest
@@ -803,7 +811,7 @@ public class Autonomous
 
     private static enum DRIVE_DROP_AND_DRIVE_AGAIN_STATE
         {
-        INIT, DELAY, DRIVE_ONE, STOP_DRIVING_AFTER_DRIVE_ONE, WAIT_AFTER_DRIVE_ONE, PREPARE_TO_DROP, STOP_DRIVING_BEFORE_DROP, WAIT_AFTER_DRIVE_TWO, DROP, LEAVE, STOP, SPIN, STOP_SPIN, END;
+        INIT, DELAY, DRIVE_ONE, STOP_DRIVING_AFTER_DRIVE_ONE, WAIT_AFTER_DRIVE_ONE, PREPARE_TO_DROP, STOP_DRIVING_BEFORE_DROP, WAIT_AFTER_DRIVE_TWO, START_DROP, RL_OFF1, RL_TRIGGERED, RL_OFF2, FIRING_DELAY, LEAVE, STOP, SPIN, STOP_SPIN, END;
         }
 
     private static enum SPIN_STATE

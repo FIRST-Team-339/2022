@@ -61,6 +61,12 @@ public class Launcher
             }
     }
 
+    /**
+     * Overload method uses the launcher with an externally set type through
+     * setLaunchType().
+     * 
+     * @return true when done launching
+     */
     public boolean launchGeneral()
     {
         switch (launchType)
@@ -105,7 +111,7 @@ public class Launcher
      */
     private boolean launch(double motorSpeed, double target)
     {
-        System.out.println("Launch state: " + this.launchState);
+        // System.out.println("Launch state: " + this.launchState);
         switch (this.launchState)
             {
             case RESTING:
@@ -117,7 +123,7 @@ public class Launcher
                 return false;
             case SPINNING_UP:
                 this.launchMotors.set(motorSpeed);
-                System.out.println("Motor rpm: " + launchEncoder.getRPM());
+                // System.out.println("Motor rpm: " + launchEncoder.getRPM());
                 // Checks when the motor RPM exceedes the target
                 if (this.launchEncoder.getRPM() >= target && this.doneSpinning == true)
                     {
@@ -134,8 +140,8 @@ public class Launcher
                     }
                 return false;
             case FIRING:
-                System.out.println("Motor rpm: " + launchEncoder.getRPM());
-                System.out.println("Motor speed: " + this.newMotorSpeed);
+                // System.out.println("Motor rpm: " + launchEncoder.getRPM());
+                // System.out.println("Motor speed: " + this.newMotorSpeed);
                 this.maintainingIterations = 0;
                 if (this.doneFiring == true)
                     {
@@ -250,6 +256,21 @@ public class Launcher
         return this.launchStatus;
     }
 
+    /**
+     * Sets the flags to allow the launcher to continue on to the next state. True
+     * will allow the launcher to move from the current state to the next state and
+     * false will maintain the current state
+     * 
+     * @param resting
+     *            - set the doneResting flag to true or false
+     * @param spinning
+     *            - set the doneSpinning flag to true or false
+     * @param atSpeed
+     *            - set the checkingSpeed flag to true or false
+     * @param firing
+     *            - set the doneFiring flag to true or false
+     * @return true when the process is finished
+     */
     public boolean setDoneStates(boolean resting, boolean spinning, boolean atSpeed, boolean firing)
     {
         this.doneSpinning = spinning;
@@ -259,30 +280,63 @@ public class Launcher
         return true;
     }
 
+    /**
+     * Sets the doneFiring flag to true to stop the launcher from firing
+     * 
+     * @return true when the process is finished
+     */
     public boolean stopFiring()
     {
         this.doneFiring = true;
         return true;
     }
 
+    /**
+     * Sets the doneFiring flag to true or false. False will cause the launcher to
+     * remain in the firing state until the flag becomes true
+     * 
+     * @param firing
+     *            - set the doneFiring flag to true or false
+     * @return true when the process is finished
+     */
     public boolean setDoneFiring(boolean firing)
     {
         this.doneFiring = firing;
         return true;
     }
 
+    /**
+     * Sets the doneResting state to true or false. False will stop the launcher
+     * from firing until the flag is set to true.
+     * 
+     * @param resting
+     *            - sets the doneResting flag to true or false
+     * @return true when the process is finished
+     */
     public boolean setResting(boolean resting)
     {
         this.doneResting = resting;
         return true;
     }
 
+    /**
+     * Stops the launcher from firing by setting the doneResting flag to false
+     * 
+     * @return true when the process is finished
+     */
     public boolean disallowLaunching()
     {
         this.doneResting = false;
         return true;
     }
 
+    /**
+     * Sets which type of launch to run
+     * 
+     * @param type
+     *            - desired launch type
+     * @return true when the process is finished
+     */
     public boolean setLaunchType(LAUNCH_TYPE type)
     {
         this.launchType = type;
