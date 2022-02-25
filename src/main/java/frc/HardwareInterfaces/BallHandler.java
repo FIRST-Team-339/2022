@@ -15,33 +15,63 @@ import frc.Hardware.Hardware;
 public class BallHandler
     {
 
-    public BallHandler(boolean intakeTrigger, JoystickButton outtakeButton)
+    // Add variables when made
+    public BallHandler()
         {
-            if (outtakeButton.get() == true)
-                {
-                PROCESS currentProcessState = PROCESS.OUTTAKE;
-                }
+            outtakeState = OUTTAKE.INIT;
         }
+
+    public PROCESS processBallHandler(PROCESS processNow)
+    {
+        switch (processNow)
+            {
+            case RESTING:
+                break;
+            case OUTTAKE:
+                processOuttakeFunc();
+                break;
+            case STOP:
+                outtakeState = OUTTAKE.END;
+                processOuttakeFunc();
+                outtakeState = OUTTAKE.INIT;
+                break;
+            default:
+                break;
+            }
+        return PROCESS.STOP;
+    }
+
+    private OUTTAKE processOuttakeFunc()
+    {
+        switch (outtakeState)
+            {
+            case INIT:
+                Hardware.intakePiston.setForward(true);
+                outtakeState = OUTTAKE.WORKING;
+                break;
+            case WORKING:
+                Hardware.intakeMotor.set(0.5);
+                Hardware.colorWheelMotor.set(0.5);
+                break;
+            case END:
+                Hardware.intakeMotor.set(0.0);
+                Hardware.colorWheelMotor.set(0.0);
+                Hardware.intakePiston.setReverse(true);
+                break;
+            }
+        return outtakeState;
+    }
+
+    private static OUTTAKE outtakeState = OUTTAKE.INIT;
 
     public static enum PROCESS
         {
-        RESTING, OUTTAKE
-            {
-
-            },
-        STOP;
+        RESTING, OUTTAKE, STOP;
         }
 
     public static enum INTAKE_MOTOR
         {
-        INTAKE_MOTOR_UP
-            {
-
-            },
-        INTAKE_MOTOR_DOWN
-            {
-
-            };
+        INTAKE_MOTOR_UP, INTAKE_MOTOR_DOWN;
         }
 
     public static enum WHEEL_MOTOR
@@ -52,5 +82,10 @@ public class BallHandler
     public static enum FIRE
         {
         TEST;
+        }
+
+    public static enum OUTTAKE
+        {
+        INIT, WORKING, END;
         }
     }
