@@ -31,6 +31,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Encoder;
 import frc.Hardware.Hardware;
+import frc.HardwareInterfaces.BallHandler;
 import frc.Utils.BallCounter;
 import frc.Utils.Launcher.LAUNCH_TYPE;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -109,6 +110,16 @@ public class Teleop
         if (currentGear < Hardware.PREV_YEAR_GEAR_1)
             {
             Hardware.tankTransmission.setGear(Hardware.PREV_YEAR_GEAR_1);
+            }
+
+        // Outtake and Intake
+        if (Hardware.outtakeButton.get() == true)
+            {
+            ballHandler.processBallHandler(BallHandler.PROCESS.OUTTAKE);
+            }
+        else
+            {
+            ballHandler.processBallHandler(BallHandler.PROCESS.STOP);
             }
 
         // Switch Camera
@@ -235,4 +246,5 @@ public class Teleop
 
     }
 
+    static BallHandler ballHandler = new BallHandler();
     } // end class
