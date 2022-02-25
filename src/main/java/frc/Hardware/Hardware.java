@@ -288,6 +288,7 @@ public class Hardware
     public static SingleThrowSwitch ballCountInitSwitch = new SingleThrowSwitch(4);
 
     public static SingleThrowSwitch spinSwitch = new SingleThrowSwitch(25);
+    public static DoubleThrowSwitch unknownSwitch = new DoubleThrowSwitch(11, 12);
 
     public static LightSensor ballPickup1 = new LightSensor(21);
     public static LightSensor ballPickup2 = new LightSensor(22, true);
