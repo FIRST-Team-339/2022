@@ -194,6 +194,7 @@ public class Launcher
         if (Math.abs(this.launchEncoder.getRPM() - targetRPM) <= LAUNCH_DEADBAND_PREV)
             {
             this.maintainingIterations++;
+            return false;
             }
         // If the delta of the actual and target rpm is not less than the
         // deadband, change the motor voltage
@@ -227,7 +228,7 @@ public class Launcher
         // If the actual rpm is outside of the acceptable range in the positive
         // direction, reduce the voltage by a
         // correction value
-        if (Hardware.launchMotorEncoder.getRPM() > target + LAUNCH_DEADBAND_PREV)
+        if (Hardware.launchMotorEncoder.getRPM() >= (target + LAUNCH_DEADBAND_PREV))
             {
             this.newMotorSpeed = this.newMotorSpeed - CORRECTION_VALUE_PREV;
             return this.newMotorSpeed;
@@ -235,7 +236,7 @@ public class Launcher
         // If the actual rpm is outside of the acceptable range in the negative
         // direction, increase the voltage by a
         // correction value
-        if (Hardware.launchMotorEncoder.getRPM() < target - LAUNCH_DEADBAND_PREV)
+        if (Hardware.launchMotorEncoder.getRPM() <= (target - LAUNCH_DEADBAND_PREV))
             {
             this.newMotorSpeed = this.newMotorSpeed + CORRECTION_VALUE_PREV;
             return this.newMotorSpeed;
@@ -397,23 +398,23 @@ public class Launcher
 
     // Constants
 
-    private double TARGET_MOTOR_RPM_LOW_PREV = 1000.0; // TODO find
+    private final double TARGET_MOTOR_RPM_LOW_PREV = 1000.0; // TODO find
 
-    private double TARGET_MOTOR_RPM_HIGH_PREV = 3000.0; // TODO find
+    private final double TARGET_MOTOR_RPM_HIGH_PREV = 3000.0; // TODO find
 
-    private double TARGET_MOTOR_RPM_AUTO_PREV = 2000.0; // TODO find
+    private final double TARGET_MOTOR_RPM_AUTO_PREV = 2000.0; // TODO find
 
-    private double LAUNCH_MOTOR_SPEED_LOW_PREV = .21; // TODO find
+    private final double LAUNCH_MOTOR_SPEED_LOW_PREV = .21; // TODO find
 
-    private double LAUNCH_MOTOR_SPEED_HIGH_PREV = .6; // TODO find
+    private final double LAUNCH_MOTOR_SPEED_HIGH_PREV = .6; // TODO find
 
-    private double LAUNCH_MOTOR_SPEED_AUTO_PREV = .35; // TODO find
+    private final double LAUNCH_MOTOR_SPEED_AUTO_PREV = .4; // TODO find
 
-    private double LAUNCH_DEADBAND_PREV = 50.0; // TODO find
+    private final double LAUNCH_DEADBAND_PREV = 50.0; // TODO find
 
-    private double CORRECTION_VALUE_PREV = .0005; // TODO find
+    private final double CORRECTION_VALUE_PREV = .0005; // TODO find
 
-    private int MAX_ITERATIONS_PREV = 10;
+    private final int MAX_ITERATIONS_PREV = 10;
 
-    private double DISTANCE_PER_PULSE_PREV = 1.0;
+    private final double DISTANCE_PER_PULSE_PREV = 1.0;
     }

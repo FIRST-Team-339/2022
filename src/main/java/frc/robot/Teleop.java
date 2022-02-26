@@ -74,6 +74,13 @@ public class Teleop
             }
         SmartDashboard.putString("DB/String 5", "     " + BallCounter.BallCount + " ball(s)");
 
+        // Initialize launcher
+        Hardware.launcher.disallowLaunching();
+        // Hardware.launcher.launchGeneral(LAUNCH_TYPE.OFF);
+        Hardware.launcher.setDoneFiring(false);
+        Hardware.launchMotorGroup.set(0.0);
+        Hardware.drive.stop();
+
     } // end Init
 
     /**
