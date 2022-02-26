@@ -292,7 +292,9 @@ public class Hardware
     public static SingleThrowSwitch ballCountInitSwitch = new SingleThrowSwitch(4);
 
     public static SingleThrowSwitch spinSwitch = new SingleThrowSwitch(25);
-    public static DoubleThrowSwitch unknownSwitch = new DoubleThrowSwitch(11, 12);
+    public static SingleThrowSwitch unknown1Switch = new SingleThrowSwitch(11);
+    public static SingleThrowSwitch unknown2Switch = new SingleThrowSwitch(12);
+    public static DoubleThrowSwitch unknownSwitch = new DoubleThrowSwitch(unknown1Switch, unknown2Switch);
 
     public static LightSensor ballPickup1 = new LightSensor(21);
     public static LightSensor ballPickup2 = new LightSensor(22, true);
@@ -366,7 +368,7 @@ public class Hardware
 
     public static Timer climbTimer = new Timer();
     public static double climbTimerWait = 0.100;
-    
+
     public static BallCounter ballCounter = new BallCounter(0, 2, addBallButton, subtractBallButton);
 
     // ------------------------------------
