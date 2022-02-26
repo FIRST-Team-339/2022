@@ -71,6 +71,9 @@ public class Autonomous
         // System.out.println("Auto disable switch: " +
         // Hardware.autoDisableSwitch.isOn());
 
+        // INITALIZE CLIMB SERVO
+        Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_OUT);
+
         // Checks if the auto disable switch is pressed. It will disable auto if the
         // switch returns a value of false
         if (Hardware.autoDisableSwitch.isOn() == false)
@@ -325,7 +328,11 @@ public class Autonomous
             case DELAY:
                 // Wait until the delay timer reaches the delay seconds from the potentiometer
                 // input to move on to the next state
-                Hardware.launcher.setDoneStates(true, true, true, false);
+                // TODO in all cases where launcher is messed with, check the ball count switch
+                if (Hardware.ballCountInitSwitch.isOn() == true)
+                    {
+                    Hardware.launcher.setDoneStates(true, true, true, false);
+                    }
                 if (Hardware.autoTimer.get() >= delaySeconds)
                     {
                     // Check if the ball count switch is true to know if the drop state should be
@@ -825,44 +832,33 @@ public class Autonomous
      */
     private static boolean launchAuto(LAUNCH_TYPE type)
     {
-        Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW); // TODO see if this is unecessary
+        // System.out.println("Launch auto state: " + launchAutoState);
+        Hardware.launcher.launchGeneral(type);
         switch (launchAutoState)
             {
             case START_DROP:
-                // Hardware.launcher.launchGeneral(type);
-                // Hardware.autoShootPlaceholderTimer.start();
-                // TODO add stopping the firing process after rl triggers + a delay
-                // if (Hardware.autoShootPlaceholderTimer.get() >=
-                // TIME_OF_MOTOR_SPINNING_SECONDS_PREV_YEAR)
-                // {
-                // Hardware.colorWheelMotor.set(0.0);
-                // driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.LEAVE;
-                // }
-                // Hardware.colorWheelMotor.set(TEST_MOTOR_SPEED_PREV_YEAR);
                 if (Hardware.ballPickup4.isOn() == true)
                     {
-                    driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.RL_TRIGGERED;
+                    launchAutoState = LAUNCH_AUTO_STATE.RL_TRIGGERED;
                     return false;
                     }
                 if (Hardware.ballPickup4.isOn() == false)
                     {
-                    driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.RL_OFF1;
+                    launchAutoState = LAUNCH_AUTO_STATE.RL_OFF1;
                     return false;
                     }
                 return false;
             case RL_OFF1:
-                // Hardware.launcher.launchGeneral(type);
                 if (Hardware.ballPickup4.isOn() == true)
                     {
-                    driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.RL_TRIGGERED;
+                    launchAutoState = LAUNCH_AUTO_STATE.RL_TRIGGERED;
                     return false;
                     }
                 return false;
             case RL_TRIGGERED:
-                // Hardware.launcher.launchGeneral(type);
                 if (Hardware.ballPickup4.isOn() == false && Hardware.launcher.getStatus() == LAUNCH_STATUS.FIRING)
                     {
-                    driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.FIRING_DELAY;
+                    launchAutoState = LAUNCH_AUTO_STATE.FIRING_DELAY;
                     }
                 return false;
             case FIRING_DELAY:
@@ -870,7 +866,7 @@ public class Autonomous
                 if (Hardware.launchDelayTimer.get() >= LAUNCH_DELAY_SECONDS)
                     {
                     Hardware.launcher.stopFiring();
-                    Hardware.launcher.setDoneStates(false, true, true, false);
+                    Hardware.launcher.disallowLaunching();
                     return true;
                     }
                 return false;
@@ -983,7 +979,7 @@ public class Autonomous
 
     private static final double MAX_DELAY_SECONDS = 5.0;
 
-    private static final double LAUNCH_DELAY_SECONDS = 3.0;
+    private static final double LAUNCH_DELAY_SECONDS = 1.0;
 
     private static final double TEST_MOTOR_SPEED_PREV_YEAR = .4;
 

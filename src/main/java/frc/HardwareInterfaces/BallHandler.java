@@ -4,36 +4,68 @@
 
 // ---------------------------------------
 
-// Stores the state machine for intake and ejection
+// Stores the state machine for intake. eject, and part of firing
 
 package frc.HardwareInterfaces;
 
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.Hardware.Hardware;
+import frc.Utils.BallCounter;
 
-/** Add your docs here. */
+/**
+ * 
+ * Code for Intake outtake and part of firing goes here
+ * 
+ * @author
+ * @written Feb 24, 2022
+ */
 public class BallHandler
     {
 
     // Add variables when made
-    public BallHandler()
+    public BallHandler() // Init
         {
-            outtakeState = OUTTAKE.INIT;
+            outtakeState = OUTTAKE.OUTTAKE_INIT;
+            intakeState = INTAKE.INTAKE_INIT;
+            intakeMotorIntakeSpeed = 0.5;
+            intakeMotorOuttakeSpeed = -0.5;
+            colorWheelIntakeSpeed = -0.5;
+            colorWheelFireSpeed = -0.5;
+            colorwheelOutakeSpeed = 0.5;
+            motorRestingSpeed = 0.0;
+
         }
 
+    /**
+     * Used to switch between states that involve intake and outtake
+     * 
+     * 
+     * @param processNow
+     *            Can be RESTING, OUTTAKE, or STOP called in Teleop
+     * @return
+     */
     public PROCESS processBallHandler(PROCESS processNow)
     {
+        // System.out.println(processNow);
         switch (processNow)
             {
             case RESTING:
                 break;
             case OUTTAKE:
+                // Calls process outtake function
                 processOuttakeFunc();
                 break;
+            case INTAKE:
+                break;
             case STOP:
-                outtakeState = OUTTAKE.END;
+                // Switches states to end so everyting stops
+                outtakeState = OUTTAKE.OUTTAKE_END;
+                intakeState = INTAKE.INTAKE_END;
+                // Finishes Calling end by setting everythign to end
                 processOuttakeFunc();
-                outtakeState = OUTTAKE.INIT;
+                // Switches states to INIT for next time buttons are pressed.
+                outtakeState = OUTTAKE.OUTTAKE_INIT;
+                intakeState = INTAKE.INTAKE_INIT;
                 break;
             default:
                 break;
@@ -41,32 +73,100 @@ public class BallHandler
         return PROCESS.STOP;
     }
 
+    private INTAKE processIntakeFunc()
+    {
+        // System.out.println(intakeState);
+        switch (intakeState)
+            {
+            case INTAKE_INIT:
+                Hardware.intakePiston.setForward(true);
+                intakeState = INTAKE.INTAKE_WORKING;
+                break;
+            case INTAKE_WORKING:
+                break;
+            case INTAKE_END:
+                Hardware.intakeMotor.set(motorRestingSpeed);
+                Hardware.colorWheelMotor.set(motorRestingSpeed);
+                Hardware.intakePiston.setReverse(true);
+                break;
+            }
+        return intakeState;
+    }
+
+    // Outtake code stored here, called by process ball handler funtion
     private OUTTAKE processOuttakeFunc()
     {
+        // System.out.println(outtakeState);
         switch (outtakeState)
             {
-            case INIT:
+            case OUTTAKE_INIT:
                 Hardware.intakePiston.setForward(true);
-                outtakeState = OUTTAKE.WORKING;
+                if (Hardware.ballPickup1.isOn() == false)
+                    {
+                    // Switches to case where there isn't a ball in front of RL sensor
+                    outtakeState = OUTTAKE.OUTTAKE_WORKING_LIGHT_OFF;
+                    }
+                else
+                    {
+                    // Switches to case where there is a ball in front of RL sensor
+                    outtakeState = OUTTAKE.OUTTAKE_WORKING_LIGHT_ON;
+                    }
                 break;
-            case WORKING:
-                Hardware.intakeMotor.set(0.5);
-                Hardware.colorWheelMotor.set(0.5);
+            // Is used when the ball is not in front of the RL sensor
+            case OUTTAKE_WORKING_LIGHT_OFF:
+                Hardware.intakeMotor.set(intakeMotorOuttakeSpeed);
+                Hardware.colorWheelMotor.set(colorwheelOutakeSpeed);
+                if (Hardware.ballPickup1.isOn() == true)
+                    {
+                    // Switches when a ball is in front of RL sensor
+                    outtakeState = OUTTAKE.OUTTAKE_WORKING_LIGHT_ON;
+                    }
+                else
+                    {
+                    outtakeState = OUTTAKE.OUTTAKE_WORKING_LIGHT_OFF;
+                    }
                 break;
-            case END:
-                Hardware.intakeMotor.set(0.0);
-                Hardware.colorWheelMotor.set(0.0);
+            // Is used when the ball is in front of the RL sensor
+            case OUTTAKE_WORKING_LIGHT_ON:
+                Hardware.intakeMotor.set(intakeMotorOuttakeSpeed);
+                Hardware.colorWheelMotor.set(colorwheelOutakeSpeed);
+                if (Hardware.ballPickup1.isOn() == false)
+                    {
+                    // Subtracts one ball when it is ejected
+                    Hardware.ballCounter.subtractCheckCount(1);
+                    // Switches when ball is not in front of RL sensor anymore
+                    outtakeState = OUTTAKE.OUTTAKE_WORKING_LIGHT_OFF;
+                    }
+                else
+                    {
+
+                    outtakeState = OUTTAKE.OUTTAKE_WORKING_LIGHT_ON;
+                    }
+                break;
+            // Case called at the end of outtake, stops everything, and moves intake piston
+            // down
+            case OUTTAKE_END:
+                Hardware.intakeMotor.set(motorRestingSpeed);
+                Hardware.colorWheelMotor.set(motorRestingSpeed);
                 Hardware.intakePiston.setReverse(true);
                 break;
             }
         return outtakeState;
     }
 
-    private static OUTTAKE outtakeState = OUTTAKE.INIT;
+    // Add Variales to init when made
+    private static OUTTAKE outtakeState = OUTTAKE.OUTTAKE_INIT;
+    private static INTAKE intakeState = INTAKE.INTAKE_INIT;
+    private static double intakeMotorIntakeSpeed;
+    private static double intakeMotorOuttakeSpeed;
+    private static double colorWheelIntakeSpeed;
+    private static double colorWheelFireSpeed;
+    private static double colorwheelOutakeSpeed;
+    private static double motorRestingSpeed;
 
     public static enum PROCESS
         {
-        RESTING, OUTTAKE, STOP;
+        RESTING, OUTTAKE, INTAKE, STOP;
         }
 
     public static enum INTAKE_MOTOR
@@ -86,6 +186,12 @@ public class BallHandler
 
     public static enum OUTTAKE
         {
-        INIT, WORKING, END;
+        OUTTAKE_INIT, OUTTAKE_WORKING_LIGHT_OFF, OUTTAKE_WORKING_LIGHT_ON, OUTTAKE_END;
         }
+
+    public static enum INTAKE
+        {
+        INTAKE_INIT, INTAKE_WORKING, INTAKE_END;
+        }
+
     }
