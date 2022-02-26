@@ -36,6 +36,7 @@ import frc.HardwareInterfaces.BallHandler;
 import frc.Utils.BallCounter;
 import frc.Utils.Launcher.LAUNCH_STATE_TELEOP;
 import frc.Utils.Launcher.LAUNCH_TYPE;
+import frc.Utils.drive.Drive.debugType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -63,6 +64,10 @@ public class Teleop
 
         // INITALIZE CLIMB SERVO
         Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_OUT);
+
+        // RESET TIMER
+        Hardware.climbTimer.stop();
+        Hardware.climbTimer.reset();
 
         // Sets the ball count initalized on the robot
         Hardware.ballCounter.BallCount = 0;
@@ -146,6 +151,8 @@ public class Teleop
         // System.out.println("Subtract: " + subBallButtonOnNow + " Add: " +
         // addBallButtonOnNow);
         // System.out.println(Hardware.climbServo.getAngle());
+
+        // CLIMB SERVO OVERRIDE BUTTON
         if (openClimbServoButtonPressed)
             {
             Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_OUT);
@@ -155,6 +162,7 @@ public class Teleop
             Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_IN);
             }
 
+        // CLIMB UP/DOWN FUNCTIONALITY
         if (climbUpButtonPressed && !climbDownButtonPressed)
             {
             if (Hardware.climbEncoder.getDistance() >= Hardware.PREV_YEAR_CLIMB_ENCODER_MAX_HEIGHT)
@@ -167,20 +175,24 @@ public class Teleop
                     {
                     Hardware.climbTimer.stop();
                     Hardware.climbTimer.reset();
-                    Hardware.climbTimer.start();
                     Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_OUT);
+                    Hardware.climbTimer.start();
                     }
                 else
                     {
-                    if ((Hardware.climbTimer.get() * 1000.0) >= Hardware.climbTimerWait)
+                    if (Hardware.climbTimer.hasElapsed(Hardware.climbTimerWait) && Hardware.climbTimer.get() != 0.0)
                         {
-                        Hardware.leftClimbMotor.set(.27);
-                        Hardware.rightClimbMotor.set(.3);
                         Hardware.climbTimer.stop();
                         Hardware.climbTimer.reset();
+                        Hardware.leftClimbMotor.set(.27);
+                        Hardware.rightClimbMotor.set(.3);
                         }
-                    Hardware.leftClimbMotor.set(.27);
-                    Hardware.rightClimbMotor.set(.3);
+                    else
+                        if (Hardware.climbTimer.get() == 0.0)
+                            {
+                            Hardware.leftClimbMotor.set(.27);
+                            Hardware.rightClimbMotor.set(.3);
+                            }
                     }
                 // Hardware.climbGroup.set(.3);
                 }
@@ -236,8 +248,18 @@ public class Teleop
         // Switch Values
 
         // ---------- ANALOG -----------
+        // Inputs/Outputs
+        // System.out.println("Delay Potentiometer degrees is " +
+        // Hardware.delayPot.get());
+        // System.out.println("Delay Potentiometer maximum degree range is " +
+        // Hardware.delayPot.getFromRange());
+
+        // System.out.println("Inches from nearest object: " +
+        // Hardware.ultraSonic.getDistanceFromNearestBumper());
 
         // ----------- CAN -------------
+        // System.out.println("Voltage of left front motor is: " +
+        // Hardware.leftTopMotor.get());
 
         // -------- SUBSYSTEMS ---------
 
@@ -247,10 +269,32 @@ public class Teleop
 
         // ---------- DIGITAL ----------
 
-        // System.out.println("Ball pickup 4: " + Hardware.ballPickup4.isOn());
+        // Sensors
 
-        // System.out.println("Ball init switch = " +
-        // Hardware.ballCountInitSwitch.isOn());
+        // System.out.println("Floor Light is " + Hardware.floorLight.isOn());
+
+        // System.out.println("Ball PickUp 1 is " + Hardware.ballPickup1.isOn());
+
+        // System.out.println("Ball Pickup 2 is " + Hardware.ballPickup2.isOn());
+
+        // System.out.println("Ball Pickup 3 is " + Hardware.ballPickup3.isOn());
+
+        // System.out.println("Ball Pickup 4 is " + Hardware.ballPickup4.isOn());
+
+        // Digital Inputs
+        System.out.println("Auto Disable Switch is " + Hardware.autoDisableSwitch.isOn());
+
+        System.out.println("Auto Six Position Switch position is " + Hardware.autoSixPosSwitch.getPosition());
+
+        System.out.println("Ball Counter Switch is " + Hardware.ballCountInitSwitch.isOn());
+
+        System.out.println("Spin switch is " + Hardware.spinSwitch.isOn());
+
+        System.out.println("Single Throw Switch for DT is " + Hardware.unknown1Switch.isOn());
+
+        System.out.println("Single Throw Switch 2 for DT is " + Hardware.unknown2Switch.isOn());
+
+        System.out.println("Double Throw Switch is " + Hardware.unknownSwitch.isOn());
 
         // ---------- ANALOG -----------
 
