@@ -64,6 +64,10 @@ public class Teleop
         // INITALIZE CLIMB SERVO
         Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_OUT);
 
+        // RESET TIMER
+        Hardware.climbTimer.stop();
+        Hardware.climbTimer.reset();
+
         // Sets the ball count initalized on the robot
         Hardware.ballCounter.BallCount = 0;
         SmartDashboard.putString("DB/String 0", "     Ball Count");
@@ -149,6 +153,8 @@ public class Teleop
         // System.out.println("Subtract: " + subBallButtonOnNow + " Add: " +
         // addBallButtonOnNow);
         // System.out.println(Hardware.climbServo.getAngle());
+
+        // CLIMB SERVO OVERRIDE BUTTON
         if (openClimbServoButtonPressed)
             {
             Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_OUT);
@@ -158,6 +164,7 @@ public class Teleop
             Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_IN);
             }
 
+        // CLIMB UP/DOWN FUNCTIONALITY
         if (climbUpButtonPressed && !climbDownButtonPressed)
             {
             if (Hardware.climbEncoder.getDistance() >= Hardware.PREV_YEAR_CLIMB_ENCODER_MAX_HEIGHT)
@@ -170,20 +177,24 @@ public class Teleop
                     {
                     Hardware.climbTimer.stop();
                     Hardware.climbTimer.reset();
-                    Hardware.climbTimer.start();
                     Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_OUT);
+                    Hardware.climbTimer.start();
                     }
                 else
                     {
-                    if ((Hardware.climbTimer.get() * 1000.0) >= Hardware.climbTimerWait)
+                    if (Hardware.climbTimer.hasElapsed(Hardware.climbTimerWait) && Hardware.climbTimer.get() != 0.0)
                         {
-                        Hardware.leftClimbMotor.set(.27);
-                        Hardware.rightClimbMotor.set(.3);
                         Hardware.climbTimer.stop();
                         Hardware.climbTimer.reset();
+                        Hardware.leftClimbMotor.set(.27);
+                        Hardware.rightClimbMotor.set(.3);
                         }
-                    Hardware.leftClimbMotor.set(.27);
-                    Hardware.rightClimbMotor.set(.3);
+                    else
+                        if (Hardware.climbTimer.get() == 0.0)
+                            {
+                            Hardware.leftClimbMotor.set(.27);
+                            Hardware.rightClimbMotor.set(.3);
+                            }
                     }
                 // Hardware.climbGroup.set(.3);
                 }
