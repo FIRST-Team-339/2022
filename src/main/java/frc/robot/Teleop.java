@@ -195,7 +195,7 @@ public class Teleop
 
         Hardware.drive.drive(Hardware.leftDriver, Hardware.rightDriver);
 
-        printStatements();
+        // printStatements();
         // individualTest();
     } // end Periodic()
 
@@ -231,7 +231,7 @@ public class Teleop
 
         // ---------- DIGITAL ----------
 
-        System.out.println("Ball pickup 4: " + Hardware.ballPickup4.isOn());
+        // System.out.println("Ball pickup 4: " + Hardware.ballPickup4.isOn());
 
         // System.out.println("Ball init switch = " +
         // Hardware.ballCountInitSwitch.isOn());

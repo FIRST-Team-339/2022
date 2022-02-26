@@ -53,6 +53,7 @@ public class Launcher
                     }
                 return false;
             case OFF:
+                this.launchStatus = LAUNCH_STATUS.SPINNING_UP;
                 this.launchState = LAUNCH_STATE.SPINNING_UP;
                 this.launchMotors.set(0.0);
                 return false;
@@ -90,6 +91,7 @@ public class Launcher
                     }
                 return false;
             case OFF:
+                this.launchStatus = LAUNCH_STATUS.SPINNING_UP;
                 this.launchState = LAUNCH_STATE.SPINNING_UP;
                 this.launchMotors.set(0.0);
                 return false;
@@ -118,6 +120,7 @@ public class Launcher
                 launchMotors.set(0.0);
                 if (this.doneResting == true)
                     {
+                    this.launchStatus = LAUNCH_STATUS.SPINNING_UP;
                     this.launchState = LAUNCH_STATE.SPINNING_UP;
                     }
                 return false;
