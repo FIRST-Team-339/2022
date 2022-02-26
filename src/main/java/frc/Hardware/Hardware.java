@@ -367,11 +367,7 @@ public class Hardware
     public static Timer driveDelayTimer = new Timer();
 
     public static Timer climbTimer = new Timer();
-<<<<<<< HEAD
-    public static double climbTimerWait = 0.100;
-=======
     public static double climbTimerWait = 0.65;
->>>>>>> e5745ca1b7e362f0d6fae66bae8bc8b4967e28aa
 
     public static BallCounter ballCounter = new BallCounter(0, 2, addBallButton, subtractBallButton);
 

@@ -182,17 +182,6 @@ public class Teleop
                     }
                 else
                     {
-<<<<<<< HEAD
-                    if ((Hardware.climbTimer.get() * 1000.0) >= Hardware.climbTimerWait)
-                        {
-                        Hardware.leftClimbMotor.set(.27);
-                        Hardware.rightClimbMotor.set(.3);
-                        Hardware.climbTimer.stop();
-                        Hardware.climbTimer.reset();
-                        }
-                    Hardware.leftClimbMotor.set(.27);
-                    Hardware.rightClimbMotor.set(.3);
-=======
                     if (Hardware.climbTimer.hasElapsed(Hardware.climbTimerWait) && Hardware.climbTimer.get() != 0.0)
                         {
                         Hardware.climbTimer.stop();
@@ -206,7 +195,6 @@ public class Teleop
                             Hardware.leftClimbMotor.set(.27);
                             Hardware.rightClimbMotor.set(.3);
                             }
->>>>>>> e5745ca1b7e362f0d6fae66bae8bc8b4967e28aa
                     }
                 // Hardware.climbGroup.set(.3);
                 }
@@ -274,15 +262,6 @@ public class Teleop
 
         // ---------- ANALOG -----------
         // Inputs/Outputs
-<<<<<<< HEAD
-        // Hardware.delayPot.setPrintToScreen(true);
-        // System.out.println("Delay Potentiometer is " +
-        // Hardware.delayPot.getPrintToScreen());
-
-        // Hardware.ultraSonic.setPrintToScreen(true);
-        // System.out.println("Ultrasonic Sensor is " +
-        // Hardware.ultraSonic.getPrintToScreen());
-=======
         // System.out.println("Delay Potentiometer degrees is " +
         // Hardware.delayPot.get());
         // System.out.println("Delay Potentiometer maximum degree range is " +
@@ -290,7 +269,6 @@ public class Teleop
 
         // System.out.println("Inches from nearest object: " +
         // Hardware.ultraSonic.getDistanceFromNearestBumper());
->>>>>>> e5745ca1b7e362f0d6fae66bae8bc8b4967e28aa
 
         // ----------- CAN -------------
         // System.out.println("Voltage of left front motor is: " +
