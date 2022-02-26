@@ -24,37 +24,37 @@ public class Launcher
         }
 
     /**
-     * General launch method to select which type of launch
+     * Launch for auto dependent on type
      * 
      * @param type
      *            - the type of launch
      * @return true when done launching
      */
-    public boolean launchGeneral(LAUNCH_TYPE type)
+    public boolean launchAutoGeneral(LAUNCH_TYPE type)
     {
         switch (type)
             {
             case LOW:
-                if (launch(LAUNCH_MOTOR_SPEED_LOW_PREV, TARGET_MOTOR_RPM_LOW_PREV) == true)
+                if (launchAuto(LAUNCH_MOTOR_SPEED_LOW_PREV, TARGET_MOTOR_RPM_LOW_PREV) == true)
                     {
                     return true;
                     }
                 return false;
             case HIGH:
-                if (launch(LAUNCH_MOTOR_SPEED_HIGH_PREV, TARGET_MOTOR_RPM_HIGH_PREV) == true)
+                if (launchAuto(LAUNCH_MOTOR_SPEED_HIGH_PREV, TARGET_MOTOR_RPM_HIGH_PREV) == true)
                     {
                     return true;
                     }
                 return false;
             case AUTO:
-                if (launch(LAUNCH_MOTOR_SPEED_AUTO_PREV, TARGET_MOTOR_RPM_AUTO_PREV) == true)
+                if (launchAuto(LAUNCH_MOTOR_SPEED_AUTO_PREV, TARGET_MOTOR_RPM_AUTO_PREV) == true)
                     {
                     return true;
                     }
                 return false;
             case OFF:
-                this.launchStatus = LAUNCH_STATUS.SPINNING_UP;
-                this.launchState = LAUNCH_STATE.SPINNING_UP;
+                this.launchStatusAuto = LAUNCH_STATUS_AUTO.RESTING;
+                this.launchStateAuto = LAUNCH_STATE_AUTO.RESTING;
                 this.launchMotors.set(0.0);
                 return false;
             default:
@@ -63,36 +63,36 @@ public class Launcher
     }
 
     /**
-     * Overload method uses the launcher with an externally set type through
-     * setLaunchType().
+     * Overload method uses the launcher for use in autonomous with an externally
+     * set type through setLaunchType().
      * 
      * @return true when done launching
      */
-    public boolean launchGeneral()
+    public boolean launchAutoGeneral()
     {
         switch (launchType)
             {
             case LOW:
-                if (launch(LAUNCH_MOTOR_SPEED_LOW_PREV, TARGET_MOTOR_RPM_LOW_PREV) == true)
+                if (launchAuto(LAUNCH_MOTOR_SPEED_LOW_PREV, TARGET_MOTOR_RPM_LOW_PREV) == true)
                     {
                     return true;
                     }
                 return false;
             case HIGH:
-                if (launch(LAUNCH_MOTOR_SPEED_HIGH_PREV, TARGET_MOTOR_RPM_HIGH_PREV) == true)
+                if (launchAuto(LAUNCH_MOTOR_SPEED_HIGH_PREV, TARGET_MOTOR_RPM_HIGH_PREV) == true)
                     {
                     return true;
                     }
                 return false;
             case AUTO:
-                if (launch(LAUNCH_MOTOR_SPEED_AUTO_PREV, TARGET_MOTOR_RPM_AUTO_PREV) == true)
+                if (launchAuto(LAUNCH_MOTOR_SPEED_AUTO_PREV, TARGET_MOTOR_RPM_AUTO_PREV) == true)
                     {
                     return true;
                     }
                 return false;
             case OFF:
-                this.launchStatus = LAUNCH_STATUS.SPINNING_UP;
-                this.launchState = LAUNCH_STATE.SPINNING_UP;
+                this.launchStatusAuto = LAUNCH_STATUS_AUTO.RESTING;
+                this.launchStateAuto = LAUNCH_STATE_AUTO.RESTING;
                 this.launchMotors.set(0.0);
                 return false;
             default:
@@ -103,7 +103,7 @@ public class Launcher
     // TODO may need to run through the whole launcher method each time a ball is
     // launched
     /**
-     * Launch the ball based on a given speed and target rpm
+     * Launch the ball based on a given speed and target rpm for use in autonomous
      * 
      * @param motorSpeed
      *            - the inital speed to send to the launch motors
@@ -111,17 +111,17 @@ public class Launcher
      *            - the target rpm of the motors
      * @return true when done firing
      */
-    private boolean launch(double motorSpeed, double target)
+    private boolean launchAuto(double motorSpeed, double target)
     {
         // System.out.println("Launch state: " + this.launchState);
-        switch (this.launchState)
+        switch (this.launchStateAuto)
             {
             case RESTING:
                 launchMotors.set(0.0);
                 if (this.doneResting == true)
                     {
-                    this.launchStatus = LAUNCH_STATUS.SPINNING_UP;
-                    this.launchState = LAUNCH_STATE.SPINNING_UP;
+                    this.launchStatusAuto = LAUNCH_STATUS_AUTO.SPINNING_UP;
+                    this.launchStateAuto = LAUNCH_STATE_AUTO.SPINNING_UP;
                     }
                 return false;
             case SPINNING_UP:
@@ -130,31 +130,110 @@ public class Launcher
                 // Checks when the motor RPM exceedes the target
                 if (this.launchEncoder.getRPM() >= target && this.doneSpinning == true)
                     {
-                    this.launchStatus = LAUNCH_STATUS.AT_SPEED;
-                    this.launchState = LAUNCH_STATE.AT_SPEED;
+                    this.launchStatusAuto = LAUNCH_STATUS_AUTO.AT_SPEED;
+                    this.launchStateAuto = LAUNCH_STATE_AUTO.AT_SPEED;
                     }
                 return false;
             case AT_SPEED:
                 // Checks if the motor voltage is correct
                 if (maintainSpeed(motorSpeed, target) == true && this.doneCheckingSpeed == true)
                     {
-                    this.launchStatus = LAUNCH_STATUS.FIRING;
-                    this.launchState = LAUNCH_STATE.FIRING;
+                    this.launchStatusAuto = LAUNCH_STATUS_AUTO.READY_TO_FIRE;
+                    this.launchStateAuto = LAUNCH_STATE_AUTO.READY_TO_FIRE;
                     }
                 return false;
-            case FIRING:
+            case READY_TO_FIRE:
                 // System.out.println("Motor rpm: " + launchEncoder.getRPM());
                 // System.out.println("Motor speed: " + this.newMotorSpeed);
                 this.maintainingIterations = 0;
                 if (this.doneFiring == true)
                     {
-                    this.launchState = LAUNCH_STATE.RESTING;
-                    this.launchStatus = LAUNCH_STATUS.RESTING;
+                    this.launchStateAuto = LAUNCH_STATE_AUTO.RESTING;
+                    this.launchStatusAuto = LAUNCH_STATUS_AUTO.RESTING;
                     return true;
                     }
                 return false;
             default:
                 return false;
+            }
+    }
+
+    /**
+     * Method to use the launcher in teleop. Does not automatically change states
+     * 
+     * @param state
+     *            - which state the launcher is in
+     * @param type
+     *            - The type of launch to use
+     * @return the status of the launcher
+     */
+    public LAUNCH_STATUS_TELEOP launchTeleopGeneral(LAUNCH_STATE_TELEOP state, LAUNCH_TYPE type)
+    {
+        switch (type)
+            {
+            case LOW:
+                this.launchTeleop(state, LAUNCH_MOTOR_SPEED_LOW_PREV, TARGET_MOTOR_RPM_LOW_PREV);
+                return this.launchStatusTeleop;
+            case HIGH:
+                this.launchTeleop(state, LAUNCH_MOTOR_SPEED_HIGH_PREV, TARGET_MOTOR_RPM_HIGH_PREV);
+                return this.launchStatusTeleop;
+            default:
+                return this.launchStatusTeleop;
+            }
+    }
+
+    /**
+     * Launches the ball for use in teleop
+     * 
+     * @param state
+     *            - the state the launcher should be in
+     * @param initalSpeed
+     *            - the inital speed to use for the motors
+     * @param targetRPM
+     *            - the target rpm that the motors should reach
+     */
+    private void launchTeleop(LAUNCH_STATE_TELEOP state, double initalSpeed, double targetRPM)
+    {
+        switch (state)
+            {
+            case RESTING:
+                launchMotors.set(0.0);
+                this.launchStatusAuto = LAUNCH_STATUS_AUTO.RESTING;
+                break;
+            case SPINNING_UP:
+                this.launchMotors.set(initalSpeed);
+                if (this.launchEncoder.getRPM() >= targetRPM)
+                    {
+                    this.launchStatusTeleop = LAUNCH_STATUS_TELEOP.DONE_SPINNING_UP;
+                    }
+                else
+                    {
+                    this.launchStatusTeleop = LAUNCH_STATUS_TELEOP.SPINNING_UP;
+                    }
+                // System.out.println("Motor rpm: " + launchEncoder.getRPM());
+                break;
+            case VERIFYING_VOLTAGE:
+                // Checks if the motor voltage is correct
+                // TODO this may create a problem if you attempt to verify voltage twice without
+                // resetting the status
+                if (maintainSpeed(initalSpeed, targetRPM) == true
+                        || this.launchStatusTeleop == LAUNCH_STATUS_TELEOP.DONE_CHECKING_SPEED)
+                    {
+                    this.launchStatusTeleop = LAUNCH_STATUS_TELEOP.DONE_CHECKING_SPEED;
+                    }
+                else
+                    {
+                    this.launchStatusTeleop = LAUNCH_STATUS_TELEOP.CHECKING_SPEED;
+                    }
+                break;
+            case READY_TO_FIRE:
+                // System.out.println("Motor rpm: " + launchEncoder.getRPM());
+                // System.out.println("Motor speed: " + this.newMotorSpeed);
+                this.maintainingIterations = 0;
+                this.launchStatusTeleop = LAUNCH_STATUS_TELEOP.FIRING;
+                break;
+            default:
+                break;
             }
     }
 
@@ -247,17 +326,38 @@ public class Launcher
     /**
      * @return the launch state
      */
-    private LAUNCH_STATE getState()
+    private LAUNCH_STATE_AUTO getStateAuto()
     {
-        return this.launchState;
+        return this.launchStateAuto;
     }
 
     /**
      * @return the launch status
      */
-    public LAUNCH_STATUS getStatus()
+    public LAUNCH_STATUS_AUTO getStatusAuto()
     {
-        return this.launchStatus;
+        return this.launchStatusAuto;
+    }
+
+    /**
+     * @return the status of the launcher in teleop
+     */
+    public LAUNCH_STATUS_TELEOP getStatusTeleop()
+    {
+        return this.launchStatusTeleop;
+    }
+
+    /**
+     * Sets the status of the launcher in teleop
+     * 
+     * @param status
+     *            - the desired status for the launcher to be in
+     * @return true when completed
+     */
+    public boolean setTeleopLaunchStatus(LAUNCH_STATUS_TELEOP status)
+    {
+        this.launchStatusTeleop = status;
+        return true;
     }
 
     /**
@@ -347,14 +447,24 @@ public class Launcher
         return true;
     }
 
-    private enum LAUNCH_STATE
+    private enum LAUNCH_STATE_AUTO
         {
-        SPINNING_UP, AT_SPEED, FIRING, RESTING;
+        SPINNING_UP, AT_SPEED, READY_TO_FIRE, RESTING;
         }
 
-    public enum LAUNCH_STATUS
+    public enum LAUNCH_STATE_TELEOP
         {
-        SPINNING_UP, AT_SPEED, FIRING, RESTING;
+        RESTING, SPINNING_UP, VERIFYING_VOLTAGE, READY_TO_FIRE;
+        }
+
+    public enum LAUNCH_STATUS_AUTO
+        {
+        SPINNING_UP, AT_SPEED, READY_TO_FIRE, RESTING;
+        }
+
+    public enum LAUNCH_STATUS_TELEOP
+        {
+        RESTING, SPINNING_UP, DONE_SPINNING_UP, CHECKING_SPEED, DONE_CHECKING_SPEED, FIRING;
         }
 
     public enum LAUNCH_TYPE
@@ -364,9 +474,13 @@ public class Launcher
 
     // Variables
 
-    private LAUNCH_STATE launchState = LAUNCH_STATE.RESTING;
+    private LAUNCH_STATE_AUTO launchStateAuto = LAUNCH_STATE_AUTO.RESTING;
 
-    private LAUNCH_STATUS launchStatus;
+    private LAUNCH_STATE_TELEOP launchStateTeleop = LAUNCH_STATE_TELEOP.RESTING;
+
+    private LAUNCH_STATUS_AUTO launchStatusAuto;
+
+    private LAUNCH_STATUS_TELEOP launchStatusTeleop;
 
     private int maintainingIterations = 0;
 
@@ -381,6 +495,8 @@ public class Launcher
     private KilroyEncoder launchEncoder;
 
     private double initalMotorSpeed;
+
+    private double targetMotorRPM;
 
     private double newMotorSpeed;
 

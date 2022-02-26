@@ -35,7 +35,7 @@ import javax.swing.DropMode;
 
 import frc.Hardware.Hardware;
 import frc.HardwareInterfaces.Transmission.TransmissionBase.MotorPosition;
-import frc.Utils.Launcher.LAUNCH_STATUS;
+import frc.Utils.Launcher.LAUNCH_STATUS_AUTO;
 import frc.Utils.Launcher.LAUNCH_TYPE;
 import frc.Utils.drive.Drive.BrakeType;
 import frc.Utils.drive.Drive.debugType;
@@ -206,7 +206,7 @@ public class Autonomous
     private static boolean dropAndDrive()
     {
         // System.out.println("DROP_AND_DRIVE_STATE = " + dropAndDriveState);
-        Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW);
+        Hardware.launcher.launchAutoGeneral(LAUNCH_TYPE.LOW);
         switch (dropAndDriveState)
             {
             case INIT:
@@ -214,7 +214,10 @@ public class Autonomous
                 dropAndDriveState = DROP_AND_DRIVE_STATE.DELAY;
                 return false;
             case DELAY:
-                Hardware.launcher.setDoneStates(true, true, true, false);
+                if (Hardware.ballCountInitSwitch.isOn() == true)
+                    {
+                    Hardware.launcher.setDoneStates(true, true, true, false);
+                    }
                 // Waits until the delay timer reaches a given time inputted from the
                 // potentiometer to move on to the next state
                 if (Hardware.autoTimer.get() >= delaySeconds)
@@ -247,13 +250,6 @@ public class Autonomous
                     }
                 return false;
             case DROP:
-                // Hardware.launchDelayTimer.start();
-                // if (Hardware.launchDelayTimer.get() >= LAUNCH_DELAY_SECONDS)
-                // {
-                // Hardware.drive.resetEncoders();
-                // dropAndDriveState = DROP_AND_DRIVE_STATE.DRIVE;
-                // }
-                // Hardware.colorWheelMotor.set(TEST_MOTOR_SPEED_PREV_YEAR);
                 if (launchAuto(LAUNCH_TYPE.LOW) == true)
                     {
                     dropAndDriveState = DROP_AND_DRIVE_STATE.DRIVE;
@@ -318,7 +314,7 @@ public class Autonomous
     {
         // System.out.println("DROP_FROM_START_AND_DRIVE_STATE = " +
         // dropFromStartAndDriveState);
-        Hardware.launcher.launchGeneral(LAUNCH_TYPE.AUTO);
+        Hardware.launcher.launchAutoGeneral(LAUNCH_TYPE.AUTO);
         switch (dropFromStartAndDriveState)
             {
             case INIT:
@@ -328,7 +324,6 @@ public class Autonomous
             case DELAY:
                 // Wait until the delay timer reaches the delay seconds from the potentiometer
                 // input to move on to the next state
-                // TODO in all cases where launcher is messed with, check the ball count switch
                 if (Hardware.ballCountInitSwitch.isOn() == true)
                     {
                     Hardware.launcher.setDoneStates(true, true, true, false);
@@ -346,17 +341,6 @@ public class Autonomous
                     }
                 return false;
             case DROP:
-                // Hardware.launchDelayTimer.start();
-                // // Waits until the placeholder timer acting reachs a certain time to move on
-                // to
-                // // the next state. During which, the color wheel, which is a stand-in for the
-                // // launch mechanism will run
-                // if (Hardware.launchDelayTimer.get() >= LAUNCH_DELAY_SECONDS)
-                // {
-                // Hardware.drive.resetEncoders();
-                // dropFromStartAndDriveState = DROP_FROM_START_AND_DRIVE_STATE.DRIVE;
-                // }
-                // Hardware.colorWheelMotor.set(TEST_MOTOR_SPEED_PREV_YEAR);
                 if (launchAuto(LAUNCH_TYPE.AUTO) == true)
                     {
                     dropFromStartAndDriveState = DROP_FROM_START_AND_DRIVE_STATE.DRIVE;
@@ -411,7 +395,7 @@ public class Autonomous
      */
     private static boolean driveAndDrop()
     {
-        Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW);
+        Hardware.launcher.launchAutoGeneral(LAUNCH_TYPE.LOW);
         // System.out.println("DRIVE_AND_DROP_STATE = " + driveAndDropState);
         switch (driveAndDropState)
             {
@@ -454,7 +438,10 @@ public class Autonomous
                     }
                 return false;
             case PREPARE_TO_DROP:
-                Hardware.launcher.setDoneStates(true, true, true, false);
+                if (Hardware.ballCountInitSwitch.isOn() == true)
+                    {
+                    Hardware.launcher.setDoneStates(true, true, true, false);
+                    }
                 if (Hardware.drive.driveStraightInches(DISTANCE_TO_WALL_FROM_OUTSIDE_OF_TARMAC_INCHES_PREV_YEAR,
                         DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_SECONDS_PREV_YEAR,
                         USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
@@ -619,7 +606,7 @@ public class Autonomous
     {
         // System.out.println("DRIVE_DROP_AND_DRIVE_AGAIN_STATE = " +
         // driveDropAndDriveAgainState);
-        Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW);
+        Hardware.launcher.launchAutoGeneral(LAUNCH_TYPE.LOW);
         switch (driveDropAndDriveAgainState)
             {
             case INIT:
@@ -653,7 +640,10 @@ public class Autonomous
                     }
                 return false;
             case WAIT_AFTER_DRIVE_ONE:
-                Hardware.launcher.setDoneStates(true, true, true, false);
+                if (Hardware.ballCountInitSwitch.isOn() == true)
+                    {
+                    Hardware.launcher.setDoneStates(true, true, true, false);
+                    }
                 // Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW);
                 // Brief delay to let the motors rest after braking
                 Hardware.driveDelayTimer.start();
@@ -696,54 +686,6 @@ public class Autonomous
                     driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.LEAVE;
                     }
                 return false;
-
-            // case START_DROP:
-            // Hardware.launcher.setDoneStates(true, true, true, false);
-            // Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW);
-            // // Hardware.autoShootPlaceholderTimer.start();
-            // // TODO add stopping the firing process after rl triggers + a delay
-            // // if (Hardware.autoShootPlaceholderTimer.get() >=
-            // // TIME_OF_MOTOR_SPINNING_SECONDS_PREV_YEAR)
-            // // {
-            // // Hardware.colorWheelMotor.set(0.0);
-            // // driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.LEAVE;
-            // // }
-            // // Hardware.colorWheelMotor.set(TEST_MOTOR_SPEED_PREV_YEAR);
-            // if (Hardware.ballPickup4.isOn() == true)
-            // {
-            // driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.RL_TRIGGERED;
-            // return false;
-            // }
-            // if (Hardware.ballPickup4.isOn() == false)
-            // {
-            // driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.RL_OFF1;
-            // return false;
-            // }
-            // return false;
-            // case RL_OFF1:
-            // Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW);
-            // if (Hardware.ballPickup4.isOn() == true)
-            // {
-            // driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.RL_TRIGGERED;
-            // return false;
-            // }
-            // return false;
-            // case RL_TRIGGERED:
-            // Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW);
-            // if (Hardware.ballPickup4.isOn() == false && Hardware.launcher.getStatus() ==
-            // LAUNCH_STATUS.FIRING)
-            // {
-            // driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.FIRING_DELAY;
-            // }
-            // return false;
-            // case FIRING_DELAY:
-            // Hardware.launchDelayTimer.start();
-            // if (Hardware.launchDelayTimer.get() >= LAUNCH_DELAY_SECONDS)
-            // {
-            // Hardware.launcher.stopFiring();
-            // driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.LEAVE;
-            // }
-            // return false;
             case WAIT_AFTER_DRIVE_TWO:
                 // Short delay after driving if the launch does not run to let the motors rest
                 // after braking
@@ -833,7 +775,7 @@ public class Autonomous
     private static boolean launchAuto(LAUNCH_TYPE type)
     {
         // System.out.println("Launch auto state: " + launchAutoState);
-        Hardware.launcher.launchGeneral(type);
+        Hardware.launcher.launchAutoGeneral(type);
         switch (launchAutoState)
             {
             case START_DROP:
@@ -856,16 +798,23 @@ public class Autonomous
                     }
                 return false;
             case RL_TRIGGERED:
-                if (Hardware.ballPickup4.isOn() == false && Hardware.launcher.getStatus() == LAUNCH_STATUS.FIRING)
+                // If the rl is off and the launcher is ready to fire, move on to the firing
+                // delay
+                if (Hardware.ballPickup4.isOn() == false
+                        && Hardware.launcher.getStatusAuto() == LAUNCH_STATUS_AUTO.READY_TO_FIRE)
                     {
                     launchAutoState = LAUNCH_AUTO_STATE.FIRING_DELAY;
                     }
                 return false;
             case FIRING_DELAY:
+                // Delay to turn off the launcher after we assume enough time has passed to fire
+                // the stored ball
                 Hardware.launchDelayTimer.start();
                 if (Hardware.launchDelayTimer.get() >= LAUNCH_DELAY_SECONDS)
                     {
                     Hardware.launcher.stopFiring();
+                    Hardware.launchDelayTimer.stop();
+                    Hardware.launchDelayTimer.reset();
                     Hardware.launcher.disallowLaunching();
                     return true;
                     }
@@ -912,7 +861,7 @@ public class Autonomous
 
     private static enum DRIVE_DROP_AND_DRIVE_AGAIN_STATE
         {
-        INIT, DELAY, DRIVE_ONE, STOP_DRIVING_AFTER_DRIVE_ONE, WAIT_AFTER_DRIVE_ONE, PREPARE_TO_DROP, STOP_DRIVING_BEFORE_DROP, WAIT_AFTER_DRIVE_TWO, DROP, RL_OFF1, RL_TRIGGERED, RL_OFF2, FIRING_DELAY, LEAVE, STOP, SPIN, STOP_SPIN, END;
+        INIT, DELAY, DRIVE_ONE, STOP_DRIVING_AFTER_DRIVE_ONE, WAIT_AFTER_DRIVE_ONE, PREPARE_TO_DROP, STOP_DRIVING_BEFORE_DROP, WAIT_AFTER_DRIVE_TWO, DROP, LEAVE, STOP, SPIN, STOP_SPIN, END;
         }
 
     private static enum SPIN_STATE

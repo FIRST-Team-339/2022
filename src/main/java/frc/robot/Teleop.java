@@ -33,8 +33,11 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
 import frc.Hardware.Hardware;
 import frc.HardwareInterfaces.BallHandler;
+import frc.HardwareInterfaces.BallHandler.PROCESS;
 import frc.Utils.BallCounter;
+import frc.Utils.Launcher.LAUNCH_STATE_TELEOP;
 import frc.Utils.Launcher.LAUNCH_TYPE;
+import frc.Utils.drive.Drive.debugType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -62,7 +65,7 @@ public class Teleop
 
         // INITALIZE CLIMB SERVO
         Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_OUT);
-        
+
         // RESET TIMER
         Hardware.climbTimer.stop();
         Hardware.climbTimer.reset();
@@ -77,9 +80,6 @@ public class Teleop
         SmartDashboard.putString("DB/String 5", "     " + Hardware.ballCounter.BallCount + " ball(s)");
 
         // Initialize launcher
-        Hardware.launcher.disallowLaunching();
-        // Hardware.launcher.launchGeneral(LAUNCH_TYPE.OFF);
-        Hardware.launcher.setDoneFiring(false);
         Hardware.launchMotorGroup.set(0.0);
         Hardware.drive.stop();
 
@@ -108,6 +108,7 @@ public class Teleop
         boolean addBallButtonOnNow = Hardware.addBallButton.isOnCheckNow();
         boolean subBallButtonOn = Hardware.subtractBallButton.isOn();
         boolean subBallButtonOnNow = Hardware.subtractBallButton.isOnCheckNow();
+        int minNumBallsCarriable = 0;
 
         // Drive Variables
         double leftDriverJoystickY = Hardware.leftDriver.getY() * Hardware.invertControllerAxis;
@@ -130,7 +131,7 @@ public class Teleop
             }
         else
             {
-            ballHandler.processBallHandler(BallHandler.PROCESS.STOP);
+            ballHandler.processBallHandler(BallHandler.PROCESS.OUTTAKE_STOP);
             }
 
         // Switch Camera
@@ -216,18 +217,18 @@ public class Teleop
 
         // =============== AUTOMATED SUBSYSTEMS ===============
         // ================= OPERATOR CONTROLS ================
-
-        if (Hardware.launchButton.get() == true)
+        if (Hardware.launchButton.get() == true && Hardware.ballCounter.BallCount > minNumBallsCarriable)
             {
             Hardware.launcher.setDoneFiring(false);
             Hardware.launcher.setResting(true);
+            ballHandler.processBallHandler(PROCESS.FIRE);
             }
-        if (Hardware.launchButton.get() == false)
+        if (Hardware.launchButton.get() == false || Hardware.ballCounter.BallCount == minNumBallsCarriable)
             {
             Hardware.launcher.disallowLaunching();
             Hardware.launcher.stopFiring();
+            ballHandler.processBallHandler(PROCESS.FIRE_STOP);
             }
-        Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW);
         // ================== DRIVER CONTROLS =================
         // Shifts Gears
         Hardware.tankTransmission.shiftGears(Hardware.driverGearUpPressed, Hardware.driverGearDownPressed);
@@ -259,8 +260,18 @@ public class Teleop
         // Switch Values
 
         // ---------- ANALOG -----------
+        // Inputs/Outputs
+        // System.out.println("Delay Potentiometer degrees is " +
+        // Hardware.delayPot.get());
+        // System.out.println("Delay Potentiometer maximum degree range is " +
+        // Hardware.delayPot.getFromRange());
+
+        // System.out.println("Inches from nearest object: " +
+        // Hardware.ultraSonic.getDistanceFromNearestBumper());
 
         // ----------- CAN -------------
+        // System.out.println("Voltage of left front motor is: " +
+        // Hardware.leftTopMotor.get());
 
         // -------- SUBSYSTEMS ---------
 
@@ -270,10 +281,32 @@ public class Teleop
 
         // ---------- DIGITAL ----------
 
-        // System.out.println("Ball pickup 4: " + Hardware.ballPickup4.isOn());
+        // Sensors
 
-        // System.out.println("Ball init switch = " +
-        // Hardware.ballCountInitSwitch.isOn());
+        // System.out.println("Floor Light is " + Hardware.floorLight.isOn());
+
+        // System.out.println("Ball PickUp 1 is " + Hardware.ballPickup1.isOn());
+
+        // System.out.println("Ball Pickup 2 is " + Hardware.ballPickup2.isOn());
+
+        // System.out.println("Ball Pickup 3 is " + Hardware.ballPickup3.isOn());
+
+        // System.out.println("Ball Pickup 4 is " + Hardware.ballPickup4.isOn());
+
+        // Digital Inputs
+        System.out.println("Auto Disable Switch is " + Hardware.autoDisableSwitch.isOn());
+
+        System.out.println("Auto Six Position Switch position is " + Hardware.autoSixPosSwitch.getPosition());
+
+        System.out.println("Ball Counter Switch is " + Hardware.ballCountInitSwitch.isOn());
+
+        System.out.println("Spin switch is " + Hardware.spinSwitch.isOn());
+
+        System.out.println("Single Throw Switch for DT is " + Hardware.unknown1Switch.isOn());
+
+        System.out.println("Single Throw Switch 2 for DT is " + Hardware.unknown2Switch.isOn());
+
+        System.out.println("Double Throw Switch is " + Hardware.unknownSwitch.isOn());
 
         // ---------- ANALOG -----------
 

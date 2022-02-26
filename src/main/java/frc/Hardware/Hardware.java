@@ -255,7 +255,7 @@ public class Hardware
 
     public static Launcher launcher = null;
 
-    public static MotorController colorWheelMotor = null; // TODO replace with launch motor
+    public static MotorController colorWheelMotor = null; // TODO replace with conveyor motor
 
     public static KilroyEncoder launchMotorEncoder = null;
 
@@ -292,7 +292,9 @@ public class Hardware
     public static SingleThrowSwitch ballCountInitSwitch = new SingleThrowSwitch(4);
 
     public static SingleThrowSwitch spinSwitch = new SingleThrowSwitch(25);
-    public static DoubleThrowSwitch unknownSwitch = new DoubleThrowSwitch(11, 12);
+    public static SingleThrowSwitch unknown1Switch = new SingleThrowSwitch(11);
+    public static SingleThrowSwitch unknown2Switch = new SingleThrowSwitch(12);
+    public static DoubleThrowSwitch unknownSwitch = new DoubleThrowSwitch(unknown1Switch, unknown2Switch);
 
     public static LightSensor ballPickup1 = new LightSensor(21);
     public static LightSensor ballPickup2 = new LightSensor(22, true);
@@ -344,6 +346,7 @@ public class Hardware
     public static JoystickButton climbUpButton = new JoystickButton(rightOperator, 3);
     public static JoystickButton climbDownButton = new JoystickButton(rightOperator, 2);
     public static JoystickButton outtakeButton = new JoystickButton(leftOperator, 2);
+    public static JoystickButton fireLow = new JoystickButton(rightOperator, 11);
     public static MomentarySwitch subtractBallButton = new MomentarySwitch(rightOperator, 8, false);
     public static MomentarySwitch addBallButton = new MomentarySwitch(rightOperator, 9, false);
 
