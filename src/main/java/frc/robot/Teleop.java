@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
 import frc.Hardware.Hardware;
 import frc.HardwareInterfaces.BallHandler;
+import frc.HardwareInterfaces.BallHandler.PROCESS;
 import frc.Utils.BallCounter;
 import frc.Utils.Launcher.LAUNCH_TYPE;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -104,6 +105,7 @@ public class Teleop
         boolean addBallButtonOnNow = Hardware.addBallButton.isOnCheckNow();
         boolean subBallButtonOn = Hardware.subtractBallButton.isOn();
         boolean subBallButtonOnNow = Hardware.subtractBallButton.isOnCheckNow();
+        int minNumBallsCarriable = 0;
 
         // Drive Variables
         double leftDriverJoystickY = Hardware.leftDriver.getY() * Hardware.invertControllerAxis;
@@ -126,7 +128,7 @@ public class Teleop
             }
         else
             {
-            ballHandler.processBallHandler(BallHandler.PROCESS.STOP);
+            ballHandler.processBallHandler(BallHandler.PROCESS.OUTTAKE_STOP);
             }
 
         // Switch Camera
@@ -174,15 +176,15 @@ public class Teleop
                     }
                 else
                     {
-                        if ((Hardware.climbTimer.get() * 1000.0) >= Hardware.climbTimerWait)
+                    if ((Hardware.climbTimer.get() * 1000.0) >= Hardware.climbTimerWait)
                         {
-                            Hardware.leftClimbMotor.set(.27);
-                            Hardware.rightClimbMotor.set(.3);
-                            Hardware.climbTimer.stop();
-                            Hardware.climbTimer.reset();
-                        }
                         Hardware.leftClimbMotor.set(.27);
                         Hardware.rightClimbMotor.set(.3);
+                        Hardware.climbTimer.stop();
+                        Hardware.climbTimer.reset();
+                        }
+                    Hardware.leftClimbMotor.set(.27);
+                    Hardware.rightClimbMotor.set(.3);
                     }
                 // Hardware.climbGroup.set(.3);
                 }
@@ -206,16 +208,18 @@ public class Teleop
 
         // =============== AUTOMATED SUBSYSTEMS ===============
         // ================= OPERATOR CONTROLS ================
-
-        if (Hardware.launchButton.get() == true)
+        System.out.println(Hardware.launcher.getStatus());
+        if (Hardware.launchButton.get() == true && Hardware.ballCounter.BallCount > minNumBallsCarriable)
             {
             Hardware.launcher.setDoneFiring(false);
             Hardware.launcher.setResting(true);
+            ballHandler.processBallHandler(PROCESS.FIRE);
             }
-        if (Hardware.launchButton.get() == false)
+        if (Hardware.launchButton.get() == false || Hardware.ballCounter.BallCount == minNumBallsCarriable)
             {
             Hardware.launcher.disallowLaunching();
             Hardware.launcher.stopFiring();
+            ballHandler.processBallHandler(PROCESS.FIRE_STOP);
             }
         Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW);
         // ================== DRIVER CONTROLS =================

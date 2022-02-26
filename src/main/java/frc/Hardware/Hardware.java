@@ -344,6 +344,7 @@ public class Hardware
     public static JoystickButton climbUpButton = new JoystickButton(rightOperator, 3);
     public static JoystickButton climbDownButton = new JoystickButton(rightOperator, 2);
     public static JoystickButton outtakeButton = new JoystickButton(leftOperator, 2);
+    public static JoystickButton fireLow = new JoystickButton(rightOperator, 11);
     public static MomentarySwitch subtractBallButton = new MomentarySwitch(rightOperator, 8, false);
     public static MomentarySwitch addBallButton = new MomentarySwitch(rightOperator, 9, false);
 
@@ -366,7 +367,7 @@ public class Hardware
 
     public static Timer climbTimer = new Timer();
     public static double climbTimerWait = 0.100;
-    
+
     public static BallCounter ballCounter = new BallCounter(0, 2, addBallButton, subtractBallButton);
 
     // ------------------------------------

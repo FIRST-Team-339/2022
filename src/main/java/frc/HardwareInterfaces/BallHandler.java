@@ -11,6 +11,7 @@ package frc.HardwareInterfaces;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.Hardware.Hardware;
 import frc.Utils.BallCounter;
+import frc.Utils.Launcher.LAUNCH_STATUS;
 
 /**
  * 
@@ -23,8 +24,9 @@ public class BallHandler
     {
 
     // Add variables when made
-    public BallHandler() // Init
+    public BallHandler() // Constructer
         {
+            fireState = FIRE.FIRE_INIT;
             outtakeState = OUTTAKE.OUTTAKE_INIT;
             intakeState = INTAKE.INTAKE_INIT;
             intakeMotorIntakeSpeed = 0.5;
@@ -33,6 +35,7 @@ public class BallHandler
             colorWheelFireSpeed = -0.5;
             colorwheelOutakeSpeed = 0.5;
             motorRestingSpeed = 0.0;
+            ballSubInt = 1;
 
         }
 
@@ -57,40 +60,26 @@ public class BallHandler
                 break;
             case INTAKE:
                 break;
-            case STOP:
+            case FIRE:
+                // Calls process fire function
+                processFireFunc();
+                break;
+            case OUTTAKE_STOP:
                 // Switches states to end so everyting stops
                 outtakeState = OUTTAKE.OUTTAKE_END;
-                intakeState = INTAKE.INTAKE_END;
-                // Finishes Calling end by setting everythign to end
+                // Finishes Calling end by setting everything to end
                 processOuttakeFunc();
                 // Switches states to INIT for next time buttons are pressed.
                 outtakeState = OUTTAKE.OUTTAKE_INIT;
-                intakeState = INTAKE.INTAKE_INIT;
                 break;
+            case FIRE_STOP:
+                fireState = FIRE.FIRE_END;
+                processFireFunc();
+                fireState = FIRE.FIRE_INIT;
             default:
                 break;
             }
-        return PROCESS.STOP;
-    }
-
-    private INTAKE processIntakeFunc()
-    {
-        // System.out.println(intakeState);
-        switch (intakeState)
-            {
-            case INTAKE_INIT:
-                Hardware.intakePiston.setForward(true);
-                intakeState = INTAKE.INTAKE_WORKING;
-                break;
-            case INTAKE_WORKING:
-                break;
-            case INTAKE_END:
-                Hardware.intakeMotor.set(motorRestingSpeed);
-                Hardware.colorWheelMotor.set(motorRestingSpeed);
-                Hardware.intakePiston.setReverse(true);
-                break;
-            }
-        return intakeState;
+        return processNow;
     }
 
     // Outtake code stored here, called by process ball handler funtion
@@ -143,18 +132,73 @@ public class BallHandler
                     outtakeState = OUTTAKE.OUTTAKE_WORKING_LIGHT_ON;
                     }
                 break;
-            // Case called at the end of outtake, stops everything, and moves intake piston
-            // down
+            // Case called at the end of outtake, stops everything, and
+            // moves intake piston down
             case OUTTAKE_END:
                 Hardware.intakeMotor.set(motorRestingSpeed);
                 Hardware.colorWheelMotor.set(motorRestingSpeed);
                 Hardware.intakePiston.setReverse(true);
                 break;
+            default:
+                break;
             }
         return outtakeState;
     }
 
+    private INTAKE processIntakeFunc()
+    {
+        // System.out.println(intakeState);
+        switch (intakeState)
+            {
+            case INTAKE_INIT:
+                Hardware.intakePiston.setForward(true);
+                break;
+            case INTAKE_WORKING:
+                break;
+            case INTAKE_END:
+                Hardware.intakeMotor.set(motorRestingSpeed);
+                Hardware.colorWheelMotor.set(motorRestingSpeed);
+                Hardware.intakePiston.setReverse(true);
+                break;
+            default:
+                break;
+            }
+        return intakeState;
+    }
+
+    private FIRE processFireFunc()
+    {
+        System.out.println(fireState);
+        switch (fireState)
+            {
+            case FIRE_INIT:
+                Hardware.intakePiston.setReverse(true);
+                Hardware.intakeMotor.set(motorRestingSpeed);
+                Hardware.colorWheelMotor.set(motorRestingSpeed);
+                if (Hardware.launcher.getStatus() != LAUNCH_STATUS.FIRING)
+                    {
+                    fireState = FIRE.FIRE_INIT;
+                    }
+                else
+                    {
+                    fireState = FIRE.FIRE_WORKING;
+                    }
+                break;
+            case FIRE_WORKING:
+                Hardware.colorWheelMotor.set(colorWheelFireSpeed);
+                fireState = FIRE.FIRE_WORKING;
+                break;
+            case FIRE_END:
+                Hardware.colorWheelMotor.set(motorRestingSpeed);
+                break;
+            default:
+                break;
+            }
+        return fireState;
+    }
+
     // Add Variales to init when made
+    private static FIRE fireState = FIRE.FIRE_INIT;
     private static OUTTAKE outtakeState = OUTTAKE.OUTTAKE_INIT;
     private static INTAKE intakeState = INTAKE.INTAKE_INIT;
     private static double intakeMotorIntakeSpeed;
@@ -163,10 +207,11 @@ public class BallHandler
     private static double colorWheelFireSpeed;
     private static double colorwheelOutakeSpeed;
     private static double motorRestingSpeed;
+    private static int ballSubInt;
 
     public static enum PROCESS
         {
-        RESTING, OUTTAKE, INTAKE, STOP;
+        RESTING, OUTTAKE, INTAKE, FIRE, OUTTAKE_STOP, INTAKE_STOP, FIRE_STOP;
         }
 
     public static enum INTAKE_MOTOR
@@ -181,7 +226,7 @@ public class BallHandler
 
     public static enum FIRE
         {
-        TEST;
+        FIRE_INIT, FIRE_WORKING, FIRE_END;
         }
 
     public static enum OUTTAKE
