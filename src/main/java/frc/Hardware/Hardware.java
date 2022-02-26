@@ -354,7 +354,7 @@ public class Hardware
 
     public static Timer autoTimer = new Timer();
 
-    public static Timer autoShootPlaceholderTimer = new Timer();
+    public static Timer launchDelayTimer = new Timer();
 
     public static Timer driveDelayTimer = new Timer();
 
