@@ -276,11 +276,11 @@ public class Hardware
 
     public static KilroyEncoder climbEncoder = null;
     public static double PREV_YEAR_CLIMB_DISTANCE_PER_TICK = .004507692;
-    public static double PREV_YEAR_CLIMB_ENCODER_MAX_HEIGHT = 19.5;
+    public static double PREV_YEAR_CLIMB_ENCODER_MAX_HEIGHT = 20;
     public static int PREV_YEAR_CLIMB_SERVO_PWM_PORT = 2;
     public static double PREV_YEAR_CLIMB_SERVO_MAX_DEGREES = 360.0;
-    public static double PREV_YEAR_CLIMB_SERVO_POS_OUT = 1.0;
-    public static double PREV_YEAR_CLIMB_SERVO_POS_IN = 0.25;
+    public static double PREV_YEAR_CLIMB_SERVO_POS_OUT = 1;
+    public static double PREV_YEAR_CLIMB_SERVO_POS_IN = 0;
     // public static double PREV_YEAR_SERVO_INIT_POS = 0;
 
     // **********************************************************
@@ -367,7 +367,11 @@ public class Hardware
     public static Timer driveDelayTimer = new Timer();
 
     public static Timer climbTimer = new Timer();
+<<<<<<< HEAD
     public static double climbTimerWait = 0.100;
+=======
+    public static double climbTimerWait = 0.65;
+>>>>>>> e5745ca1b7e362f0d6fae66bae8bc8b4967e28aa
 
     public static BallCounter ballCounter = new BallCounter(0, 2, addBallButton, subtractBallButton);
 
