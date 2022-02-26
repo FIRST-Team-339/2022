@@ -71,6 +71,9 @@ public class Autonomous
         // System.out.println("Auto disable switch: " +
         // Hardware.autoDisableSwitch.isOn());
 
+        // INITALIZE CLIMB SERVO
+        Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_OUT);
+
         // Checks if the auto disable switch is pressed. It will disable auto if the
         // switch returns a value of false
         if (Hardware.autoDisableSwitch.isOn() == false)
