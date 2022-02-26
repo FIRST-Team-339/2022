@@ -51,6 +51,7 @@ import frc.Utils.drive.Drive;
 import frc.Utils.Launcher;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.Utils.BallCounter;
 
 /**
  * ------------------------------------------------------- puts all of the
@@ -365,6 +366,8 @@ public class Hardware
 
     public static Timer climbTimer = new Timer();
     public static double climbTimerWait = 0.100;
+    
+    public static BallCounter ballCounter = new BallCounter(0, 2, addBallButton, subtractBallButton);
 
     // ------------------------------------
     // Drive system

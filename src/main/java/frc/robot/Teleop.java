@@ -47,8 +47,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Teleop
     {
 
-    static BallCounter BallCounter = null;
-
     /**
      * User Initialization code for teleop mode should go here. Will be called once
      * when the robot enters teleop mode.
@@ -65,18 +63,21 @@ public class Teleop
         // INITALIZE CLIMB SERVO
         Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_OUT);
 
-        // INITIALIZE BALL COUNTER
-
-        BallCounter = new BallCounter(0, 2, Hardware.addBallButton, Hardware.subtractBallButton);
-
         // Sets the ball count initalized on the robot
-        BallCounter.BallCount = 0;
+        Hardware.ballCounter.BallCount = 0;
         SmartDashboard.putString("DB/String 0", "     Ball Count");
         if (Hardware.ballCountInitSwitch.isOn())
             {
-            BallCounter.uncheckedAdd(1);
+            Hardware.ballCounter.uncheckedAdd(1);
             }
-        SmartDashboard.putString("DB/String 5", "     " + BallCounter.BallCount + " ball(s)");
+        SmartDashboard.putString("DB/String 5", "     " + Hardware.ballCounter.BallCount + " ball(s)");
+
+        // Initialize launcher
+        Hardware.launcher.disallowLaunching();
+        // Hardware.launcher.launchGeneral(LAUNCH_TYPE.OFF);
+        Hardware.launcher.setDoneFiring(false);
+        Hardware.launchMotorGroup.set(0.0);
+        Hardware.drive.stop();
 
     } // end Init
 
@@ -137,11 +138,11 @@ public class Teleop
         // Ball Count
         if (subBallButtonOnNow == true)
             {
-            BallCounter.subtractCheckCount(1);
+            Hardware.ballCounter.subtractCheckCount(1);
             }
         if (addBallButtonOnNow == true)
             {
-            BallCounter.addCheckCount(1);
+            Hardware.ballCounter.addCheckCount(1);
             }
         // System.out.println("BALL COUNT: " + BallCounter.BallCount);
         // System.out.println("Subtract: " + subBallButtonOnNow + " Add: " +
@@ -200,7 +201,7 @@ public class Teleop
                 Hardware.climbGroup.set(0);
                 }
         // Operator Dashboard Variables
-        SmartDashboard.putString("DB/String 5", " " + BallCounter.BallCount + " ball(s)");
+        SmartDashboard.putString("DB/String 5", " " + Hardware.ballCounter.BallCount + " ball(s)");
         // System.out.println("BALL COUNT: " + BallCounter.BallCount);
 
         // =============== AUTOMATED SUBSYSTEMS ===============
