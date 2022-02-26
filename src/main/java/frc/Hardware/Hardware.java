@@ -275,8 +275,11 @@ public class Hardware
 
     public static KilroyEncoder climbEncoder = null;
     public static double PREV_YEAR_CLIMB_DISTANCE_PER_TICK = .004507692;
+    public static double PREV_YEAR_CLIMB_ENCODER_MAX_HEIGHT = 19.5;
     public static int PREV_YEAR_CLIMB_SERVO_PWM_PORT = 2;
-    public static double PREV_YEAR_CLIMB_SERVO_MAX_DEGREES = 270.0;
+    public static double PREV_YEAR_CLIMB_SERVO_MAX_DEGREES = 360.0;
+    public static double PREV_YEAR_CLIMB_SERVO_POS_OUT = 1.0;
+    public static double PREV_YEAR_CLIMB_SERVO_POS_IN = 0.25;
     // public static double PREV_YEAR_SERVO_INIT_POS = 0;
 
     // **********************************************************
@@ -335,6 +338,8 @@ public class Hardware
     public static boolean operatorIntakeButtonPressed = leftOperator.getTrigger();
     public static JoystickButton rightOperatorCameraSwitchButton = new JoystickButton(rightOperator, 10);
     public static JoystickButton rightDriverCameraSwitchButton = new JoystickButton(rightDriver, 3);
+    public static JoystickButton closeClimbServo = new JoystickButton(rightOperator, 4);
+    public static JoystickButton openClimbServo = new JoystickButton(rightOperator, 5);
     public static JoystickButton climbUpButton = new JoystickButton(rightOperator, 3);
     public static JoystickButton climbDownButton = new JoystickButton(rightOperator, 2);
     public static JoystickButton outtakeButton = new JoystickButton(leftOperator, 2);
@@ -357,6 +362,9 @@ public class Hardware
     public static Timer launchDelayTimer = new Timer();
 
     public static Timer driveDelayTimer = new Timer();
+
+    public static Timer climbTimer = new Timer();
+    public static double climbTimerWait = 0.100;
 
     // ------------------------------------
     // Drive system

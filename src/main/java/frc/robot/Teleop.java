@@ -30,6 +30,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Timer;
 import frc.Hardware.Hardware;
 import frc.HardwareInterfaces.BallHandler;
 import frc.Utils.BallCounter;
@@ -61,6 +62,9 @@ public class Teleop
         // Initializes Transmission To Gear 1
         Hardware.tankTransmission.setGear(1);
 
+        // INITALIZE CLIMB SERVO
+        Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_OUT);
+
         // INITIALIZE BALL COUNTER
 
         BallCounter = new BallCounter(0, 2, Hardware.addBallButton, Hardware.subtractBallButton);
@@ -91,6 +95,8 @@ public class Teleop
         boolean rightOperatorCameraSwitchButtonPressed = Hardware.rightOperatorCameraSwitchButton.get();
         boolean climbUpButtonPressed = Hardware.climbUpButton.get();
         boolean climbDownButtonPressed = Hardware.climbDownButton.get();
+        boolean openClimbServoButtonPressed = Hardware.openClimbServo.get();
+        boolean closeClimbServoButtonPressed = Hardware.closeClimbServo.get();
 
         // Joystick Ball Add/Sub Variables
         boolean addBallButtonOn = Hardware.addBallButton.isOn();
@@ -141,31 +147,53 @@ public class Teleop
         // System.out.println("Subtract: " + subBallButtonOnNow + " Add: " +
         // addBallButtonOnNow);
         // System.out.println(Hardware.climbServo.getAngle());
-        if (SmartDashboard.getBoolean("DB/Button 2", false))
+        if (openClimbServoButtonPressed)
             {
-            Hardware.climbServo.set(.3);
+            Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_OUT);
             }
-        else
+        if (closeClimbServoButtonPressed && !openClimbServoButtonPressed)
             {
-            Hardware.climbServo.set(.6);
+            Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_IN);
             }
 
-        // 27 INCHES STUFF
         if (climbUpButtonPressed && !climbDownButtonPressed)
             {
-            if (Hardware.climbEncoder.getDistance() >= 21)
+            if (Hardware.climbEncoder.getDistance() >= Hardware.PREV_YEAR_CLIMB_ENCODER_MAX_HEIGHT)
                 {
                 Hardware.climbGroup.set(0);
                 }
             else
                 {
-                Hardware.climbGroup.set(.35);
+                if (Hardware.climbServo.get() == Hardware.PREV_YEAR_CLIMB_SERVO_POS_IN)
+                    {
+                    Hardware.climbTimer.stop();
+                    Hardware.climbTimer.reset();
+                    Hardware.climbTimer.start();
+                    Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_OUT);
+                    }
+                else
+                    {
+                        if ((Hardware.climbTimer.get() * 1000.0) >= Hardware.climbTimerWait)
+                        {
+                            Hardware.leftClimbMotor.set(.27);
+                            Hardware.rightClimbMotor.set(.3);
+                            Hardware.climbTimer.stop();
+                            Hardware.climbTimer.reset();
+                        }
+                        Hardware.leftClimbMotor.set(.27);
+                        Hardware.rightClimbMotor.set(.3);
+                    }
+                // Hardware.climbGroup.set(.3);
                 }
             }
         else
             if (climbDownButtonPressed)
                 {
-                Hardware.climbGroup.set(-.35);
+                Hardware.climbGroup.set(-.3);
+                if (Hardware.climbEncoder.getDistance() <= Hardware.PREV_YEAR_CLIMB_ENCODER_MAX_HEIGHT - 2)
+                    {
+                    Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_IN);
+                    }
                 }
             else
                 {
@@ -195,7 +223,7 @@ public class Teleop
 
         Hardware.drive.drive(Hardware.leftDriver, Hardware.rightDriver);
 
-        // printStatements();
+        printStatements();
         // individualTest();
     } // end Periodic()
 
