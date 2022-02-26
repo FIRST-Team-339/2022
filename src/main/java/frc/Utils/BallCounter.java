@@ -93,62 +93,122 @@ public class BallCounter
             subtractBallButton = setSubtractBallButton;
         }
 
-    // TODO JAVA DOC IT
+    /**
+     * Get the {@link BallCounter#MinimumBallCount} currently set
+     * 
+     * @return int MinimumBallCount
+     */
     public int getMinimumBallCount() 
     {
         return MinimumBallCount;
     }
 
-    // TODO JAVA DOC IT
+    /**
+     * Get the {@link BallCounter#MaximumBallCount} currently set
+     * 
+     * @return int MaximumBallCount
+     */
     public int getMaximumBallCount() 
     {
         return MaximumBallCount;
     }
 
-    // TODO JAVA DOC IT
-    public int setMinimumBallCount(int newMinimum) 
+    /**
+     * Set the {@link BallCounter#MinimumBallCount}
+     * 
+     * @param newMinimum The new minimum ball count
+     * 
+     * @return int MinimumBallCount
+     */
+    public int setMinimumBallCount(final int newMinimum) 
     {
         MinimumBallCount = newMinimum;
         return MinimumBallCount;
     }
 
-    // TODO JAVA DOC IT
-    public int setMaximumBallCount(int newMaximum) 
+    /**
+     * Set the {@link BallCounter#MaximumBallCount}
+     * 
+     * @param newMaximum The new maximum ball count
+     * 
+     * @return int MaximumBallCount
+     */
+    public int setMaximumBallCount(final int newMaximum) 
     {
         MaximumBallCount = newMaximum;
         return MaximumBallCount;
     }
 
-    // TODO JAVA DOC IT
+    /**
+     * Set the new {@link BallCounter#addBallButton}
+     * 
+     * @param newAddBallButton The MomentarySwitch for the additive ball button
+     * 
+     * @return MomentarySwitch addBallButton
+     */
     public MomentarySwitch setAddBallButton(final MomentarySwitch newAddBallButton)
     {
         addBallButton = newAddBallButton;
         return addBallButton;
     }
 
-    // TODO JAVA DOC IT
+    /**
+     * Set the new {@link BallCounter#subtractBallButton}
+     * 
+     * @param newSubtractBallButton The MomentarySwitch for the subtractive ball button
+     * 
+     * @return MomentarySwitch subtractBallButton
+     */
     public MomentarySwitch setSubtractBallButton(final MomentarySwitch newSubtractBallButton)
     {
         subtractBallButton = newSubtractBallButton;
         return subtractBallButton;
     }
 
-    // TODO JAVA DOC IT
-    public int uncheckedAdd(int addBy)
+    /**
+     * Add to the {@link BallCounter#BallCount} by the integer {@code addBy}
+     * <p></p>
+     * <strong>This method does NOT check for the current Ball count between the minimum
+     * and maximum, nor if the joystick buttons are active or not, see {@link BallCounter#addCheckCount}</strong>
+     * 
+     * @param addBy The amount to add by
+     * 
+     * @return int BallCount
+     */
+    public int uncheckedAdd(final int addBy)
     {
         BallCount = BallCount + addBy;
         return BallCount;
     }
 
-    // TODO JAVA DOC IT
-    public int uncheckedSubtract(int subtractBy)
+    /**
+     * Subtract from the {@link BallCounter#BallCount} by the integer {@code subtractBy}
+     * <p></p>
+     * <strong>This method does NOT check for the current Ball count between the minimum
+     * and maximum, nor if the joystick buttons are active or not, see {@link BallCounter#subtractCheckCount}</strong>
+     * 
+     * @param addBy The amount to subtract by
+     * 
+     * @return int BallCount
+     */
+    public int uncheckedSubtract(final int subtractBy)
     {
         BallCount = BallCount - subtractBy;
         return BallCount;
     }
 
-    // TODO JAVA DOC IT
-    public int addCheckCount(int addBy)
+    /**
+     * Add to the {@link BallCounter#BallCount} by the integer {@code addBy}
+     * and check for the current min/max ball counts compared to the amount
+     * you are trying to add by, and check the state of the joystick buttons
+     * <p></p>
+     * <strong>Recommended compared to {@link BallCounter#uncheckedAdd}</strong>
+     * 
+     * @param addBy The amount to add by
+     * 
+     * @return int BallCount
+     */
+    public int addCheckCount(final int addBy)
     {
         if (BallCount + addBy <= MaximumBallCount)
             {
@@ -162,8 +222,18 @@ public class BallCounter
         return BallCount;
     }
 
-    // TODO JAVA DOC IT
-    public int subtractCheckCount(int subtractBy)
+    /**
+     * Subtract from the {@link BallCounter#BallCount} by the integer {@code subtractBy}
+     * and check for the current min/max ball counts compared to the amount
+     * you are trying to subtract by, and check the state of the joystick buttons
+     * <p></p>
+     * <strong>Recommended compared to {@link BallCounter#uncheckedSubtract}</strong>
+     * 
+     * @param subtractBy The amount to subtract by
+     * 
+     * @return int BallCount
+     */
+    public int subtractCheckCount(final int subtractBy)
     {
         if (BallCount - subtractBy >= MinimumBallCount)
             {

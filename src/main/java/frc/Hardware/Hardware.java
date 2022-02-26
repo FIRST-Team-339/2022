@@ -255,7 +255,7 @@ public class Hardware
 
     public static Launcher launcher = null;
 
-    public static MotorController colorWheelMotor = null; // TODO replace with launch motor
+    public static MotorController colorWheelMotor = null; // TODO replace with conveyor motor
 
     public static KilroyEncoder launchMotorEncoder = null;
 
@@ -276,11 +276,11 @@ public class Hardware
 
     public static KilroyEncoder climbEncoder = null;
     public static double PREV_YEAR_CLIMB_DISTANCE_PER_TICK = .004507692;
-    public static double PREV_YEAR_CLIMB_ENCODER_MAX_HEIGHT = 19.5;
+    public static double PREV_YEAR_CLIMB_ENCODER_MAX_HEIGHT = 20;
     public static int PREV_YEAR_CLIMB_SERVO_PWM_PORT = 2;
     public static double PREV_YEAR_CLIMB_SERVO_MAX_DEGREES = 360.0;
-    public static double PREV_YEAR_CLIMB_SERVO_POS_OUT = 1.0;
-    public static double PREV_YEAR_CLIMB_SERVO_POS_IN = 0.25;
+    public static double PREV_YEAR_CLIMB_SERVO_POS_OUT = 1;
+    public static double PREV_YEAR_CLIMB_SERVO_POS_IN = 0;
     // public static double PREV_YEAR_SERVO_INIT_POS = 0;
 
     // **********************************************************
@@ -292,7 +292,9 @@ public class Hardware
     public static SingleThrowSwitch ballCountInitSwitch = new SingleThrowSwitch(4);
 
     public static SingleThrowSwitch spinSwitch = new SingleThrowSwitch(25);
-    public static DoubleThrowSwitch unknownSwitch = new DoubleThrowSwitch(11, 12);
+    public static SingleThrowSwitch unknown1Switch = new SingleThrowSwitch(11);
+    public static SingleThrowSwitch unknown2Switch = new SingleThrowSwitch(12);
+    public static DoubleThrowSwitch unknownSwitch = new DoubleThrowSwitch(unknown1Switch, unknown2Switch);
 
     public static LightSensor ballPickup1 = new LightSensor(21);
     public static LightSensor ballPickup2 = new LightSensor(22, true);
@@ -366,7 +368,7 @@ public class Hardware
     public static Timer driveDelayTimer = new Timer();
 
     public static Timer climbTimer = new Timer();
-    public static double climbTimerWait = 0.100;
+    public static double climbTimerWait = 0.65;
 
     public static BallCounter ballCounter = new BallCounter(0, 2, addBallButton, subtractBallButton);
 
