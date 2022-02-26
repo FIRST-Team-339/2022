@@ -185,12 +185,12 @@ public class Teleop
                             {
                             Hardware.climbTimer.stop();
                             Hardware.climbTimer.reset();
-                            Hardware.leftClimbMotor.set(.27);
+                            Hardware.leftClimbMotor.set(.2725);
                             Hardware.rightClimbMotor.set(.3);
                             }
                         else if (Hardware.climbTimer.get() == 0.0)
                             {
-                            Hardware.leftClimbMotor.set(.27);
+                            Hardware.leftClimbMotor.set(.2725);
                             Hardware.rightClimbMotor.set(.3);
                             }
                     }
