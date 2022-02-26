@@ -37,6 +37,9 @@ public class Robot extends TimedRobot
         // ---------------------------------------
         Hardware.initialize();
 
+        // INITALIZE CLIMB SERVO
+        Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_OUT);
+
         // ---------------------------------------
         // done setup - tell the user we are complete
         // setup

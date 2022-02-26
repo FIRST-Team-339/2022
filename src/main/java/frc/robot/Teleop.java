@@ -30,6 +30,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Timer;
 import frc.Hardware.Hardware;
 import frc.HardwareInterfaces.BallHandler;
 import frc.Utils.BallCounter;
@@ -46,8 +47,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Teleop
     {
 
-    static BallCounter BallCounter = null;
-
     /**
      * User Initialization code for teleop mode should go here. Will be called once
      * when the robot enters teleop mode.
@@ -61,18 +60,24 @@ public class Teleop
         // Initializes Transmission To Gear 1
         Hardware.tankTransmission.setGear(1);
 
-        // INITIALIZE BALL COUNTER
-
-        BallCounter = new BallCounter(0, 2, Hardware.addBallButton, Hardware.subtractBallButton);
+        // INITALIZE CLIMB SERVO
+        Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_OUT);
 
         // Sets the ball count initalized on the robot
-        BallCounter.BallCount = 0;
+        Hardware.ballCounter.BallCount = 0;
         SmartDashboard.putString("DB/String 0", "     Ball Count");
         if (Hardware.ballCountInitSwitch.isOn())
             {
-            BallCounter.uncheckedAdd(1);
+            Hardware.ballCounter.uncheckedAdd(1);
             }
-        SmartDashboard.putString("DB/String 5", "     " + BallCounter.BallCount + " ball(s)");
+        SmartDashboard.putString("DB/String 5", "     " + Hardware.ballCounter.BallCount + " ball(s)");
+
+        // Initialize launcher
+        Hardware.launcher.disallowLaunching();
+        // Hardware.launcher.launchGeneral(LAUNCH_TYPE.OFF);
+        Hardware.launcher.setDoneFiring(false);
+        Hardware.launchMotorGroup.set(0.0);
+        Hardware.drive.stop();
 
     } // end Init
 
@@ -91,6 +96,8 @@ public class Teleop
         boolean rightOperatorCameraSwitchButtonPressed = Hardware.rightOperatorCameraSwitchButton.get();
         boolean climbUpButtonPressed = Hardware.climbUpButton.get();
         boolean climbDownButtonPressed = Hardware.climbDownButton.get();
+        boolean openClimbServoButtonPressed = Hardware.openClimbServo.get();
+        boolean closeClimbServoButtonPressed = Hardware.closeClimbServo.get();
 
         // Joystick Ball Add/Sub Variables
         boolean addBallButtonOn = Hardware.addBallButton.isOn();
@@ -131,48 +138,70 @@ public class Teleop
         // Ball Count
         if (subBallButtonOnNow == true)
             {
-            BallCounter.subtractCheckCount(1);
+            Hardware.ballCounter.subtractCheckCount(1);
             }
         if (addBallButtonOnNow == true)
             {
-            BallCounter.addCheckCount(1);
+            Hardware.ballCounter.addCheckCount(1);
             }
         // System.out.println("BALL COUNT: " + BallCounter.BallCount);
         // System.out.println("Subtract: " + subBallButtonOnNow + " Add: " +
         // addBallButtonOnNow);
         // System.out.println(Hardware.climbServo.getAngle());
-        if (SmartDashboard.getBoolean("DB/Button 2", false))
+        if (openClimbServoButtonPressed)
             {
-            Hardware.climbServo.set(.3);
+            Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_OUT);
             }
-        else
+        if (closeClimbServoButtonPressed && !openClimbServoButtonPressed)
             {
-            Hardware.climbServo.set(.6);
+            Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_IN);
             }
 
-        // 27 INCHES STUFF
         if (climbUpButtonPressed && !climbDownButtonPressed)
             {
-            if (Hardware.climbEncoder.getDistance() >= 21)
+            if (Hardware.climbEncoder.getDistance() >= Hardware.PREV_YEAR_CLIMB_ENCODER_MAX_HEIGHT)
                 {
                 Hardware.climbGroup.set(0);
                 }
             else
                 {
-                Hardware.climbGroup.set(.35);
+                if (Hardware.climbServo.get() == Hardware.PREV_YEAR_CLIMB_SERVO_POS_IN)
+                    {
+                    Hardware.climbTimer.stop();
+                    Hardware.climbTimer.reset();
+                    Hardware.climbTimer.start();
+                    Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_OUT);
+                    }
+                else
+                    {
+                        if ((Hardware.climbTimer.get() * 1000.0) >= Hardware.climbTimerWait)
+                        {
+                            Hardware.leftClimbMotor.set(.27);
+                            Hardware.rightClimbMotor.set(.3);
+                            Hardware.climbTimer.stop();
+                            Hardware.climbTimer.reset();
+                        }
+                        Hardware.leftClimbMotor.set(.27);
+                        Hardware.rightClimbMotor.set(.3);
+                    }
+                // Hardware.climbGroup.set(.3);
                 }
             }
         else
             if (climbDownButtonPressed)
                 {
-                Hardware.climbGroup.set(-.35);
+                Hardware.climbGroup.set(-.3);
+                if (Hardware.climbEncoder.getDistance() <= Hardware.PREV_YEAR_CLIMB_ENCODER_MAX_HEIGHT - 2)
+                    {
+                    Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_IN);
+                    }
                 }
             else
                 {
                 Hardware.climbGroup.set(0);
                 }
         // Operator Dashboard Variables
-        SmartDashboard.putString("DB/String 5", " " + BallCounter.BallCount + " ball(s)");
+        SmartDashboard.putString("DB/String 5", " " + Hardware.ballCounter.BallCount + " ball(s)");
         // System.out.println("BALL COUNT: " + BallCounter.BallCount);
 
         // =============== AUTOMATED SUBSYSTEMS ===============
@@ -195,7 +224,7 @@ public class Teleop
 
         Hardware.drive.drive(Hardware.leftDriver, Hardware.rightDriver);
 
-        // printStatements();
+        printStatements();
         // individualTest();
     } // end Periodic()
 
