@@ -218,7 +218,6 @@ public class Teleop
 
         // =============== AUTOMATED SUBSYSTEMS ===============
         // ================= OPERATOR CONTROLS ================
-        System.out.println(Hardware.launcher.getStatus());
         if (Hardware.launchButton.get() == true && Hardware.ballCounter.BallCount > minNumBallsCarriable)
             {
             Hardware.launcher.setDoneFiring(false);
@@ -231,7 +230,6 @@ public class Teleop
             Hardware.launcher.stopFiring();
             ballHandler.processBallHandler(PROCESS.FIRE_STOP);
             }
-        Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW);
         // ================== DRIVER CONTROLS =================
         // Shifts Gears
         Hardware.tankTransmission.shiftGears(Hardware.driverGearUpPressed, Hardware.driverGearDownPressed);

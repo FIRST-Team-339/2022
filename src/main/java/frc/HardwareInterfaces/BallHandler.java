@@ -11,7 +11,7 @@ package frc.HardwareInterfaces;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.Hardware.Hardware;
 import frc.Utils.BallCounter;
-import frc.Utils.Launcher.LAUNCH_STATUS;
+import frc.Utils.Launcher.LAUNCH_STATUS_TELEOP;
 
 /**
  * 
@@ -175,7 +175,7 @@ public class BallHandler
                 Hardware.intakePiston.setReverse(true);
                 Hardware.intakeMotor.set(motorRestingSpeed);
                 Hardware.colorWheelMotor.set(motorRestingSpeed);
-                if (Hardware.launcher.getStatus() != LAUNCH_STATUS.FIRING)
+                if (Hardware.launcher.getStatusTeleop() != LAUNCH_STATUS_TELEOP.FIRING)
                     {
                     fireState = FIRE.FIRE_INIT;
                     }
