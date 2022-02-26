@@ -255,7 +255,7 @@ public class Hardware
 
     public static Launcher launcher = null;
 
-    public static MotorController colorWheelMotor = null; // TODO replace with launch motor
+    public static MotorController colorWheelMotor = null; // TODO replace with conveyor motor
 
     public static KilroyEncoder launchMotorEncoder = null;
 
@@ -366,7 +366,7 @@ public class Hardware
 
     public static Timer climbTimer = new Timer();
     public static double climbTimerWait = 0.100;
-    
+
     public static BallCounter ballCounter = new BallCounter(0, 2, addBallButton, subtractBallButton);
 
     // ------------------------------------

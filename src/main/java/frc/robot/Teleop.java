@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.Hardware.Hardware;
 import frc.HardwareInterfaces.BallHandler;
 import frc.Utils.BallCounter;
+import frc.Utils.Launcher.LAUNCH_STATE_TELEOP;
 import frc.Utils.Launcher.LAUNCH_TYPE;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -73,9 +74,6 @@ public class Teleop
         SmartDashboard.putString("DB/String 5", "     " + Hardware.ballCounter.BallCount + " ball(s)");
 
         // Initialize launcher
-        Hardware.launcher.disallowLaunching();
-        // Hardware.launcher.launchGeneral(LAUNCH_TYPE.OFF);
-        Hardware.launcher.setDoneFiring(false);
         Hardware.launchMotorGroup.set(0.0);
         Hardware.drive.stop();
 
@@ -174,15 +172,15 @@ public class Teleop
                     }
                 else
                     {
-                        if ((Hardware.climbTimer.get() * 1000.0) >= Hardware.climbTimerWait)
+                    if ((Hardware.climbTimer.get() * 1000.0) >= Hardware.climbTimerWait)
                         {
-                            Hardware.leftClimbMotor.set(.27);
-                            Hardware.rightClimbMotor.set(.3);
-                            Hardware.climbTimer.stop();
-                            Hardware.climbTimer.reset();
-                        }
                         Hardware.leftClimbMotor.set(.27);
                         Hardware.rightClimbMotor.set(.3);
+                        Hardware.climbTimer.stop();
+                        Hardware.climbTimer.reset();
+                        }
+                    Hardware.leftClimbMotor.set(.27);
+                    Hardware.rightClimbMotor.set(.3);
                     }
                 // Hardware.climbGroup.set(.3);
                 }
@@ -207,17 +205,6 @@ public class Teleop
         // =============== AUTOMATED SUBSYSTEMS ===============
         // ================= OPERATOR CONTROLS ================
 
-        if (Hardware.launchButton.get() == true)
-            {
-            Hardware.launcher.setDoneFiring(false);
-            Hardware.launcher.setResting(true);
-            }
-        if (Hardware.launchButton.get() == false)
-            {
-            Hardware.launcher.disallowLaunching();
-            Hardware.launcher.stopFiring();
-            }
-        Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW);
         // ================== DRIVER CONTROLS =================
         // Shifts Gears
         Hardware.tankTransmission.shiftGears(Hardware.driverGearUpPressed, Hardware.driverGearDownPressed);
