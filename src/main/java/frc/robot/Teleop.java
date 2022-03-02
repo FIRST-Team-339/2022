@@ -182,14 +182,15 @@ public class Teleop
                     }
                 else
                     {
-                        if (Hardware.climbTimer.hasElapsed(Hardware.climbTimerWait) && Hardware.climbTimer.get() != 0.0)
-                            {
-                            Hardware.climbTimer.stop();
-                            Hardware.climbTimer.reset();
-                            Hardware.leftClimbMotor.set(.2725);
-                            Hardware.rightClimbMotor.set(.3);
-                            }
-                        else if (Hardware.climbTimer.get() == 0.0)
+                    if (Hardware.climbTimer.hasElapsed(Hardware.climbTimerWait) && Hardware.climbTimer.get() != 0.0)
+                        {
+                        Hardware.climbTimer.stop();
+                        Hardware.climbTimer.reset();
+                        Hardware.leftClimbMotor.set(.2725);
+                        Hardware.rightClimbMotor.set(.3);
+                        }
+                    else
+                        if (Hardware.climbTimer.get() == 0.0)
                             {
                             Hardware.leftClimbMotor.set(.2725);
                             Hardware.rightClimbMotor.set(.3);
@@ -259,6 +260,14 @@ public class Teleop
 
         // Switch Values
 
+        // System.out.println("Disable Autonomous Switch is:" +
+        // Hardware.autoDisableSwitch.isOn());
+        // System.out.println("Six Position Switch is:" + Hardware.autoSixPosSwitch);
+        // //FIX
+        // System.out.println("Ball Counter Switch is:" +
+        // Hardware.ballCountInitSwitch.isOn());
+        // System.out.println("Spin Switch is:" + Hardware.spinSwitch.isOn());
+
         // ---------- ANALOG -----------
         // Inputs/Outputs
         // System.out.println("Delay Potentiometer degrees is " +
@@ -270,45 +279,87 @@ public class Teleop
         // Hardware.ultraSonic.getDistanceFromNearestBumper());
 
         // ----------- CAN -------------
+
+        // Wheel Motor Values
+
         // System.out.println("Voltage of left front motor is: " +
         // Hardware.leftTopMotor.get());
+        // System.out.println("Voltage of right front motor is: " +
+        // Hardware.rightTopMotor.get());
+        // System.out.println("Voltage of left back motor is: " +
+        // Hardware.leftBottomMotor.get());
+        // System.out.println("Voltage of right back motor is: " +
+        // Hardware.rightBottomMotor.get());
+
+        // Climb Motor Values
+
+        // System.out.println("Voltage of left climb motor is: " +
+        // Hardware.leftClimbMotor.get());
+        // System.out.println("Voltage of right climb motor is: " +
+        // Hardware.rightClimbMotor.get());
+        // System.out.println("Voltage of climb encoder is: " +
+        // Hardware.climbEncoder.get());
+
+        // Launch Motor Values
+
+        // System.out.println("Launch Motor Forward is: " +
+        // Hardware.launchMotorForward.get());
+        // System.out.println("Launch Motor Backward is: " +
+        // Hardware.launchMotorBackward.get());
+
+        // Other Motor Values
+
+        // System.out.println("Voltage of intake motor is: " +
+        // Hardware.intakeMotor.get());
+        // System.out.println("Voltage of color wheel motor is: " +
+        // Hardware.colorWheelMotor.get());
 
         // -------- SUBSYSTEMS ---------
 
         // ---------- OTHER ------------
 
+        // FIX ALL OF THESE
+
+        // Joystick Values
+
+        // Operator Controls
+
         // ========== OUTPUTS ==========
 
         // ---------- DIGITAL ----------
 
-        // Sensors
+        // Sensors FIX THESE
 
         // System.out.println("Floor Light is " + Hardware.floorLight.isOn());
-
         // System.out.println("Ball PickUp 1 is " + Hardware.ballPickup1.isOn());
-
         // System.out.println("Ball Pickup 2 is " + Hardware.ballPickup2.isOn());
-
         // System.out.println("Ball Pickup 3 is " + Hardware.ballPickup3.isOn());
-
         // System.out.println("Ball Pickup 4 is " + Hardware.ballPickup4.isOn());
 
         // Digital Inputs
-        System.out.println("Auto Disable Switch is " + Hardware.autoDisableSwitch.isOn());
+        // System.out.println("Auto Disable Switch is " +
+        // Hardware.autoDisableSwitch.isOn());
 
-        System.out.println("Auto Six Position Switch position is " + Hardware.autoSixPosSwitch.getPosition());
+        // System.out.println("Auto Six Position Switch position is " +
+        // Hardware.autoSixPosSwitch.getPosition());
 
-        System.out.println("Ball Counter Switch is " + Hardware.ballCountInitSwitch.isOn());
+        // System.out.println("Ball Counter Switch is " +
+        // Hardware.ballCountInitSwitch.isOn());
 
-        System.out.println("Spin switch is " + Hardware.spinSwitch.isOn());
+        // System.out.println("Spin switch is " + Hardware.spinSwitch.isOn());
 
-        System.out.println("Single Throw Switch for DT is " + Hardware.unknown1Switch.isOn());
+        // System.out.println("Single Throw Switch for DT is " +
+        // Hardware.unknown1Switch.isOn());
 
-        System.out.println("Single Throw Switch 2 for DT is " + Hardware.unknown2Switch.isOn());
+        // System.out.println("Single Throw Switch 2 for DT is " +
+        // Hardware.unknown2Switch.isOn());
 
-        System.out.println("Double Throw Switch is " + Hardware.unknownSwitch.isOn());
+        // System.out.println("Double Throw Switch is " +
+        // Hardware.unknownSwitch.isOn());
 
         // ---------- ANALOG -----------
+
+        // System.out.println("SPI Gyro is:" + Hardware.gyro.get());
 
         // ----------- CAN -------------
 
