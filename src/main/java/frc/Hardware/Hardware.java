@@ -168,6 +168,13 @@ public class Hardware
 
         launchMotorGroup = new MotorControllerGroup(launchMotorForward, launchMotorBackward);
 
+        conveyorMotorForward = new WPI_TalonSRX(21);
+        conveyorMotorForward.setInverted(false);
+        conveyorMotorBackward = new WPI_TalonSRX(22);
+        conveyorMotorBackward.setInverted(true);
+
+        conveyorGroup = new MotorControllerGroup(conveyorMotorForward, conveyorMotorBackward);
+
         leftBottomMotor = new WPI_TalonFX(15);
         leftBottomMotor.setInverted(false);
         rightTopMotor = new WPI_TalonFX(14);
@@ -264,6 +271,11 @@ public class Hardware
 
     public static KilroyEncoder leftDriveEncoder = null;
     public static KilroyEncoder rightDriveEncoder = null;
+
+    public static MotorController conveyorMotorForward = null;
+    public static MotorController conveyorMotorBackward = null;
+
+    public static MotorControllerGroup conveyorGroup = null;
 
     public static MotorController rightClimbMotor = null;
     public static MotorController leftClimbMotor = null;

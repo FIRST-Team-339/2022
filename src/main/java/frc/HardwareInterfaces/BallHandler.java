@@ -11,6 +11,7 @@ package frc.HardwareInterfaces;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.Hardware.Hardware;
 import frc.Utils.BallCounter;
+import frc.Utils.Launcher.LAUNCH_STATE_TELEOP;
 import frc.Utils.Launcher.LAUNCH_STATUS_TELEOP;
 
 /**
@@ -29,11 +30,12 @@ public class BallHandler
             fireState = FIRE.FIRE_INIT;
             outtakeState = OUTTAKE.OUTTAKE_INIT;
             intakeState = INTAKE.INTAKE_INIT;
+            bhLauncherState = BH_LAUNCHER.RESTING;
             intakeMotorIntakeSpeed = 0.5;
             intakeMotorOuttakeSpeed = -0.5;
-            colorWheelIntakeSpeed = -0.5;
-            colorWheelFireSpeed = -0.5;
-            colorwheelOutakeSpeed = 0.5;
+            conveyerWheelIntakeSpeed = -0.5;
+            conveyerWheelFireSpeed = -0.5;
+            conveyerwheelOutakeSpeed = 0.5;
             motorRestingSpeed = 0.0;
             ballSubInt = 1;
 
@@ -104,7 +106,7 @@ public class BallHandler
             // Is used when the ball is not in front of the RL sensor
             case OUTTAKE_WORKING_LIGHT_OFF:
                 Hardware.intakeMotor.set(intakeMotorOuttakeSpeed);
-                Hardware.colorWheelMotor.set(colorwheelOutakeSpeed);
+                Hardware.conveyorGroup.set(conveyerwheelOutakeSpeed);
                 if (Hardware.ballPickup1.isOn() == true)
                     {
                     // Switches when a ball is in front of RL sensor
@@ -118,7 +120,7 @@ public class BallHandler
             // Is used when the ball is in front of the RL sensor
             case OUTTAKE_WORKING_LIGHT_ON:
                 Hardware.intakeMotor.set(intakeMotorOuttakeSpeed);
-                Hardware.colorWheelMotor.set(colorwheelOutakeSpeed);
+                Hardware.conveyorGroup.set(conveyerwheelOutakeSpeed);
                 if (Hardware.ballPickup1.isOn() == false)
                     {
                     // Subtracts one ball when it is ejected
@@ -136,7 +138,7 @@ public class BallHandler
             // moves intake piston down
             case OUTTAKE_END:
                 Hardware.intakeMotor.set(motorRestingSpeed);
-                Hardware.colorWheelMotor.set(motorRestingSpeed);
+                Hardware.conveyorGroup.set(motorRestingSpeed);
                 Hardware.intakePiston.setReverse(true);
                 break;
             default:
@@ -157,7 +159,7 @@ public class BallHandler
                 break;
             case INTAKE_END:
                 Hardware.intakeMotor.set(motorRestingSpeed);
-                Hardware.colorWheelMotor.set(motorRestingSpeed);
+                Hardware.conveyorGroup.set(motorRestingSpeed);
                 Hardware.intakePiston.setReverse(true);
                 break;
             default:
@@ -174,22 +176,41 @@ public class BallHandler
             case FIRE_INIT:
                 Hardware.intakePiston.setReverse(true);
                 Hardware.intakeMotor.set(motorRestingSpeed);
-                Hardware.colorWheelMotor.set(motorRestingSpeed);
+                Hardware.conveyorGroup.set(motorRestingSpeed);
                 if (Hardware.launcher.getStatusTeleop() != LAUNCH_STATUS_TELEOP.FIRING)
                     {
                     fireState = FIRE.FIRE_INIT;
                     }
                 else
                     {
-                    fireState = FIRE.FIRE_WORKING;
+                    fireState = FIRE.FIRE_WORKING_LIGHT_OFF;
                     }
                 break;
-            case FIRE_WORKING:
-                Hardware.colorWheelMotor.set(colorWheelFireSpeed);
-                fireState = FIRE.FIRE_WORKING;
+            case FIRE_WORKING_LIGHT_OFF:
+                Hardware.conveyorGroup.set(conveyerWheelFireSpeed);
+                if (Hardware.ballPickup4.isOn() == true)
+                    {
+                    fireState = FIRE.FIRE_WORKING_LIGHT_ON;
+                    }
+                else
+                    {
+                    fireState = FIRE.FIRE_WORKING_LIGHT_OFF;
+                    }
+                break;
+            case FIRE_WORKING_LIGHT_ON:
+                Hardware.conveyorGroup.set(conveyerWheelFireSpeed);
+                if (Hardware.ballPickup4.isOn() == false)
+                    {
+                    fireState = FIRE.FIRE_WORKING_LIGHT_OFF;
+                    Hardware.ballCounter.subtractCheckCount(ballSubInt);
+                    }
+                else
+                    {
+                    fireState = FIRE.FIRE_WORKING_LIGHT_ON;
+                    }
                 break;
             case FIRE_END:
-                Hardware.colorWheelMotor.set(motorRestingSpeed);
+                Hardware.conveyorGroup.set(motorRestingSpeed);
                 break;
             default:
                 break;
@@ -197,17 +218,39 @@ public class BallHandler
         return fireState;
     }
 
+    public static BH_LAUNCHER processLauncher()
+    {
+        switch (bhLauncherState)
+            {
+            case RESTING:
+                break;
+            case SPINNING_UP:
+                break;
+            case VERIFYING_VOLTAGE:
+                break;
+            case FIRING:
+                break;
+            }
+        return bhLauncherState;
+    }
+
     // Add Variales to init when made
     private static FIRE fireState = FIRE.FIRE_INIT;
     private static OUTTAKE outtakeState = OUTTAKE.OUTTAKE_INIT;
     private static INTAKE intakeState = INTAKE.INTAKE_INIT;
+    private static BH_LAUNCHER bhLauncherState = BH_LAUNCHER.RESTING;
     private static double intakeMotorIntakeSpeed;
     private static double intakeMotorOuttakeSpeed;
-    private static double colorWheelIntakeSpeed;
-    private static double colorWheelFireSpeed;
-    private static double colorwheelOutakeSpeed;
+    private static double conveyerWheelIntakeSpeed;
+    private static double conveyerWheelFireSpeed;
+    private static double conveyerwheelOutakeSpeed;
     private static double motorRestingSpeed;
     private static int ballSubInt;
+
+    public static enum BH_LAUNCHER
+        {
+        RESTING, SPINNING_UP, VERIFYING_VOLTAGE, FIRING;
+        }
 
     public static enum PROCESS
         {
@@ -226,7 +269,7 @@ public class BallHandler
 
     public static enum FIRE
         {
-        FIRE_INIT, FIRE_WORKING, FIRE_END;
+        FIRE_INIT, FIRE_WORKING_LIGHT_OFF, FIRE_WORKING_LIGHT_ON, FIRE_END;
         }
 
     public static enum OUTTAKE
