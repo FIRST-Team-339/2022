@@ -72,7 +72,7 @@ public class Autonomous
         // Hardware.autoDisableSwitch.isOn());
 
         // INITALIZE CLIMB SERVO
-        Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_OUT);
+        Hardware.climbServo.set(Hardware.CLIMB_SERVO_POS_OUT);
 
         // Checks if the auto disable switch is pressed. It will disable auto if the
         // switch returns a value of false
@@ -745,11 +745,15 @@ public class Autonomous
         switch (spinState)
             {
             case SPIN:
-                if (Hardware.drive.turnDegrees(TURN_AROUND_DEGREES, TURN_SPEED_PREV_YEAR,
-                        TURN_ACCELERATION_SECONDS_PREV_YEAR, USING_GYRO_FOR_TURN_PREV_YEAR) == true)
-                    {
+                // if (Hardware.drive.turnDegrees(TURN_AROUND_DEGREES, TURN_SPEED_PREV_YEAR,
+                //         TURN_ACCELERATION_SECONDS_PREV_YEAR, USING_GYRO_FOR_TURN_PREV_YEAR) == true)
+                //     {
+                //     spinState = SPIN_STATE.STOP_SPIN;
+                //     }
+                if (Hardware.drive.arc(TURN_SPEED_PREV_YEAR, 10, 10, TURN_ACCELERATION_SECONDS_PREV_YEAR) == true)
+                {
                     spinState = SPIN_STATE.STOP_SPIN;
-                    }
+                }
                 return false;
             case STOP_SPIN:
                 if (Hardware.drive.brake(BrakeType.AFTER_TURN) == true)
