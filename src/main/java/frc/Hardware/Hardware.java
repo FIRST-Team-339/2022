@@ -143,6 +143,35 @@ public class Hardware
      *********************************************/
     public static void initializeCurrentYear() // 2022
     {
+        // -----------------------------------
+        // initialize the drive speed controllers and servo
+        // -----------------------------------
+        leftDriveGroup = new MotorControllerGroup(leftBottomMotor, leftTopMotor);
+        rightDriveGroup = new MotorControllerGroup(rightBottomMotor, rightTopMotor);
+        climbServo = new KilroyServo(PREV_YEAR_CLIMB_SERVO_PWM_PORT, CLIMB_SERVO_MAX_DEGREES);
+        // climbServo.set(value);
+
+        // -----------------------------------
+        // initalize the climb controller groups
+        // -----------------------------------
+        climbGroup = new MotorControllerGroup(leftClimbMotor, rightClimbMotor);
+
+        // CLIMB CONSTS
+        CLIMB_SERVO_POS_OUT = 1.0;
+        CLIMB_SERVO_POS_IN = 0.0;
+        CLIMB_ENCODER_MAX_HEIGHT = 20.0;
+        CLIMB_SERVO_MAX_DEGREES = 360.0;
+
+        LEFT_CLIMB_ENCODER_SPEED = 0.2725;
+        RIGHT_CLIMB_ENCODER_SPEED = 0.3;
+        BOTH_CLIMB_ENCODER_SPEED = 0.3;
+
+        // ------------------------------------
+        // configure climb encoders
+        // ------------------------------------
+        climbEncoder = new KilroyEncoder((WPI_TalonSRX) leftClimbMotor);
+        climbEncoder.setDistancePerPulse(PREV_YEAR_CLIMB_DISTANCE_PER_TICK);
+        climbEncoder.setReverseDirection(true);
     } // end of initializeCurrentYear()
 
     /**********************************************
@@ -184,13 +213,23 @@ public class Hardware
         // -----------------------------------
         leftDriveGroup = new MotorControllerGroup(leftBottomMotor, leftTopMotor);
         rightDriveGroup = new MotorControllerGroup(rightBottomMotor, rightTopMotor);
-        climbServo = new KilroyServo(PREV_YEAR_CLIMB_SERVO_PWM_PORT, PREV_YEAR_CLIMB_SERVO_MAX_DEGREES);
+        climbServo = new KilroyServo(PREV_YEAR_CLIMB_SERVO_PWM_PORT, CLIMB_SERVO_MAX_DEGREES);
         // climbServo.set(value);
 
         // -----------------------------------
         // initalize the climb controller groups
         // -----------------------------------
         climbGroup = new MotorControllerGroup(leftClimbMotor, rightClimbMotor);
+
+        // CLIMB CONSTS
+        CLIMB_SERVO_POS_OUT = 1.0;
+        CLIMB_SERVO_POS_IN = 0.0;
+        CLIMB_ENCODER_MAX_HEIGHT = 20.0;
+        CLIMB_SERVO_MAX_DEGREES = 360.0;
+
+        LEFT_CLIMB_ENCODER_SPEED = 0.2725;
+        RIGHT_CLIMB_ENCODER_SPEED = 0.3;
+        BOTH_CLIMB_ENCODER_SPEED = 0.3;
 
         // -----------------------------------
         // configure the drive system encoders
@@ -276,11 +315,14 @@ public class Hardware
 
     public static KilroyEncoder climbEncoder = null;
     public static double PREV_YEAR_CLIMB_DISTANCE_PER_TICK = .004507692;
-    public static double PREV_YEAR_CLIMB_ENCODER_MAX_HEIGHT = 20;
+    public static double CLIMB_ENCODER_MAX_HEIGHT;
     public static int PREV_YEAR_CLIMB_SERVO_PWM_PORT = 2;
-    public static double PREV_YEAR_CLIMB_SERVO_MAX_DEGREES = 360.0;
-    public static double PREV_YEAR_CLIMB_SERVO_POS_OUT = 1;
-    public static double PREV_YEAR_CLIMB_SERVO_POS_IN = 0;
+    public static double CLIMB_SERVO_MAX_DEGREES;
+    public static double CLIMB_SERVO_POS_OUT;
+    public static double CLIMB_SERVO_POS_IN;
+    public static double LEFT_CLIMB_ENCODER_SPEED;
+    public static double RIGHT_CLIMB_ENCODER_SPEED;
+    public static double BOTH_CLIMB_ENCODER_SPEED;
     // public static double PREV_YEAR_SERVO_INIT_POS = 0;
 
     // **********************************************************
