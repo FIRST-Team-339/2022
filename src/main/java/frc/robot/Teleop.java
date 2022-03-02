@@ -64,7 +64,7 @@ public class Teleop
         Hardware.tankTransmission.setGear(1);
 
         // INITALIZE CLIMB SERVO
-        Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_OUT);
+        Hardware.climbServo.set(Hardware.CLIMB_SERVO_POS_OUT);
 
         // RESET TIMER
         Hardware.climbTimer.stop();
@@ -155,60 +155,38 @@ public class Teleop
         // System.out.println(Hardware.climbServo.getAngle());
 
         // CLIMB SERVO OVERRIDE BUTTON
-        if (openClimbServoButtonPressed)
-            {
-            Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_OUT);
-            }
-        if (closeClimbServoButtonPressed && !openClimbServoButtonPressed)
-            {
-            Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_IN);
-            }
+        if (openClimbServoButtonPressed == true) Hardware.climbServo.set(Hardware.CLIMB_SERVO_POS_OUT);
+        if (closeClimbServoButtonPressed == true && openClimbServoButtonPressed == false) Hardware.climbServo.set(Hardware.CLIMB_SERVO_POS_IN);
 
         // CLIMB UP/DOWN FUNCTIONALITY
-        if (climbUpButtonPressed && !climbDownButtonPressed)
+        if (climbUpButtonPressed == true && climbDownButtonPressed == false)
             {
-            if (Hardware.climbEncoder.getDistance() >= Hardware.PREV_YEAR_CLIMB_ENCODER_MAX_HEIGHT)
-                {
-                Hardware.climbGroup.set(0);
-                }
+            if (Hardware.climbEncoder.getDistance() >= Hardware.CLIMB_ENCODER_MAX_HEIGHT) Hardware.climbGroup.set(0); // SET SPEED TO ZERO/STOP
             else
                 {
-                if (Hardware.climbServo.get() == Hardware.PREV_YEAR_CLIMB_SERVO_POS_IN)
-                    {
-                    Hardware.climbTimer.stop();
-                    Hardware.climbTimer.reset();
-                    Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_OUT);
-                    Hardware.climbTimer.start();
-                    }
+                    // CHECK IF THE SERVO IS DISENGAGED
+                    if (Hardware.climbServo.get() == Hardware.CLIMB_SERVO_POS_IN) resetClimbTimerAndSetOut();
                 else
                     {
-                        if (Hardware.climbTimer.hasElapsed(Hardware.climbTimerWait) && Hardware.climbTimer.get() != 0.0)
-                            {
-                            Hardware.climbTimer.stop();
-                            Hardware.climbTimer.reset();
-                            Hardware.leftClimbMotor.set(.2725);
-                            Hardware.rightClimbMotor.set(.3);
-                            }
-                        else if (Hardware.climbTimer.get() == 0.0)
-                            {
-                            Hardware.leftClimbMotor.set(.2725);
-                            Hardware.rightClimbMotor.set(.3);
-                            }
+                        // CHECK IF TIME HAS MOVED AT ALL (MEANS TIMER IS ACTIVATED) & IF IT HAS PASSED THE REQUIRED WAIT TIME
+                        if (Hardware.climbTimer.hasElapsed(Hardware.climbTimerWait) && Hardware.climbTimer.get() != 0.0) resetClimbTimerAndSetSpeeds();
+                        else
+                            if (Hardware.climbTimer.get() == 0.0)
+                                setClimbSpeeds();
                     }
                 // Hardware.climbGroup.set(.3);
                 }
             }
         else
-            if (climbDownButtonPressed)
+            if (climbDownButtonPressed == true)
                 {
-                Hardware.climbGroup.set(-.3);
-                if (Hardware.climbEncoder.getDistance() <= Hardware.PREV_YEAR_CLIMB_ENCODER_MAX_HEIGHT - 2)
-                    {
-                    Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_IN);
-                    }
+                Hardware.climbGroup.set(-Hardware.BOTH_CLIMB_ENCODER_SPEED);
+                // CHECK IF THE CLIMB ENCODERS ARE BELOW AT LEAST 2 INCHES OF THE MAX HEIGHT, AND THEN MOVE THE CLIMB SERVO IN
+                if (Hardware.climbEncoder.getDistance() <= Hardware.CLIMB_ENCODER_MAX_HEIGHT - 2) Hardware.climbServo.set(Hardware.CLIMB_SERVO_POS_IN);
                 }
             else
                 {
+                    // SET SPEED TO ZERO
                 Hardware.climbGroup.set(0);
                 }
         // Operator Dashboard Variables
@@ -316,6 +294,39 @@ public class Teleop
 
         // ---------- OTHER ------------
 
+    }
+
+    // PRIVATE FUNCTIONS
+    
+    /**
+     * Stops & resets the climb timer, sets the climb servo to be in the "out" position, and starts the timer (again?)
+     */
+    private static void resetClimbTimerAndSetOut()
+    {
+        Hardware.climbTimer.stop();
+        Hardware.climbTimer.reset();
+        Hardware.climbServo.set(Hardware.CLIMB_SERVO_POS_OUT);
+        Hardware.climbTimer.start();
+    }
+
+    /**
+     * Stops & Resets the climb timer, and sets the climb encoders to their respected speeds
+     */
+    private static void resetClimbTimerAndSetSpeeds()
+    {
+        Hardware.climbTimer.stop();
+        Hardware.climbTimer.reset();
+        Hardware.leftClimbMotor.set(Hardware.LEFT_CLIMB_ENCODER_SPEED);
+        Hardware.rightClimbMotor.set(Hardware.RIGHT_CLIMB_ENCODER_SPEED);
+    }
+
+    /**
+     * Sets the climb encoders to their respected speeds
+     */
+    private static void setClimbSpeeds()
+    {
+        Hardware.leftClimbMotor.set(Hardware.LEFT_CLIMB_ENCODER_SPEED);
+        Hardware.rightClimbMotor.set(Hardware.RIGHT_CLIMB_ENCODER_SPEED);
     }
 
     static BallHandler ballHandler = new BallHandler();
