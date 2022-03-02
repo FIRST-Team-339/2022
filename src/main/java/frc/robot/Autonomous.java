@@ -72,7 +72,7 @@ public class Autonomous
         // Hardware.autoDisableSwitch.isOn());
 
         // INITALIZE CLIMB SERVO
-        Hardware.climbServo.set(Hardware.PREV_YEAR_CLIMB_SERVO_POS_OUT);
+        Hardware.climbServo.set(Hardware.CLIMB_SERVO_POS_OUT);
 
         // Checks if the auto disable switch is pressed. It will disable auto if the
         // switch returns a value of false
@@ -258,7 +258,7 @@ public class Autonomous
             case WAIT:
                 // Exists to let the motors rest before driving after braking
                 Hardware.driveDelayTimer.start();
-                if (Hardware.driveDelayTimer.get() >= DRIVE_DELAY_SECONDS)
+                if (Hardware.driveDelayTimer.get() >= DRIVE_DELAY_SECONDS_PREV_YEAR)
                     {
                     dropAndDriveState = DROP_AND_DRIVE_STATE.DRIVE;
                     }
@@ -432,7 +432,7 @@ public class Autonomous
             case WAIT:
                 // Delays the robot to allow the motors to rest before driving after braking
                 Hardware.driveDelayTimer.start();
-                if (Hardware.driveDelayTimer.get() >= DRIVE_DELAY_SECONDS)
+                if (Hardware.driveDelayTimer.get() >= DRIVE_DELAY_SECONDS_PREV_YEAR)
                     {
                     driveAndDropState = DRIVE_AND_DROP_STATE.PREPARE_TO_DROP;
                     }
@@ -473,6 +473,7 @@ public class Autonomous
                     }
                 return false;
             case END:
+                Hardware.launcher.launchAutoGeneral(LAUNCH_TYPE.OFF);
                 Hardware.drive.stop();
                 return true;
             default:
@@ -647,7 +648,7 @@ public class Autonomous
                 // Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW);
                 // Brief delay to let the motors rest after braking
                 Hardware.driveDelayTimer.start();
-                if (Hardware.driveDelayTimer.get() >= DRIVE_DELAY_SECONDS)
+                if (Hardware.driveDelayTimer.get() >= DRIVE_DELAY_SECONDS_PREV_YEAR)
                     {
                     driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.PREPARE_TO_DROP;
                     }
@@ -690,7 +691,7 @@ public class Autonomous
                 // Short delay after driving if the launch does not run to let the motors rest
                 // after braking
                 Hardware.driveDelayTimer.start();
-                if (Hardware.driveDelayTimer.get() >= DRIVE_DELAY_SECONDS)
+                if (Hardware.driveDelayTimer.get() >= DRIVE_DELAY_SECONDS_PREV_YEAR)
                     {
                     driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.LEAVE;
                     }
@@ -745,11 +746,15 @@ public class Autonomous
         switch (spinState)
             {
             case SPIN:
-                if (Hardware.drive.turnDegrees(TURN_AROUND_DEGREES, TURN_SPEED_PREV_YEAR,
-                        TURN_ACCELERATION_SECONDS_PREV_YEAR, USING_GYRO_FOR_TURN_PREV_YEAR) == true)
-                    {
+                // if (Hardware.drive.turnDegrees(TURN_AROUND_DEGREES, TURN_SPEED_PREV_YEAR,
+                //         TURN_ACCELERATION_SECONDS_PREV_YEAR, USING_GYRO_FOR_TURN_PREV_YEAR) == true)
+                //     {
+                //     spinState = SPIN_STATE.STOP_SPIN;
+                //     }
+                if (Hardware.drive.arc(TURN_SPEED_PREV_YEAR, 10, 10, TURN_ACCELERATION_SECONDS_PREV_YEAR) == true)
+                {
                     spinState = SPIN_STATE.STOP_SPIN;
-                    }
+                }
                 return false;
             case STOP_SPIN:
                 if (Hardware.drive.brake(BrakeType.AFTER_TURN) == true)
@@ -791,6 +796,7 @@ public class Autonomous
                     }
                 return false;
             case RL_OFF1:
+                // TODO Move the conveyor in this state
                 if (Hardware.ballPickup4.isOn() == true)
                     {
                     launchAutoState = LAUNCH_AUTO_STATE.RL_TRIGGERED;
@@ -798,10 +804,19 @@ public class Autonomous
                     }
                 return false;
             case RL_TRIGGERED:
-                // If the rl is off and the launcher is ready to fire, move on to the firing
-                // delay
-                if (Hardware.ballPickup4.isOn() == false
-                        && Hardware.launcher.getStatusAuto() == LAUNCH_STATUS_AUTO.READY_TO_FIRE)
+                // If the rl is off and the launcher is ready to fire, move the conveyor to fire
+                // the ball
+                // TODO stop the conveyor
+                if (Hardware.launcher.getStatusAuto() == LAUNCH_STATUS_AUTO.READY_TO_FIRE)
+                    {
+                    launchAutoState = LAUNCH_AUTO_STATE.FIRING;
+                    }
+                return false;
+            case FIRING:
+                // Wait until the top rl does not see the ball to move on to a short delay to
+                // ensure that the ball has been fired
+                // TODO move the conveyor here
+                if (Hardware.ballPickup4.isOn() == false)
                     {
                     launchAutoState = LAUNCH_AUTO_STATE.FIRING_DELAY;
                     }
@@ -810,8 +825,9 @@ public class Autonomous
                 // Delay to turn off the launcher after we assume enough time has passed to fire
                 // the stored ball
                 Hardware.launchDelayTimer.start();
-                if (Hardware.launchDelayTimer.get() >= LAUNCH_DELAY_SECONDS)
+                if (Hardware.launchDelayTimer.get() >= LAUNCH_DELAY_SECONDS_PREV_YEAR)
                     {
+                    // TODO Stop moving the conveyor here
                     Hardware.launcher.stopFiring();
                     Hardware.launchDelayTimer.stop();
                     Hardware.launchDelayTimer.reset();
@@ -871,7 +887,7 @@ public class Autonomous
 
     private static enum LAUNCH_AUTO_STATE
         {
-        START_DROP, RL_OFF1, RL_TRIGGERED, FIRING_DELAY;
+        START_DROP, RL_OFF1, RL_TRIGGERED, FIRING, FIRING_DELAY;
         }
 
     private static AUTO_PATH autoPath;
@@ -900,7 +916,11 @@ public class Autonomous
 
     private static final double DISTANCE_TO_WALL_INCHES_PREV_YEAR = 10.0; // TODO test
 
+    private static final double DISTANCE_TO_WALL_INCHES_CURRECT_YEAR = 10.0; // TODO
+
     private static final double DISTANCE_TO_WALL_FROM_OUTSIDE_OF_TARMAC_INCHES_PREV_YEAR = 90.0; // TODO test
+
+    private static final double DISTANCE_TO_WALL_FROM_OUTSIDE_OF_TARMAC_INCHES_CURRENT_YEAR = 90.0; // TODO
 
     private static final double DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_PREV_YEAR = 90.0; // TODO test
 
@@ -912,9 +932,15 @@ public class Autonomous
 
     private static final double DISTANCE_AFTER_RED_LIGHT_PREV_YEAR_INCHES = 40.0; // TODO test
 
+    private static final double DISTANCE_AFTER_RED_LIGHT_CURRENT_YEAR_INCHES = 40.0; // TODO
+
     private static final double DRIVE_SPEED_POSITIVE_PREV_YEAR = .4; // TODO test
 
+    private static final double DRIVE_SPEED_POSITIVE_CURRENT_YEAR = .4; // TODO
+
     private static final double DRIVE_SPEED_NEGATIVE_PREV_YEAR = -.4; // TODO test
+
+    private static final double DRIVE_SPEED_NEGATIVE_CURRENT_YEAR = -.4; // TODO
 
     private static final double BRAKE_POWER_POSITIVE = .9;
 
@@ -922,21 +948,33 @@ public class Autonomous
 
     private static final double ACCELERATION_SECONDS_PREV_YEAR = .5;
 
+    private static final double ACCELERATION_SECONDS_CURRENT_YEAR = .5; // TODO
+
     private static final boolean USING_GYRO_FOR_TURN_PREV_YEAR = true;
+
+    private static final boolean USING_GYRO_FOR_TURN_CURRENT_YEAR = true; // TODO
 
     private static final boolean USING_GYRO_FOR_DRIVE_PREV_YEAR = false;
 
+    private static final boolean USING_GYRO_FOR_DRIVE_CURRENT_YEAR = false; // TODO
+
     private static final double MAX_DELAY_SECONDS = 5.0;
 
-    private static final double LAUNCH_DELAY_SECONDS = 1.0;
+    private static final double LAUNCH_DELAY_SECONDS_PREV_YEAR = 1.0;
 
-    private static final double TEST_MOTOR_SPEED_PREV_YEAR = .4;
+    private static final double LAUNCH_DELAY_SECONDS_CURRENT_YEAR = 1.0; // TODO
 
-    private static final double DRIVE_DELAY_SECONDS = .5;
+    private static final double DRIVE_DELAY_SECONDS_PREV_YEAR = .5;
+
+    private static final double DRIVE_DELAY_SECONDS_CURRENT_YEAR = .5; // TODO
 
     private static final double TURN_SPEED_PREV_YEAR = .45;
 
+    private static final double TURN_SPEED_CURRENT_YEAR = .45; // TODO
+
     private static final double TURN_ACCELERATION_SECONDS_PREV_YEAR = .5;
+
+    private static final double TURN_ACCELERATION_SECONDS_CURRENT_YEAR = .5; // TODO
 
     private static final int TURN_AROUND_DEGREES = 180;
     }
