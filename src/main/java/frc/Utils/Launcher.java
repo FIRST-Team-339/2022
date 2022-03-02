@@ -262,7 +262,7 @@ public class Launcher
             }
         // Checks if the motors have been within the deadband for a satisfactory amount
         // of time
-        if (this.maintainingIterations >= MAX_ITERATIONS_PREV)
+        if (this.maintainingIterations >= TARGET_ITERATIONS_PREV)
             {
             this.firstCorrectionInteration = true;
             // this.launchMotors.set(this.newMotorSpeed);
@@ -516,21 +516,37 @@ public class Launcher
 
     private final double TARGET_MOTOR_RPM_LOW_PREV = 1000.0; // TODO find
 
+    private final double TARGET_MOTOR_RPM_LOW_CURRENT = 1000.0; // TODO
+
     private final double TARGET_MOTOR_RPM_HIGH_PREV = 3000.0; // TODO find
+
+    private final double TARGET_MOTOR_RPM_HIGH_CURRENT = 3000.0; // TODO
 
     private final double TARGET_MOTOR_RPM_AUTO_PREV = 2000.0; // TODO find
 
+    private final double TARGET_MOTOR_RPM_AUTO_CURRENT = 2000.0; // TODO
+
     private final double LAUNCH_MOTOR_SPEED_LOW_PREV = .21; // TODO find
+
+    private final double LAUNCH_MOTOR_SPEED_LOW_CURRENT = .21; // TODO
 
     private final double LAUNCH_MOTOR_SPEED_HIGH_PREV = .6; // TODO find
 
+    private final double LAUNCH_MOTOR_SPEED_HIGH_CURRENT = .6; // TODO
+
     private final double LAUNCH_MOTOR_SPEED_AUTO_PREV = .4; // TODO find
+
+    private final double LAUNCH_MOTOR_SPEED_AUTO_CURRENT = .4; // TODO
 
     private final double LAUNCH_DEADBAND_PREV = 50.0; // TODO find
 
+    private final double LAUNCH_DEADBAND_CURRENT = 50.0; // TODO
+
     private final double CORRECTION_VALUE_PREV = .0005; // TODO find
 
-    private final int MAX_ITERATIONS_PREV = 10;
+    private final double CORRECTION_VALUE_CURRENT = .0005; // TODO
+
+    private final int TARGET_ITERATIONS_PREV = 10;
 
     private final double DISTANCE_PER_PULSE_PREV = 1.0;
     }
