@@ -143,12 +143,53 @@ public class Hardware
      *********************************************/
     public static void initializeCurrentYear() // 2022
     {
+
+        // ==============CAN INIT=============
+        // Motor Controllers
+        // ====================================
+        leftTopMotor = new WPI_TalonFX(6);
+        leftTopMotor.setInverted(false);
+        rightBottomMotor = new WPI_TalonFX(12);
+        rightBottomMotor.setInverted(true);
+
+        colorWheelMotor = new WPI_TalonSRX(25);
+
+        launchMotorForward = new CANSparkMax(27, MotorType.kBrushless);
+        launchMotorBackward = new CANSparkMax(26, MotorType.kBrushless);
+
+        launchMotorGroup = new MotorControllerGroup(launchMotorForward, launchMotorBackward);
+
+        conveyorMotorForward = new WPI_TalonSRX(21);
+        conveyorMotorForward.setInverted(false);
+        conveyorMotorBackward = new WPI_TalonSRX(22);
+        conveyorMotorBackward.setInverted(true);
+
+        conveyorGroup = new MotorControllerGroup(conveyorMotorForward, conveyorMotorBackward);
+
+        leftBottomMotor = new WPI_TalonFX(15);
+        leftBottomMotor.setInverted(false);
+        rightTopMotor = new WPI_TalonFX(14);
+        rightTopMotor.setInverted(true);
+
+        leftClimbMotor = new WPI_TalonSRX(10);
+        rightClimbMotor = new WPI_TalonSRX(24);
+
+        intakeMotor = new WPI_TalonSRX(23);
+        intakeMotor.setInverted(true);
+
+        // ------------------------------------
+        // configure climb encoders
+        // ------------------------------------
+        climbEncoder = new KilroyEncoder((WPI_TalonSRX) leftClimbMotor);
+        climbEncoder.setDistancePerPulse(CURRENT_YEAR_CLIMB_DISTANCE_PER_TICK);
+        climbEncoder.setReverseDirection(true);
+
         // -----------------------------------
         // initialize the drive speed controllers and servo
         // -----------------------------------
         leftDriveGroup = new MotorControllerGroup(leftBottomMotor, leftTopMotor);
         rightDriveGroup = new MotorControllerGroup(rightBottomMotor, rightTopMotor);
-        climbServo = new KilroyServo(PREV_YEAR_CLIMB_SERVO_PWM_PORT, CLIMB_SERVO_MAX_DEGREES);
+        climbServo = new KilroyServo(CURRENT_YEAR_CLIMB_SERVO_PWM_PORT, CLIMB_SERVO_MAX_DEGREES);
         // climbServo.set(value);
 
         // -----------------------------------
@@ -156,7 +197,9 @@ public class Hardware
         // -----------------------------------
         climbGroup = new MotorControllerGroup(leftClimbMotor, rightClimbMotor);
 
+        // ==============================
         // CLIMB CONSTS
+        // ==============================
         CLIMB_SERVO_POS_OUT = 1.0;
         CLIMB_SERVO_POS_IN = 0.0;
         CLIMB_ENCODER_MAX_HEIGHT = 20.0;
@@ -166,12 +209,49 @@ public class Hardware
         RIGHT_CLIMB_ENCODER_SPEED = 0.3;
         BOTH_CLIMB_ENCODER_SPEED = 0.3;
 
+        // -----------------------------------
+        // configure the drive system encoders
+        // -----------------------------------
+        leftDriveEncoder = new KilroyEncoder((WPI_TalonFX) leftBottomMotor);
+        leftDriveEncoder.setDistancePerPulse(CURRENT_YEAR_DISTANCE_PER_TICK);
+        leftDriveEncoder.setReverseDirection(true);
+
+        rightDriveEncoder = new KilroyEncoder((WPI_TalonFX) rightBottomMotor);
+        rightDriveEncoder.setDistancePerPulse(CURRENT_YEAR_DISTANCE_PER_TICK);
+        rightDriveEncoder.setReverseDirection(true);
+
+        // -----------------------------------
+        // Configure launch encoders
+        // -----------------------------------
+        launchMotorEncoder = new KilroyEncoder((CANSparkMax) launchMotorForward, 1);
+
         // ------------------------------------
         // configure climb encoders
         // ------------------------------------
         climbEncoder = new KilroyEncoder((WPI_TalonSRX) leftClimbMotor);
-        climbEncoder.setDistancePerPulse(PREV_YEAR_CLIMB_DISTANCE_PER_TICK);
+        climbEncoder.setDistancePerPulse(CURRENT_YEAR_CLIMB_DISTANCE_PER_TICK);
         climbEncoder.setReverseDirection(true);
+
+        // ------------------------------------
+        // Drive System
+        // ------------------------------------
+        tankTransmission = new TankTransmission(leftDriveGroup, rightDriveGroup);
+        drive = new Drive(tankTransmission, leftDriveEncoder, rightDriveEncoder, gyro);
+
+        gyro.calibrate();
+
+        // ------------------------------------
+        // Pnuematics
+        // ------------------------------------
+
+        intakePiston = new DoubleSolenoid(5, 4);
+        intakePiston.setReverse(true);
+
+        // --------------------------------------
+        // Launch system
+        // --------------------------------------
+        launcher = new Launcher(launchMotorGroup, launchMotorEncoder);
+
     } // end of initializeCurrentYear()
 
     /**********************************************
@@ -185,6 +265,7 @@ public class Hardware
     {
         // ==============CAN INIT=============
         // Motor Controllers
+        // ====================================
         leftTopMotor = new WPI_TalonFX(6);
         leftTopMotor.setInverted(false);
         rightBottomMotor = new WPI_TalonFX(12);
@@ -228,7 +309,9 @@ public class Hardware
         // -----------------------------------
         climbGroup = new MotorControllerGroup(leftClimbMotor, rightClimbMotor);
 
+        // ===========================
         // CLIMB CONSTS
+        // ===========================
         CLIMB_SERVO_POS_OUT = 1.0;
         CLIMB_SERVO_POS_IN = 0.0;
         CLIMB_ENCODER_MAX_HEIGHT = 20.0;
@@ -252,7 +335,6 @@ public class Hardware
         // -----------------------------------
         // Configure launch encoders
         // -----------------------------------
-
         launchMotorEncoder = new KilroyEncoder((CANSparkMax) launchMotorForward, 1);
 
         // ------------------------------------
@@ -266,7 +348,6 @@ public class Hardware
         // Drive System
         // ------------------------------------
         tankTransmission = new TankTransmission(leftDriveGroup, rightDriveGroup);
-
         drive = new Drive(tankTransmission, leftDriveEncoder, rightDriveEncoder, gyro);
 
         gyro.calibrate();
@@ -274,15 +355,12 @@ public class Hardware
         // ------------------------------------
         // Pnuematics
         // ------------------------------------
-
         intakePiston = new DoubleSolenoid(5, 4);
-
         intakePiston.setReverse(true);
 
         // --------------------------------------
         // Launch system
         // --------------------------------------
-
         launcher = new Launcher(launchMotorGroup, launchMotorEncoder);
     } // end of initializePrevYear()
 
@@ -326,15 +404,21 @@ public class Hardware
     public static KilroyServo climbServo = null;
 
     public static KilroyEncoder climbEncoder = null;
+
     public static double PREV_YEAR_CLIMB_DISTANCE_PER_TICK = .004507692;
-    public static double CLIMB_ENCODER_MAX_HEIGHT;
+    public static double CURRENT_YEAR_CLIMB_DISTANCE_PER_TICK = .004507692;
+
+    public static double CLIMB_ENCODER_MAX_HEIGHT = 0.0;
+
     public static int PREV_YEAR_CLIMB_SERVO_PWM_PORT = 2;
-    public static double CLIMB_SERVO_MAX_DEGREES;
-    public static double CLIMB_SERVO_POS_OUT;
-    public static double CLIMB_SERVO_POS_IN;
-    public static double LEFT_CLIMB_ENCODER_SPEED;
-    public static double RIGHT_CLIMB_ENCODER_SPEED;
-    public static double BOTH_CLIMB_ENCODER_SPEED;
+    public static int CURRENT_YEAR_CLIMB_SERVO_PWM_PORT = 2;
+
+    public static double CLIMB_SERVO_MAX_DEGREES = 0.0;
+    public static double CLIMB_SERVO_POS_OUT = 0.0;
+    public static double CLIMB_SERVO_POS_IN = 0.0;
+    public static double LEFT_CLIMB_ENCODER_SPEED = 0.0;
+    public static double RIGHT_CLIMB_ENCODER_SPEED = 0.0;
+    public static double BOTH_CLIMB_ENCODER_SPEED = 0.0;
     // public static double PREV_YEAR_SERVO_INIT_POS = 0;
 
     // **********************************************************
@@ -361,7 +445,7 @@ public class Hardware
     // **********************************************************
     public static Potentiometer delayPot = new Potentiometer(2);
 
-    public static UltraSonic ultraSonic;
+    public static UltraSonic ultraSonic = null;
 
     // **********************************************************
     // PNEUMATIC DEVICES
@@ -369,7 +453,7 @@ public class Hardware
 
     public static Compressor compressor = new Compressor(PneumaticsModuleType.CTREPCM);
 
-    public static DoubleSolenoid intakePiston;
+    public static DoubleSolenoid intakePiston = null;
 
     // **********************************************************
     // roboRIO CONNECTIONS CLASSES
@@ -414,7 +498,6 @@ public class Hardware
     // ------------------------------------
     // Utility classes
     // ------------------------------------
-
     public static Timer autoTimer = new Timer();
 
     public static Timer launchDelayTimer = new Timer();
@@ -430,10 +513,11 @@ public class Hardware
     // Drive system
     // ------------------------------------
     public final static double PREV_YEAR_DISTANCE_PER_TICK = .000746;
+    public final static double CURRENT_YEAR_DISTANCE_PER_TICK = .000746;
 
-    public static Drive drive;
+    public static Drive drive = null;
 
-    public static TankTransmission tankTransmission;
+    public static TankTransmission tankTransmission = null;
 
     public static ADXRS450_Gyro gyro = new ADXRS450_Gyro();
 
