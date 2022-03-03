@@ -134,9 +134,13 @@ public class Teleop
             {
             ballHandler.processBallHandler(BallHandler.PROCESS.OUTTAKE);
             }
-        else
+        if (Hardware.leftOperator.getTrigger() == true && Hardware.outtakeButton.get() == false)
             {
-            ballHandler.processBallHandler(BallHandler.PROCESS.OUTTAKE_STOP);
+            ballHandler.processBallHandler(BallHandler.PROCESS.INTAKE);
+            }
+        if (Hardware.leftOperator.getTrigger() == false && Hardware.outtakeButton.get() == false)
+            {
+            ballHandler.processBallHandler(BallHandler.PROCESS.INTAKE_AND_OUTTAKE_STOP);
             }
 
         // Switch Camera
@@ -214,12 +218,12 @@ public class Teleop
             }
         if (Hardware.launchButton.get() == false || Hardware.ballCounter.BallCount == minNumBallsCarriable)
             {
-            Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.RESTING, LAUNCH_TYPE.OFF);
             ballHandler.processBallHandler(PROCESS.FIRE_STOP);
+            Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.RESTING, LAUNCH_TYPE.LOW);
             }
         // ================== DRIVER CONTROLS =================
         // Shifts Gears
-        Hardware.tankTransmission.shiftGears(Hardware.driverGearUpPressed, Hardware.driverGearDownPressed);
+        Hardware.tankTransmission.shiftGears(Hardware.rightDriver.getTrigger(), Hardware.leftDriver.getTrigger());
 
         Hardware.drive.drive(Hardware.leftDriver, Hardware.rightDriver);
 

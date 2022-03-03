@@ -745,23 +745,27 @@ public class Autonomous
     {
         switch (spinState)
             {
+            // Executes the turn method
             case SPIN:
-                // if (Hardware.drive.turnDegrees(TURN_AROUND_DEGREES, TURN_SPEED_PREV_YEAR,
-                //         TURN_ACCELERATION_SECONDS_PREV_YEAR, USING_GYRO_FOR_TURN_PREV_YEAR) == true)
-                //     {
-                //     spinState = SPIN_STATE.STOP_SPIN;
-                //     }
-                if (Hardware.drive.arc(TURN_SPEED_PREV_YEAR, 10, 10, TURN_ACCELERATION_SECONDS_PREV_YEAR) == true)
-                {
+                if (Hardware.drive.turnDegrees(TURN_AROUND_DEGREES, TURN_SPEED_PREV_YEAR,
+                        TURN_ACCELERATION_SECONDS_PREV_YEAR, USING_GYRO_FOR_TURN_PREV_YEAR) == true)
+                    {
                     spinState = SPIN_STATE.STOP_SPIN;
-                }
+                    }
+                // if (Hardware.drive.arc(TURN_SPEED_PREV_YEAR, 10, 10,
+                // TURN_ACCELERATION_SECONDS_PREV_YEAR) == true)
+                // {
+                // spinState = SPIN_STATE.STOP_SPIN;
+                // }
                 return false;
+            // Executes the braking
             case STOP_SPIN:
                 if (Hardware.drive.brake(BrakeType.AFTER_TURN) == true)
                     {
                     spinState = SPIN_STATE.END;
                     }
                 return false;
+            // Finished
             case END:
                 return true;
             default:
@@ -783,6 +787,7 @@ public class Autonomous
         Hardware.launcher.launchAutoGeneral(type);
         switch (launchAutoState)
             {
+            // Checks if the top rl is on and moves to the corresponding state
             case START_DROP:
                 if (Hardware.ballPickup4.isOn() == true)
                     {
@@ -795,6 +800,7 @@ public class Autonomous
                     return false;
                     }
                 return false;
+            // Moves the conveyor until the rl is triggered
             case RL_OFF1:
                 // TODO Move the conveyor in this state
                 if (Hardware.ballPickup4.isOn() == true)
@@ -803,6 +809,7 @@ public class Autonomous
                     return false;
                     }
                 return false;
+            // Waits until the launcher returns a ready to fire status
             case RL_TRIGGERED:
                 // If the rl is off and the launcher is ready to fire, move the conveyor to fire
                 // the ball
@@ -812,6 +819,7 @@ public class Autonomous
                     launchAutoState = LAUNCH_AUTO_STATE.FIRING;
                     }
                 return false;
+            // Moves the conveyor to fire
             case FIRING:
                 // Wait until the top rl does not see the ball to move on to a short delay to
                 // ensure that the ball has been fired
@@ -821,6 +829,7 @@ public class Autonomous
                     launchAutoState = LAUNCH_AUTO_STATE.FIRING_DELAY;
                     }
                 return false;
+            // Brief wait to ensure that the ball has been fired
             case FIRING_DELAY:
                 // Delay to turn off the launcher after we assume enough time has passed to fire
                 // the stored ball

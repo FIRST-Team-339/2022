@@ -34,24 +34,28 @@ public class Launcher
     {
         switch (type)
             {
+            // Case for shooting the low goal from in front of the wall
             case LOW:
                 if (launchAuto(LAUNCH_MOTOR_SPEED_LOW_PREV, TARGET_MOTOR_RPM_LOW_PREV) == true)
                     {
                     return true;
                     }
                 return false;
+            // Case for shooting to the high goal
             case HIGH:
                 if (launchAuto(LAUNCH_MOTOR_SPEED_HIGH_PREV, TARGET_MOTOR_RPM_HIGH_PREV) == true)
                     {
                     return true;
                     }
                 return false;
+            // Case for shooting in the low goal from the starting position
             case AUTO:
                 if (launchAuto(LAUNCH_MOTOR_SPEED_AUTO_PREV, TARGET_MOTOR_RPM_AUTO_PREV) == true)
                     {
                     return true;
                     }
                 return false;
+            // Turns off the launcher
             case OFF:
                 this.launchStatusAuto = LAUNCH_STATUS_AUTO.RESTING;
                 this.launchStateAuto = LAUNCH_STATE_AUTO.RESTING;
@@ -72,24 +76,28 @@ public class Launcher
     {
         switch (launchType)
             {
+            // Case for shooting in the low goal from the wall
             case LOW:
                 if (launchAuto(LAUNCH_MOTOR_SPEED_LOW_PREV, TARGET_MOTOR_RPM_LOW_PREV) == true)
                     {
                     return true;
                     }
                 return false;
+            // Case for shooting in the high goal
             case HIGH:
                 if (launchAuto(LAUNCH_MOTOR_SPEED_HIGH_PREV, TARGET_MOTOR_RPM_HIGH_PREV) == true)
                     {
                     return true;
                     }
                 return false;
+            // Case for shooting from the starting position
             case AUTO:
                 if (launchAuto(LAUNCH_MOTOR_SPEED_AUTO_PREV, TARGET_MOTOR_RPM_AUTO_PREV) == true)
                     {
                     return true;
                     }
                 return false;
+            // Case for turning off the launcher
             case OFF:
                 this.launchStatusAuto = LAUNCH_STATUS_AUTO.RESTING;
                 this.launchStateAuto = LAUNCH_STATE_AUTO.RESTING;
@@ -116,6 +124,7 @@ public class Launcher
         // System.out.println("Launch state: " + this.launchState);
         switch (this.launchStateAuto)
             {
+            // State where the launcher is off
             case RESTING:
                 launchMotors.set(0.0);
                 if (this.doneResting == true)
@@ -124,6 +133,8 @@ public class Launcher
                     this.launchStateAuto = LAUNCH_STATE_AUTO.SPINNING_UP;
                     }
                 return false;
+            // State when the launch motors are running at the inital speed until they reach
+            // the target speed
             case SPINNING_UP:
                 this.launchMotors.set(motorSpeed);
                 // System.out.println("Motor rpm: " + launchEncoder.getRPM());
@@ -134,6 +145,7 @@ public class Launcher
                     this.launchStateAuto = LAUNCH_STATE_AUTO.AT_SPEED;
                     }
                 return false;
+            // Checks that the rpm of the launch wheels is consistently within the deadband
             case AT_SPEED:
                 // Checks if the motor voltage is correct
                 if (maintainSpeed(motorSpeed, target) == true && this.doneCheckingSpeed == true)
@@ -142,6 +154,7 @@ public class Launcher
                     this.launchStateAuto = LAUNCH_STATE_AUTO.READY_TO_FIRE;
                     }
                 return false;
+            // State where the launcher is at speed and ready to fire
             case READY_TO_FIRE:
                 // System.out.println("Motor rpm: " + launchEncoder.getRPM());
                 // System.out.println("Motor speed: " + this.newMotorSpeed);
@@ -171,9 +184,11 @@ public class Launcher
     {
         switch (type)
             {
+            // Case for launching from in front of the wall in teleop
             case LOW:
                 this.launchTeleop(state, LAUNCH_MOTOR_SPEED_LOW_PREV, TARGET_MOTOR_RPM_LOW_PREV);
                 return this.launchStatusTeleop;
+            // Case for scoring in the high goal in teleop
             case HIGH:
                 this.launchTeleop(state, LAUNCH_MOTOR_SPEED_HIGH_PREV, TARGET_MOTOR_RPM_HIGH_PREV);
                 return this.launchStatusTeleop;
@@ -194,12 +209,16 @@ public class Launcher
      */
     private void launchTeleop(LAUNCH_STATE_TELEOP state, double initalSpeed, double targetRPM)
     {
+        // System.out.println("Launch teleop state: " + state);
         switch (state)
             {
+            // The launch motors are off
             case RESTING:
                 launchMotors.set(0.0);
                 this.launchStatusAuto = LAUNCH_STATUS_AUTO.RESTING;
                 break;
+            // The motors are supplied the inital voltage and waits until the rpm of the
+            // wheels reaches the target
             case SPINNING_UP:
                 this.launchMotors.set(initalSpeed);
                 if (this.launchEncoder.getRPM() >= targetRPM)
@@ -212,13 +231,15 @@ public class Launcher
                     }
                 // System.out.println("Motor rpm: " + launchEncoder.getRPM());
                 break;
-            case VERIFYING_VOLTAGE:
+            // Ensures that the launch wheels spin consistently within the deadband
+            case AT_SPEED:
                 // Checks if the motor voltage is correct
                 // TODO this may create a problem if you attempt to verify voltage twice without
-                // resetting the status
+                // changing the status
                 if (maintainSpeed(initalSpeed, targetRPM) == true
                         || this.launchStatusTeleop == LAUNCH_STATUS_TELEOP.DONE_CHECKING_SPEED)
                     {
+                    this.maintainingIterations = 0;
                     this.launchStatusTeleop = LAUNCH_STATUS_TELEOP.DONE_CHECKING_SPEED;
                     }
                 else
@@ -226,12 +247,13 @@ public class Launcher
                     this.launchStatusTeleop = LAUNCH_STATUS_TELEOP.CHECKING_SPEED;
                     }
                 break;
-            case READY_TO_FIRE:
-                // System.out.println("Motor rpm: " + launchEncoder.getRPM());
-                // System.out.println("Motor speed: " + this.newMotorSpeed);
-                this.maintainingIterations = 0;
-                this.launchStatusTeleop = LAUNCH_STATUS_TELEOP.FIRING;
-                break;
+            // // Returns that the launcher is firing after ensuring that the rpm is correct
+            // case READY_TO_FIRE:
+            // // System.out.println("Motor rpm: " + launchEncoder.getRPM());
+            // // System.out.println("Motor speed: " + this.newMotorSpeed);
+            // this.maintainingIterations = 0;
+            // this.launchStatusTeleop = LAUNCH_STATUS_TELEOP.FIRING;
+            // break;
             default:
                 break;
             }
@@ -454,7 +476,7 @@ public class Launcher
 
     public enum LAUNCH_STATE_TELEOP
         {
-        RESTING, SPINNING_UP, VERIFYING_VOLTAGE, READY_TO_FIRE;
+        RESTING, SPINNING_UP, AT_SPEED, READY_TO_FIRE;
         }
 
     public enum LAUNCH_STATUS_AUTO
