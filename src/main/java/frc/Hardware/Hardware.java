@@ -20,6 +20,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import frc.HardwareInterfaces.BallHandler;
 import frc.HardwareInterfaces.DoubleSolenoid;
 import frc.HardwareInterfaces.DoubleThrowSwitch;
 import frc.HardwareInterfaces.KilroyCamera;
@@ -534,5 +535,6 @@ public class Hardware
     // -------------------
     // Subassemblies
     // -------------------
+    public static BallHandler ballHandler = new BallHandler();
 
     }// end class

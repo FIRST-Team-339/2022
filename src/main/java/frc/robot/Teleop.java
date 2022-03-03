@@ -32,6 +32,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
 import frc.Hardware.Hardware;
+
 import frc.HardwareInterfaces.BallHandler;
 import frc.HardwareInterfaces.BallHandler.FIRE;
 import frc.HardwareInterfaces.BallHandler.PROCESS;
@@ -106,8 +107,6 @@ public class Teleop
         boolean openClimbServoButtonPressed = Hardware.openClimbServo.get();
         boolean closeClimbServoButtonPressed = Hardware.closeClimbServo.get();
 
-        // Launch Variables
-
         // Joystick Ball Add/Sub Variables
         boolean addBallButtonOn = Hardware.addBallButton.isOn();
         boolean addBallButtonOnNow = Hardware.addBallButton.isOnCheckNow();
@@ -127,20 +126,6 @@ public class Teleop
         if (currentGear < Hardware.PREV_YEAR_GEAR_1)
             {
             Hardware.tankTransmission.setGear(Hardware.PREV_YEAR_GEAR_1);
-            }
-
-        // Outtake and Intake
-        if (Hardware.outtakeButton.get() == true)
-            {
-            ballHandler.processBallHandler(BallHandler.PROCESS.OUTTAKE);
-            }
-        if (Hardware.leftOperator.getTrigger() == true && Hardware.outtakeButton.get() == false)
-            {
-            ballHandler.processBallHandler(BallHandler.PROCESS.INTAKE);
-            }
-        if (Hardware.leftOperator.getTrigger() == false && Hardware.outtakeButton.get() == false)
-            {
-            ballHandler.processBallHandler(BallHandler.PROCESS.INTAKE_AND_OUTTAKE_STOP);
             }
 
         // Switch Camera
@@ -206,21 +191,15 @@ public class Teleop
                 // SET SPEED TO ZERO
                 Hardware.climbGroup.set(0);
                 }
+
+        processFireOuttakeIntake();
+
         // Operator Dashboard Variables
         SmartDashboard.putString("DB/String 5", " " + Hardware.ballCounter.BallCount + " ball(s)");
         // System.out.println("BALL COUNT: " + BallCounter.BallCount);
 
         // =============== AUTOMATED SUBSYSTEMS ===============
         // ================= OPERATOR CONTROLS ================
-        if (Hardware.launchButton.get() == true && Hardware.ballCounter.BallCount > minNumBallsCarriable)
-            {
-            ballHandler.processBallHandler(PROCESS.FIRE);
-            }
-        if (Hardware.launchButton.get() == false || Hardware.ballCounter.BallCount == minNumBallsCarriable)
-            {
-            ballHandler.processBallHandler(PROCESS.FIRE_STOP);
-            Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.RESTING, LAUNCH_TYPE.LOW);
-            }
         // ================== DRIVER CONTROLS =================
         // Shifts Gears
         Hardware.tankTransmission.shiftGears(Hardware.rightDriver.getTrigger(), Hardware.leftDriver.getTrigger());
@@ -361,6 +340,31 @@ public class Teleop
     }
 
     // PRIVATE FUNCTIONS
+    private static void processFireOuttakeIntake()
+    {
+        int minNumBallsCarriable = 0;
+        if (Hardware.outtakeButton.get() == true)
+            {
+            Hardware.ballHandler.processBallHandler(BallHandler.PROCESS.OUTTAKE);
+            }
+        if (Hardware.leftOperator.getTrigger() == true && Hardware.outtakeButton.get() == false)
+            {
+            Hardware.ballHandler.processBallHandler(BallHandler.PROCESS.INTAKE);
+            }
+        if (Hardware.leftOperator.getTrigger() == false && Hardware.outtakeButton.get() == false)
+            {
+            Hardware.ballHandler.processBallHandler(BallHandler.PROCESS.INTAKE_AND_OUTTAKE_STOP);
+            }
+        if (Hardware.launchButton.get() == true && Hardware.ballCounter.BallCount > minNumBallsCarriable)
+            {
+            Hardware.ballHandler.processBallHandler(PROCESS.FIRE);
+            }
+        if (Hardware.launchButton.get() == false || Hardware.ballCounter.BallCount == minNumBallsCarriable)
+            {
+            Hardware.ballHandler.processBallHandler(PROCESS.FIRE_STOP);
+            Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.RESTING, LAUNCH_TYPE.LOW);
+            }
+    }
 
     /**
      * Stops & resets the climb timer, sets the climb servo to be in the "out"
@@ -395,5 +399,4 @@ public class Teleop
         Hardware.rightClimbMotor.set(Hardware.RIGHT_CLIMB_ENCODER_SPEED);
     }
 
-    static BallHandler ballHandler = new BallHandler();
     } // end class

@@ -31,7 +31,6 @@ public class BallHandler
             fireState = FIRE.FIRE_START_LAUNCHER;
             outtakeState = OUTTAKE.OUTTAKE_INIT;
             intakeState = INTAKE.INTAKE_INIT;
-            bhLauncherState = BH_LAUNCHER.RESTING;
             intakeMotorIntakeSpeed = 0.5;
             intakeMotorOuttakeSpeed = -0.5;
             conveyerWheelIntakeSpeed = -0.5;
@@ -281,27 +280,10 @@ public class BallHandler
         return fireState;
     }
 
-    public static BH_LAUNCHER processLauncher()
-    {
-        switch (bhLauncherState)
-            {
-            case RESTING:
-                break;
-            case SPINNING_UP:
-                break;
-            case VERIFYING_VOLTAGE:
-                break;
-            case FIRING:
-                break;
-            }
-        return bhLauncherState;
-    }
-
     // Add Variales to init when made
     private static FIRE fireState = FIRE.FIRE_START_LAUNCHER;
     private static OUTTAKE outtakeState = OUTTAKE.OUTTAKE_INIT;
     private static INTAKE intakeState = INTAKE.INTAKE_INIT;
-    private static BH_LAUNCHER bhLauncherState = BH_LAUNCHER.RESTING;
     private static double intakeMotorIntakeSpeed;
     private static double intakeMotorOuttakeSpeed;
     private static double conveyerWheelIntakeSpeed;
