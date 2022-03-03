@@ -129,7 +129,10 @@ public class Teleop
             Hardware.tankTransmission.setGear(Hardware.PREV_YEAR_GEAR_1);
             }
 
-        // Outtake and Intake
+        // Outtake, Intake, and launcher
+        // TODO Conflict: all stop cases in processBallHandler turn off the conveyor
+        // motor. Could possibly be fixed now. Test.
+
         if (Hardware.outtakeButton.get() == true)
             {
             ballHandler.processBallHandler(BallHandler.PROCESS.OUTTAKE);
@@ -138,9 +141,20 @@ public class Teleop
             {
             ballHandler.processBallHandler(BallHandler.PROCESS.INTAKE);
             }
-        if (Hardware.leftOperator.getTrigger() == false && Hardware.outtakeButton.get() == false)
+        if (Hardware.launchButton.get() == true && Hardware.ballCounter.BallCount > minNumBallsCarriable)
             {
+            ballHandler.processBallHandler(PROCESS.FIRE);
+            }
+        if (Hardware.leftOperator.getTrigger() == false && Hardware.outtakeButton.get() == false
+                && Hardware.launchButton.get() == false)
+            {
+            ballHandler.processBallHandler(BallHandler.PROCESS.FIRE_STOP);
             ballHandler.processBallHandler(BallHandler.PROCESS.INTAKE_AND_OUTTAKE_STOP);
+            }
+        if (Hardware.ballCounter.BallCount <= minNumBallsCarriable)
+            {
+            Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.RESTING, LAUNCH_TYPE.LOW);
+            ballHandler.processBallHandler(BallHandler.PROCESS.RESET_FIRE);
             }
 
         // Switch Camera
@@ -212,15 +226,6 @@ public class Teleop
 
         // =============== AUTOMATED SUBSYSTEMS ===============
         // ================= OPERATOR CONTROLS ================
-        if (Hardware.launchButton.get() == true && Hardware.ballCounter.BallCount > minNumBallsCarriable)
-            {
-            ballHandler.processBallHandler(PROCESS.FIRE);
-            }
-        if (Hardware.launchButton.get() == false || Hardware.ballCounter.BallCount == minNumBallsCarriable)
-            {
-            ballHandler.processBallHandler(PROCESS.FIRE_STOP);
-            Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.RESTING, LAUNCH_TYPE.LOW);
-            }
         // ================== DRIVER CONTROLS =================
         // Shifts Gears
         Hardware.tankTransmission.shiftGears(Hardware.rightDriver.getTrigger(), Hardware.leftDriver.getTrigger());
