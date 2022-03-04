@@ -439,7 +439,6 @@ public class Hardware
     public static LightSensor ballPickup2 = new LightSensor(22, true);
     public static LightSensor ballPickup3 = new LightSensor(23);
     public static LightSensor ballPickup4 = new LightSensor(24);
-    public static LightSensor floorLight = new LightSensor(9);
 
     // **********************************************************
     // ANALOG I/O
@@ -483,6 +482,7 @@ public class Hardware
     public static JoystickButton climbDownButton = new JoystickButton(rightOperator, 2);
     public static JoystickButton outtakeButton = new JoystickButton(leftOperator, 2);
     public static JoystickButton fireLow = new JoystickButton(rightOperator, 11);
+    public static JoystickButton fireOverride = new JoystickButton(leftOperator, 11);
     public static MomentarySwitch subtractBallButton = new MomentarySwitch(rightOperator, 8, false);
     public static MomentarySwitch addBallButton = new MomentarySwitch(rightOperator, 9, false);
 

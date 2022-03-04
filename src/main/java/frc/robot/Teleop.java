@@ -296,9 +296,6 @@ public class Teleop
 
         // ---------- DIGITAL ----------
 
-        // Sensors FIX THESE
-
-        // System.out.println("Floor Light is " + Hardware.floorLight.isOn());
         // System.out.println("Ball PickUp 1 is " + Hardware.ballPickup1.isOn());
         // System.out.println("Ball Pickup 2 is " + Hardware.ballPickup2.isOn());
         // System.out.println("Ball Pickup 3 is " + Hardware.ballPickup3.isOn());
@@ -357,7 +354,9 @@ public class Teleop
             Hardware.ballHandler.processBallHandler(BallHandler.PROCESS.OUTTAKE);
             }
         // Sees if fire button is pressed
-        else if (Hardware.launchButton.get() == true && Hardware.ballCounter.BallCount > minNumBallsCarriable)
+        else if (Hardware.launchButton.get() == true && Hardware.fireOverride.get() == true
+                || Hardware.launchButton.get() == true && Hardware.fireOverride.get() == false
+                        && Hardware.ballCounter.BallCount > minNumBallsCarriable)
             {
             // Fires
             Hardware.ballHandler.processBallHandler(PROCESS.FIRE);
