@@ -170,32 +170,37 @@ public class BallHandler
             {
             case INTAKE_INIT:
                 Hardware.intakePiston.setForward(true);
-                if (Hardware.ballPickup1.isOn() == false && Hardware.ballPickup2.isOn() == false)
+                if (Hardware.ballPickup2.isOn() == false && Hardware.ballPickup1.isOn() == false)
                     {
                     Hardware.conveyorGroup.set(conveyerwheelOutakeSpeed);
                     }
                 else
                     {
-                    intakeState = INTAKE.INTAKE_CONVEYOR_UP_RL2_OFF;
+                    Hardware.conveyorGroup.set(motorRestingSpeed);
+                    intakeState = INTAKE.INTAKE_CONVEYOR_UP_RL1_OFF;
                     }
                 break;
-            case INTAKE_CONVEYOR_UP_RL2_OFF:
-                if (Hardware.ballPickup2.isOn() == false)
+            case INTAKE_CONVEYOR_UP_RL1_OFF:
+                if (Hardware.ballPickup1.isOn() == true)
                     {
                     Hardware.conveyorGroup.set(conveyerWheelIntakeSpeed);
+                    intakeState = INTAKE.INTAKE_CONVEYOR_UP_RL1_ON;
                     }
-                else
+                break;
+            case INTAKE_CONVEYOR_UP_RL1_ON:
+                if (Hardware.ballPickup1.isOn() == false)
+                    {
+                    Hardware.ballCounter.addCheckCount(1);
+                    intakeState = INTAKE.INTAKE_CONVEYOR_UP_CHECK_FOR_RL2;
+                    }
+                Hardware.conveyorGroup.set(conveyerWheelIntakeSpeed);
+                break;
+            case INTAKE_CONVEYOR_UP_CHECK_FOR_RL2:
+                if (Hardware.ballPickup2.isOn() == true)
                     {
                     Hardware.conveyorGroup.set(motorRestingSpeed);
+                    intakeState = INTAKE.INTAKE_INIT;
                     }
-                break;
-            case INTAKE_CONVEYOR_UP_RL2_ON:
-                if (Hardware.ballPickup2.isOn() == false)
-                    {
-
-                    }
-                break;
-            case INTAKE_CONVEYOR_UP_RL2_PASSED:
                 break;
             case INTAKE_END:
                 Hardware.intakeMotor.set(motorRestingSpeed);
@@ -314,7 +319,7 @@ public class BallHandler
 
     public static enum INTAKE
         {
-        INTAKE_INIT, INTAKE_CONVEYOR_UP_RL2_ON, INTAKE_CONVEYOR_UP_RL2_PASSED, INTAKE_CONVEYOR_UP_RL2_OFF, INTAKE_END;
+        INTAKE_INIT, INTAKE_CONVEYOR_UP_CHECK_FOR_RL2, INTAKE_CONVEYOR_UP_RL1_ON, INTAKE_CONVEYOR_UP_RL1_OFF, INTAKE_END;
         }
 
     }
