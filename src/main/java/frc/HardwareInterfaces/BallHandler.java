@@ -8,6 +8,8 @@
 
 package frc.HardwareInterfaces;
 
+import javax.lang.model.util.ElementScanner6;
+
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.Hardware.Hardware;
 import frc.Utils.BallCounter;
@@ -158,59 +160,42 @@ public class BallHandler
 
     private INTAKE processIntakeFunc()
     {
-        // System.out.println(intakeState);
+        System.out.println("Intake state: " + intakeState);
+        Hardware.intakeMotor.set(intakeMotorIntakeSpeed);
+        if (Hardware.ballCounter.BallCount >= Hardware.ballCounter.getMaximumBallCount())
+            {
+            intakeState = INTAKE.INTAKE_END;
+            }
         switch (intakeState)
             {
             case INTAKE_INIT:
-                Hardware.intakeMotor.set(intakeMotorIntakeSpeed);
                 Hardware.intakePiston.setForward(true);
-                if (Hardware.ballPickup1.isOn() == true)
+                if (Hardware.ballPickup1.isOn() == false && Hardware.ballPickup2.isOn() == false)
                     {
-                    intakeState = INTAKE.INTAKE_WORKING_RL1_ON;
-                    break;
+                    Hardware.conveyorGroup.set(conveyerwheelOutakeSpeed);
                     }
-                if (Hardware.ballPickup1.isOn() == false)
+                else
                     {
-                    intakeState = INTAKE.INTAKE_WORKING_RL1_OFF;
-                    break;
+                    intakeState = INTAKE.INTAKE_CONVEYOR_UP_RL2_OFF;
                     }
                 break;
-            case INTAKE_WORKING_RL1_OFF:
-                Hardware.intakeMotor.set(intakeMotorIntakeSpeed);
-                if (Hardware.ballPickup2.isOn() == false && Hardware.ballPickup1.isOn() == false)
+            case INTAKE_CONVEYOR_UP_RL2_OFF:
+                if (Hardware.ballPickup2.isOn() == false)
                     {
                     Hardware.conveyorGroup.set(conveyerWheelIntakeSpeed);
                     }
                 else
                     {
-                    if (Hardware.ballPickup1.isOn() == true)
-                        {
-                        Hardware.ballCounter.addCheckCount(1);
-                        }
                     Hardware.conveyorGroup.set(motorRestingSpeed);
-                    intakeState = INTAKE.INTAKE_WORKING_RL1_ON;
                     }
                 break;
-            case INTAKE_WORKING_RL1_ON:
-                Hardware.intakeMotor.set(intakeMotorIntakeSpeed);
-                if (Hardware.ballPickup3.isOn() == false)
+            case INTAKE_CONVEYOR_UP_RL2_ON:
+                if (Hardware.ballPickup2.isOn() == false)
                     {
-                    if (Hardware.ballPickup1.isOn() == false)
-                        {
-                        checkForBallInIntake = true;
-                        }
-                    Hardware.conveyorGroup.set(conveyerWheelIntakeSpeed);
+
                     }
-                else
-                    {
-                    if (Hardware.ballPickup1.isOn() == true && checkForBallInIntake == true)
-                        {
-                        Hardware.ballCounter.addCheckCount(1);
-                        }
-                    Hardware.conveyorGroup.set(motorRestingSpeed);
-                    checkForBallInIntake = false;
-                    intakeState = INTAKE.INTAKE_END;
-                    }
+                break;
+            case INTAKE_CONVEYOR_UP_RL2_PASSED:
                 break;
             case INTAKE_END:
                 Hardware.intakeMotor.set(motorRestingSpeed);
@@ -329,7 +314,7 @@ public class BallHandler
 
     public static enum INTAKE
         {
-        INTAKE_INIT, INTAKE_WORKING_RL1_ON, INTAKE_WORKING_RL1_2_OFF, INTAKE_WORKING_RL1_OFF, INTAKE_END;
+        INTAKE_INIT, INTAKE_CONVEYOR_UP_RL2_ON, INTAKE_CONVEYOR_UP_RL2_PASSED, INTAKE_CONVEYOR_UP_RL2_OFF, INTAKE_END;
         }
 
     }
