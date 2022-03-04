@@ -170,27 +170,25 @@ public class Teleop
                     // THE REQUIRED WAIT TIME
                     if (Hardware.climbTimer.hasElapsed(Hardware.climbTimerWait) && Hardware.climbTimer.get() != 0.0)
                         resetClimbTimerAndSetSpeeds();
-                    else
-                        if (Hardware.climbTimer.get() == 0.0)
-                            setClimbSpeeds();
+                    else if (Hardware.climbTimer.get() == 0.0)
+                        setClimbSpeeds();
                     }
                 // Hardware.climbGroup.set(.3);
                 }
             }
+        else if (climbDownButtonPressed == true)
+            {
+            Hardware.climbGroup.set(-Hardware.BOTH_CLIMB_ENCODER_SPEED);
+            // CHECK IF THE CLIMB ENCODERS ARE BELOW AT LEAST 2 INCHES OF THE MAX HEIGHT,
+            // AND THEN MOVE THE CLIMB SERVO IN
+            if (Hardware.climbEncoder.getDistance() <= Hardware.CLIMB_ENCODER_MAX_HEIGHT - 2)
+                Hardware.climbServo.set(Hardware.CLIMB_SERVO_POS_IN);
+            }
         else
-            if (climbDownButtonPressed == true)
-                {
-                Hardware.climbGroup.set(-Hardware.BOTH_CLIMB_ENCODER_SPEED);
-                // CHECK IF THE CLIMB ENCODERS ARE BELOW AT LEAST 2 INCHES OF THE MAX HEIGHT,
-                // AND THEN MOVE THE CLIMB SERVO IN
-                if (Hardware.climbEncoder.getDistance() <= Hardware.CLIMB_ENCODER_MAX_HEIGHT - 2)
-                    Hardware.climbServo.set(Hardware.CLIMB_SERVO_POS_IN);
-                }
-            else
-                {
-                // SET SPEED TO ZERO
-                Hardware.climbGroup.set(0);
-                }
+            {
+            // SET SPEED TO ZERO
+            Hardware.climbGroup.set(0);
+            }
 
         processFireOuttakeIntake();
 
@@ -340,27 +338,42 @@ public class Teleop
     }
 
     // PRIVATE FUNCTIONS
+
+    /**
+     * Used to fire intake and outtake without conflicts Called when you need to
+     * fire with used buttons
+     * 
+     * 
+     */
     private static void processFireOuttakeIntake()
     {
+        // Used for not firing when we have 0 balls
         int minNumBallsCarriable = 0;
+
+        // Sees if button to outtake is pressed
         if (Hardware.outtakeButton.get() == true)
             {
+            // Outtakes
             Hardware.ballHandler.processBallHandler(BallHandler.PROCESS.OUTTAKE);
             }
-        if (Hardware.leftOperator.getTrigger() == true && Hardware.outtakeButton.get() == false)
+        // Sees if fire button is pressed
+        else if (Hardware.launchButton.get() == true && Hardware.ballCounter.BallCount > minNumBallsCarriable)
             {
-            Hardware.ballHandler.processBallHandler(BallHandler.PROCESS.INTAKE);
-            }
-        if (Hardware.leftOperator.getTrigger() == false && Hardware.outtakeButton.get() == false)
-            {
-            Hardware.ballHandler.processBallHandler(BallHandler.PROCESS.INTAKE_AND_OUTTAKE_STOP);
-            }
-        if (Hardware.launchButton.get() == true && Hardware.ballCounter.BallCount > minNumBallsCarriable)
-            {
+            // Fires
             Hardware.ballHandler.processBallHandler(PROCESS.FIRE);
             }
-        if (Hardware.launchButton.get() == false || Hardware.ballCounter.BallCount == minNumBallsCarriable)
+        // Sees if button to intake is pressed
+        else if (Hardware.leftOperator.getTrigger() == true)
             {
+            // Intakes
+            Hardware.ballHandler.processBallHandler(BallHandler.PROCESS.INTAKE);
+            }
+        // If fire button not pressed or balls = 0, stops firing; if intake and outtake
+        // aren't pressed stops
+        else
+            {
+            // Stops all things
+            Hardware.ballHandler.processBallHandler(BallHandler.PROCESS.INTAKE_AND_OUTTAKE_STOP);
             Hardware.ballHandler.processBallHandler(PROCESS.FIRE_STOP);
             Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.RESTING, LAUNCH_TYPE.LOW);
             }
