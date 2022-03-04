@@ -8,6 +8,8 @@
 
 package frc.HardwareInterfaces;
 
+import javax.lang.model.util.ElementScanner6;
+
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.Hardware.Hardware;
 import frc.Utils.BallCounter;
@@ -158,58 +160,46 @@ public class BallHandler
 
     private INTAKE processIntakeFunc()
     {
-        // System.out.println(intakeState);
+        System.out.println("Intake state: " + intakeState);
+        Hardware.intakeMotor.set(intakeMotorIntakeSpeed);
+        if (Hardware.ballCounter.BallCount >= Hardware.ballCounter.getMaximumBallCount())
+            {
+            intakeState = INTAKE.INTAKE_END;
+            }
         switch (intakeState)
             {
             case INTAKE_INIT:
-                Hardware.intakeMotor.set(intakeMotorIntakeSpeed);
                 Hardware.intakePiston.setForward(true);
-                if (Hardware.ballPickup1.isOn() == true)
-                    {
-                    intakeState = INTAKE.INTAKE_WORKING_RL1_ON;
-                    break;
-                    }
-                if (Hardware.ballPickup1.isOn() == false)
-                    {
-                    intakeState = INTAKE.INTAKE_WORKING_RL1_OFF;
-                    break;
-                    }
-                break;
-            case INTAKE_WORKING_RL1_OFF:
-                Hardware.intakeMotor.set(intakeMotorIntakeSpeed);
                 if (Hardware.ballPickup2.isOn() == false && Hardware.ballPickup1.isOn() == false)
                     {
-                    Hardware.conveyorGroup.set(conveyerWheelIntakeSpeed);
+                    Hardware.conveyorGroup.set(conveyerwheelOutakeSpeed);
                     }
                 else
                     {
-                    if (Hardware.ballPickup1.isOn() == true)
-                        {
-                        Hardware.ballCounter.addCheckCount(1);
-                        }
                     Hardware.conveyorGroup.set(motorRestingSpeed);
-                    intakeState = INTAKE.INTAKE_WORKING_RL1_ON;
+                    intakeState = INTAKE.INTAKE_CONVEYOR_UP_RL1_OFF;
                     }
                 break;
-            case INTAKE_WORKING_RL1_ON:
-                Hardware.intakeMotor.set(intakeMotorIntakeSpeed);
-                if (Hardware.ballPickup3.isOn() == false)
+            case INTAKE_CONVEYOR_UP_RL1_OFF:
+                if (Hardware.ballPickup1.isOn() == true)
                     {
-                    if (Hardware.ballPickup1.isOn() == false)
-                        {
-                        checkForBallInIntake = true;
-                        }
                     Hardware.conveyorGroup.set(conveyerWheelIntakeSpeed);
+                    intakeState = INTAKE.INTAKE_CONVEYOR_UP_RL1_ON;
                     }
-                else
+                break;
+            case INTAKE_CONVEYOR_UP_RL1_ON:
+                if (Hardware.ballPickup1.isOn() == false)
                     {
-                    if (Hardware.ballPickup1.isOn() == true && checkForBallInIntake == true)
-                        {
-                        Hardware.ballCounter.addCheckCount(1);
-                        }
+                    Hardware.ballCounter.addCheckCount(1);
+                    intakeState = INTAKE.INTAKE_CONVEYOR_UP_CHECK_FOR_RL2;
+                    }
+                Hardware.conveyorGroup.set(conveyerWheelIntakeSpeed);
+                break;
+            case INTAKE_CONVEYOR_UP_CHECK_FOR_RL2:
+                if (Hardware.ballPickup2.isOn() == true)
+                    {
                     Hardware.conveyorGroup.set(motorRestingSpeed);
-                    checkForBallInIntake = false;
-                    intakeState = INTAKE.INTAKE_END;
+                    intakeState = INTAKE.INTAKE_INIT;
                     }
                 break;
             case INTAKE_END:
@@ -329,7 +319,7 @@ public class BallHandler
 
     public static enum INTAKE
         {
-        INTAKE_INIT, INTAKE_WORKING_RL1_ON, INTAKE_WORKING_RL1_2_OFF, INTAKE_WORKING_RL1_OFF, INTAKE_END;
+        INTAKE_INIT, INTAKE_CONVEYOR_UP_CHECK_FOR_RL2, INTAKE_CONVEYOR_UP_RL1_ON, INTAKE_CONVEYOR_UP_RL1_OFF, INTAKE_END;
         }
 
     }
