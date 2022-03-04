@@ -83,6 +83,10 @@ public class BallHandler
                 fireState = FIRE.FIRE_END;
                 processFireFunc();
                 fireState = FIRE.FIRE_START_LAUNCHER;
+                break;
+            case RESET_FIRE:
+                fireState = FIRE.FIRE_START_LAUNCHER;
+                break;
             default:
                 break;
             }
@@ -300,7 +304,7 @@ public class BallHandler
 
     public static enum PROCESS
         {
-        RESTING, OUTTAKE, INTAKE, FIRE, INTAKE_AND_OUTTAKE_STOP, INTAKE_STOP, FIRE_STOP;
+        RESTING, OUTTAKE, INTAKE, FIRE, INTAKE_AND_OUTTAKE_STOP, INTAKE_STOP, FIRE_STOP, RESET_FIRE;
         }
 
     public static enum INTAKE_MOTOR
