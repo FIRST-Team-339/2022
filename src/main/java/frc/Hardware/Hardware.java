@@ -226,11 +226,13 @@ public class Hardware
         rightDriveBottomEncoder = new KilroyEncoder((WPI_TalonFX) rightBottomMotor);
         rightDriveBottomEncoder.setDistancePerPulse(CURRENT_YEAR_DISTANCE_PER_TICK);
         rightDriveBottomEncoder.setReverseDirection(true);
+        rightDriveBottomEncoder.getRPM();
 
         // -----------------------------------
         // Configure launch encoders
         // -----------------------------------
         launchMotorEncoder = new KilroyEncoder((CANSparkMax) launchMotorForward, 1);
+        launchMotorEncoder.setDistancePerPulse(LAUNCHER_DISTANCE_PER_PULSE_CURR);
 
         // ------------------------------------
         // configure climb encoders
@@ -280,8 +282,8 @@ public class Hardware
 
         colorWheelMotor = new WPI_TalonSRX(25);
 
-        launchMotorForward = new WPI_TalonSRX(17);
-        launchMotorBackward = new WPI_TalonSRX(18);
+        launchMotorForward = new WPI_TalonFX(17);
+        launchMotorBackward = new WPI_TalonFX(18);
 
         launchMotorGroup = new MotorControllerGroup(launchMotorForward, launchMotorBackward);
 
@@ -348,7 +350,8 @@ public class Hardware
         // -----------------------------------
         // Configure launch encoders
         // -----------------------------------
-        launchMotorEncoder = new KilroyEncoder((WPI_TalonSRX) launchMotorForward);
+        launchMotorEncoder = new KilroyEncoder((WPI_TalonFX) launchMotorForward);
+        launchMotorEncoder.setDistancePerPulse(LAUNCHER_DISTANCE_PER_PULSE_PREV);
 
         // ------------------------------------
         // configure climb encoders
@@ -427,6 +430,9 @@ public class Hardware
 
     public static int PREV_YEAR_CLIMB_SERVO_PWM_PORT = 2;
     public static int CURRENT_YEAR_CLIMB_SERVO_PWM_PORT = 2;
+
+    public static double LAUNCHER_DISTANCE_PER_PULSE_PREV = 1.0 / 2048.0;
+    public static double LAUNCHER_DISTANCE_PER_PULSE_CURR = 1.0;
 
     public static double CLIMB_SERVO_MAX_DEGREES = 0.0;
     public static double CLIMB_SERVO_POS_OUT = 0.0;

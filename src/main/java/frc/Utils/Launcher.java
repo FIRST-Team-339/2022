@@ -580,4 +580,6 @@ public class Launcher
     private final int TARGET_ITERATIONS_PREV = 10;
 
     private final double DISTANCE_PER_PULSE_PREV = 1.0;
+
+    private final double DISTANCE_PER_PULSE_CURR = 1.0;
     }

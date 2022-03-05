@@ -230,7 +230,7 @@ public class Teleop
         // System.out.println("Launcher RPM = " + Hardware.launchMotorEncoder.getRPM());
 
         // Encoder Distances
-        // NEEDS TESTED
+        // DONE
         // System.out.println("LF Distance is " +
         // Hardware.leftDriveTopEncoder.getDistance());
         // System.out.println("LB Distance is " +
@@ -289,7 +289,7 @@ public class Teleop
         // System.out.println("RB Motor Voltage: " + Hardware.rightBottomMotor.get());
 
         // Climb Motor Values
-        // NEEDS TESTED
+        // DONE
         // System.out.println("Voltage of left climb motor is: " +
         // Hardware.leftClimbMotor.get());
         // System.out.println("Voltage of right climb motor is: " +
@@ -299,17 +299,14 @@ public class Teleop
 
         // Launch Motor Values
         // NEEDS TESTED
-        // System.out.println("Launch Motor Forward is: " +
-        // Hardware.launchMotorForward.get());
-        // System.out.println("Launch Motor Backward is: " +
-        // Hardware.launchMotorBackward.get());
+        System.out.println("LMF Voltage is: " + Hardware.launchMotorForward.get());
+        System.out.println("LMB Voltage is: " + Hardware.launchMotorBackward.get());
+        System.out.println("LM RPM is " + Hardware.launchMotorEncoder.getRPM());
 
         // Other Motor Values
-        // NEEDS TESTED
+        // DONE
         // System.out.println("Voltage of intake motor is: " +
         // Hardware.intakeMotor.get());
-        // System.out.println("Voltage of color wheel motor is: " +
-        // Hardware.colorWheelMotor.get());
 
         // -------- SUBSYSTEMS ---------
 
