@@ -210,12 +210,13 @@ public class Launcher
     private void launchTeleop(LAUNCH_STATE_TELEOP state, double initalSpeed, double targetRPM)
     {
         // System.out.println("Launch teleop state: " + state);
+        System.out.println("Launch teleop status: " + this.launchStatusTeleop);
         switch (state)
             {
             // The launch motors are off
             case RESTING:
                 launchMotors.set(0.0);
-                this.launchStatusAuto = LAUNCH_STATUS_AUTO.RESTING;
+                this.launchStatusTeleop = LAUNCH_STATUS_TELEOP.RESTING;
                 break;
             // The motors are supplied the inital voltage and waits until the rpm of the
             // wheels reaches the target
@@ -234,6 +235,12 @@ public class Launcher
             // Ensures that the launch wheels spin consistently within the deadband
             case AT_SPEED:
                 // Checks if the motor voltage is correct
+                // TODO need to set the motors to the inital speed the first time through
+                if (this.firstChecking == true)
+                    {
+                    this.launchMotors.set(initalSpeed);
+                    this.firstChecking = false;
+                    }
                 // TODO this may create a problem if you attempt to verify voltage twice without
                 // changing the status
                 if (maintainSpeed(initalSpeed, targetRPM) == true
@@ -534,6 +541,8 @@ public class Launcher
 
     private LAUNCH_TYPE launchType;
 
+    public boolean firstChecking = true;
+
     // Constants
 
     private final double TARGET_MOTOR_RPM_LOW_PREV = 1000.0; // TODO find
@@ -552,7 +561,7 @@ public class Launcher
 
     private final double LAUNCH_MOTOR_SPEED_LOW_CURRENT = .21; // TODO
 
-    private final double LAUNCH_MOTOR_SPEED_HIGH_PREV = .6; // TODO find
+    private final double LAUNCH_MOTOR_SPEED_HIGH_PREV = .55; // TODO find
 
     private final double LAUNCH_MOTOR_SPEED_HIGH_CURRENT = .6; // TODO
 

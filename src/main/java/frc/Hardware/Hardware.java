@@ -280,8 +280,8 @@ public class Hardware
 
         colorWheelMotor = new WPI_TalonSRX(25);
 
-        launchMotorForward = new CANSparkMax(27, MotorType.kBrushless);
-        launchMotorBackward = new CANSparkMax(26, MotorType.kBrushless);
+        launchMotorForward = new WPI_TalonSRX(17);
+        launchMotorBackward = new WPI_TalonSRX(18);
 
         launchMotorGroup = new MotorControllerGroup(launchMotorForward, launchMotorBackward);
 
@@ -348,7 +348,7 @@ public class Hardware
         // -----------------------------------
         // Configure launch encoders
         // -----------------------------------
-        launchMotorEncoder = new KilroyEncoder((CANSparkMax) launchMotorForward, 1);
+        launchMotorEncoder = new KilroyEncoder((WPI_TalonSRX) launchMotorForward);
 
         // ------------------------------------
         // configure climb encoders
@@ -490,12 +490,13 @@ public class Hardware
 
     public static JoystickButton rightOperatorCameraSwitchButton = new JoystickButton(rightOperator, 10);
     public static JoystickButton rightDriverCameraSwitchButton = new JoystickButton(rightDriver, 3);
-    public static JoystickButton closeClimbServo = new JoystickButton(rightOperator, 4);
-    public static JoystickButton openClimbServo = new JoystickButton(rightOperator, 5);
+    public static JoystickButton closeClimbServo = new JoystickButton(leftOperator, 4);
+    public static JoystickButton openClimbServo = new JoystickButton(leftOperator, 5);
     public static JoystickButton climbUpButton = new JoystickButton(rightOperator, 3);
     public static JoystickButton climbDownButton = new JoystickButton(rightOperator, 2);
     public static JoystickButton outtakeButton = new JoystickButton(leftOperator, 2);
     public static JoystickButton fireLow = new JoystickButton(rightOperator, 11);
+    public static JoystickButton fireHigh = new JoystickButton(rightOperator, 4);
     public static JoystickButton fireOverride = new JoystickButton(leftOperator, 11);
     public static MomentarySwitch subtractBallButton = new MomentarySwitch(rightOperator, 8, false);
     public static MomentarySwitch addBallButton = new MomentarySwitch(rightOperator, 9, false);
