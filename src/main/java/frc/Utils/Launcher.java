@@ -210,7 +210,11 @@ public class Launcher
     private void launchTeleop(LAUNCH_STATE_TELEOP state, double initalSpeed, double targetRPM)
     {
         // System.out.println("Launch teleop state: " + state);
-        System.out.println("Launch teleop status: " + this.launchStatusTeleop);
+        // System.out.println("Launch teleop status: " + this.launchStatusTeleop);
+        // System.out.println("Launch motors RPM: " + this.launchEncoder.getRPM());
+        // System.out.println("Launch motor ticks: " + this.launchEncoder.getRaw());
+        // System.out.println("Launch motor voltage: " + this.launchMotors.get());
+        // System.out.println("Launch motor RPS: " + this.launchEncoder.getRate());
         switch (state)
             {
             // The launch motors are off
@@ -476,6 +480,20 @@ public class Launcher
         return true;
     }
 
+    /**
+     * Sets the flags to reset the launcher's speed checking system to supply the
+     * motors with the correct initial speed when going between the different types
+     * of launch
+     * 
+     * @return true when done
+     */
+    public boolean resetSpeedChecking()
+    {
+        this.firstCorrectionInteration = true;
+        this.firstChecking = true;
+        return true;
+    }
+
     private enum LAUNCH_STATE_AUTO
         {
         SPINNING_UP, AT_SPEED, READY_TO_FIRE, RESTING;
@@ -523,10 +541,6 @@ public class Launcher
 
     private KilroyEncoder launchEncoder;
 
-    private double initalMotorSpeed;
-
-    private double targetMotorRPM;
-
     private double newMotorSpeed;
 
     private boolean firstCorrectionInteration = true;
@@ -541,7 +555,7 @@ public class Launcher
 
     private LAUNCH_TYPE launchType;
 
-    public boolean firstChecking = true;
+    private boolean firstChecking = true;
 
     // Constants
 
@@ -557,11 +571,11 @@ public class Launcher
 
     private final double TARGET_MOTOR_RPM_AUTO_CURRENT = 2000.0; // TODO
 
-    private final double LAUNCH_MOTOR_SPEED_LOW_PREV = .21; // TODO find
+    private final double LAUNCH_MOTOR_SPEED_LOW_PREV = .2; // TODO find
 
     private final double LAUNCH_MOTOR_SPEED_LOW_CURRENT = .21; // TODO
 
-    private final double LAUNCH_MOTOR_SPEED_HIGH_PREV = .55; // TODO find
+    private final double LAUNCH_MOTOR_SPEED_HIGH_PREV = .5; // TODO find
 
     private final double LAUNCH_MOTOR_SPEED_HIGH_CURRENT = .6; // TODO
 
@@ -579,5 +593,5 @@ public class Launcher
 
     private final int TARGET_ITERATIONS_PREV = 10;
 
-    private final double DISTANCE_PER_PULSE_PREV = 1.0;
+    private final double DISTANCE_PER_PULSE_PREV = .00049;
     }

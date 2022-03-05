@@ -370,34 +370,30 @@ public class Teleop
                         && Hardware.ballCounter.BallCount > minNumBallsCarriable)
             {
             // Fires
-            // TODO launch high needs to reset the launcher before using
-            // if (Hardware.fireHigh.get() == true)
-            // {
-            // if (launchHighReset == false)
-            // {
-            // Hardware.ballHandler.processBallHandler(PROCESS.FIRE_STOP, LAUNCH_TYPE.HIGH);
-            // Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.RESTING,
-            // LAUNCH_TYPE.HIGH);
-            // Hardware.launcher.firstChecking = true;
-            // launchHighReset = true;
-            // }
-            // Hardware.ballHandler.processBallHandler(PROCESS.FIRE, LAUNCH_TYPE.HIGH);
-            // launchLowReset = false;
-            // }
-            // if (Hardware.fireHigh.get() == false)
-            // {
-            // if (launchLowReset == false)
-            // {
-            // Hardware.ballHandler.processBallHandler(PROCESS.FIRE_STOP, LAUNCH_TYPE.LOW);
-            // Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.RESTING,
-            // LAUNCH_TYPE.LOW);
-            // Hardware.launcher.firstChecking = true;
-            // launchLowReset = true;
-            // }
-            // Hardware.ballHandler.processBallHandler(PROCESS.FIRE, LAUNCH_TYPE.LOW);
-            // launchHighReset = false;
-            // }
-            Hardware.ballHandler.processBallHandler(PROCESS.FIRE, LAUNCH_TYPE.LOW);
+            if (Hardware.fireHigh.get() == true)
+                {
+                if (launchHighReset == false)
+                    {
+                    Hardware.ballHandler.processBallHandler(PROCESS.FIRE_STOP, LAUNCH_TYPE.HIGH);
+                    Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.RESTING, LAUNCH_TYPE.HIGH);
+                    Hardware.launcher.resetSpeedChecking();
+                    launchHighReset = true;
+                    }
+                Hardware.ballHandler.processBallHandler(PROCESS.FIRE, LAUNCH_TYPE.HIGH);
+                launchLowReset = false;
+                }
+            if (Hardware.fireHigh.get() == false)
+                {
+                if (launchLowReset == false)
+                    {
+                    Hardware.ballHandler.processBallHandler(PROCESS.FIRE_STOP, LAUNCH_TYPE.LOW);
+                    Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.RESTING, LAUNCH_TYPE.LOW);
+                    Hardware.launcher.resetSpeedChecking();
+                    launchLowReset = true;
+                    }
+                Hardware.ballHandler.processBallHandler(PROCESS.FIRE, LAUNCH_TYPE.LOW);
+                launchHighReset = false;
+                }
             }
         // Sees if button to intake is pressed
         else if (Hardware.leftOperator.getTrigger() == true)

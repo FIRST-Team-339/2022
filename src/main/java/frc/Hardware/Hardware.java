@@ -280,8 +280,8 @@ public class Hardware
 
         colorWheelMotor = new WPI_TalonSRX(25);
 
-        launchMotorForward = new WPI_TalonSRX(17);
-        launchMotorBackward = new WPI_TalonSRX(18);
+        launchMotorForward = new WPI_TalonFX(17);
+        launchMotorBackward = new WPI_TalonFX(18);
 
         launchMotorGroup = new MotorControllerGroup(launchMotorForward, launchMotorBackward);
 
@@ -348,7 +348,7 @@ public class Hardware
         // -----------------------------------
         // Configure launch encoders
         // -----------------------------------
-        launchMotorEncoder = new KilroyEncoder((WPI_TalonSRX) launchMotorForward);
+        launchMotorEncoder = new KilroyEncoder((WPI_TalonFX) launchMotorForward);
 
         // ------------------------------------
         // configure climb encoders
