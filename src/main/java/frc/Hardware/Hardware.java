@@ -274,8 +274,8 @@ public class Hardware
 
         colorWheelMotor = new WPI_TalonSRX(25);
 
-        launchMotorForward = new CANSparkMax(27, MotorType.kBrushless);
-        launchMotorBackward = new CANSparkMax(26, MotorType.kBrushless);
+        launchMotorForward = new WPI_TalonSRX(17);
+        launchMotorBackward = new WPI_TalonSRX(18);
 
         launchMotorGroup = new MotorControllerGroup(launchMotorForward, launchMotorBackward);
 
@@ -336,7 +336,7 @@ public class Hardware
         // -----------------------------------
         // Configure launch encoders
         // -----------------------------------
-        launchMotorEncoder = new KilroyEncoder((CANSparkMax) launchMotorForward, 1);
+        launchMotorEncoder = new KilroyEncoder((WPI_TalonSRX) launchMotorForward);
 
         // ------------------------------------
         // configure climb encoders
