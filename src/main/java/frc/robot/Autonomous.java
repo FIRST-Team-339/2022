@@ -33,6 +33,7 @@ package frc.robot;
 
 import javax.swing.DropMode;
 
+import edu.wpi.first.wpilibj.Timer;
 import frc.Hardware.Hardware;
 import frc.HardwareInterfaces.Transmission.TransmissionBase.MotorPosition;
 import frc.Utils.Launcher.LAUNCH_STATUS_AUTO;
@@ -73,6 +74,10 @@ public class Autonomous
 
         // INITALIZE CLIMB SERVO
         Hardware.climbServo.set(Hardware.CLIMB_SERVO_POS_OUT);
+
+        // INITALIZE TIMER
+        spinWaitTimer.stop();
+        spinWaitTimer.reset();
 
         // Checks if the auto disable switch is pressed. It will disable auto if the
         // switch returns a value of false
@@ -126,6 +131,15 @@ public class Autonomous
         driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.INIT;
         spinState = SPIN_STATE.SPIN;
         launchAutoState = LAUNCH_AUTO_STATE.START_DROP;
+        // TODO initialize variables to either previous year or current year
+        if (Hardware.robotIdentity == Hardware.yearIdentifier.CurrentYear)
+            {
+
+            }
+        else if (Hardware.robotIdentity == Hardware.yearIdentifier.PrevYear)
+            {
+
+            }
     } // end Init
 
     /**
@@ -144,6 +158,14 @@ public class Autonomous
     public static void periodic()
     {
         // System.out.println("AUTO_PATH = " + autoPath);
+        // System.out.println("LEFT: " + Hardware.leftDriveEncoder.getRaw());
+        System.out.println("LEFT V: " + Hardware.leftDriveGroup.get());
+        // System.out.println("RIGHT: " + Hardware.rightDriveEncoder.getRaw());
+        System.out.println("RIGHT V: " + Hardware.rightDriveGroup.get());
+
+        // System.out.println("GYRO V: " + Hardware.gyro);
+        // System.out.println("BOTH AVG: " +
+        // Hardware.drive.getEncoderDistanceAverage(MotorPosition.ALL));
         switch (autoPath)
             {
             case DRIVE_ONLY_BACKWARD:
@@ -284,7 +306,16 @@ public class Autonomous
                         dropAndDriveState = DROP_AND_DRIVE_STATE.SPIN;
                         return false;
                         }
-                    dropAndDriveState = DROP_AND_DRIVE_STATE.END;
+                    dropAndDriveState = DROP_AND_DRIVE_STATE.WAIT_SPIN;
+                    spinWaitTimer.start();
+                    }
+                return false;
+            case WAIT_SPIN:
+                if (spinWaitTimer.hasElapsed(SPIN_DELAY_SECONDS_PREV))
+                    {
+                    spinWaitTimer.stop();
+                    spinWaitTimer.reset();
+                    dropAndDriveState = DROP_AND_DRIVE_STATE.SPIN;
                     }
                 return false;
             case SPIN:
@@ -367,7 +398,15 @@ public class Autonomous
                         dropFromStartAndDriveState = DROP_FROM_START_AND_DRIVE_STATE.SPIN;
                         return false;
                         }
-                    dropFromStartAndDriveState = DROP_FROM_START_AND_DRIVE_STATE.END;
+                    dropFromStartAndDriveState = DROP_FROM_START_AND_DRIVE_STATE.WAIT_SPIN;
+                    }
+                return false;
+            case WAIT_SPIN:
+                if (spinWaitTimer.hasElapsed(SPIN_DELAY_SECONDS_PREV))
+                    {
+                    spinWaitTimer.stop();
+                    spinWaitTimer.reset();
+                    dropFromStartAndDriveState = DROP_FROM_START_AND_DRIVE_STATE.SPIN;
                     }
                 return false;
             case SPIN:
@@ -528,6 +567,14 @@ public class Autonomous
                         return false;
                         }
                     onlyDriveBackwardsState = ONLY_DRIVE_BACKWARDS_STATE.END;
+                    }
+                return false;
+            case WAIT_SPIN:
+                if (spinWaitTimer.hasElapsed(SPIN_DELAY_SECONDS_PREV))
+                    {
+                    spinWaitTimer.stop();
+                    spinWaitTimer.reset();
+                    onlyDriveBackwardsState = ONLY_DRIVE_BACKWARDS_STATE.SPIN;
                     }
                 return false;
             case SPIN:
@@ -719,6 +766,14 @@ public class Autonomous
                     driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.END;
                     }
                 return false;
+            case WAIT_SPIN:
+                if (spinWaitTimer.hasElapsed(SPIN_DELAY_SECONDS_PREV))
+                    {
+                    spinWaitTimer.stop();
+                    spinWaitTimer.reset();
+                    driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.SPIN;
+                    }
+                return false;
             case SPIN:
                 if (spin() == true)
                     {
@@ -747,12 +802,13 @@ public class Autonomous
             {
             // Executes the turn method
             case SPIN:
-                if (Hardware.drive.turnDegrees(TURN_AROUND_DEGREES, TURN_SPEED_PREV_YEAR,
+                Hardware.drive.setPivotDegreesStationaryPercentage(PIVOT_SPEED_CURRENT_YEAR);
+                if (Hardware.drive.pivotTurnDegrees(TURN_AROUND_DEGREES, TURN_SPEED_CURRENT_YEAR,
                         TURN_ACCELERATION_SECONDS_PREV_YEAR, USING_GYRO_FOR_TURN_PREV_YEAR) == true)
                     {
                     spinState = SPIN_STATE.STOP_SPIN;
                     }
-                // if (Hardware.drive.arc(TURN_SPEED_PREV_YEAR, 10, 10,
+                // if (Hardware.drive.arc(TURN_SPEED_CURRENT_YEAR, 10, TURN_AROUND_DEGREES,
                 // TURN_ACCELERATION_SECONDS_PREV_YEAR) == true)
                 // {
                 // spinState = SPIN_STATE.STOP_SPIN;
@@ -861,7 +917,7 @@ public class Autonomous
 
     private static enum ONLY_DRIVE_BACKWARDS_STATE
         {
-        INIT, DELAY, DRIVE, STOP, SPIN, STOP_SPIN, END;
+        INIT, DELAY, DRIVE, STOP, WAIT_SPIN, SPIN, STOP_SPIN, END;
         }
 
     private static enum ONLY_DRIVE_FORWARD_STATE
@@ -876,17 +932,17 @@ public class Autonomous
 
     private static enum DROP_AND_DRIVE_STATE
         {
-        INIT, DELAY, PREPARE_TO_DROP, STOP_DRIVING_BEFORE_DROP, DROP, WAIT, DRIVE, STOP, SPIN, STOP_SPIN, END;
+        INIT, DELAY, PREPARE_TO_DROP, STOP_DRIVING_BEFORE_DROP, DROP, WAIT, DRIVE, STOP, WAIT_SPIN, SPIN, STOP_SPIN, END;
         }
 
     private static enum DROP_FROM_START_AND_DRIVE_STATE
         {
-        INIT, DELAY, DROP, DRIVE, STOP, SPIN, STOP_SPIN, END;
+        INIT, DELAY, DROP, DRIVE, STOP, WAIT_SPIN, SPIN, STOP_SPIN, END;
         }
 
     private static enum DRIVE_DROP_AND_DRIVE_AGAIN_STATE
         {
-        INIT, DELAY, DRIVE_ONE, STOP_DRIVING_AFTER_DRIVE_ONE, WAIT_AFTER_DRIVE_ONE, PREPARE_TO_DROP, STOP_DRIVING_BEFORE_DROP, WAIT_AFTER_DRIVE_TWO, DROP, LEAVE, STOP, SPIN, STOP_SPIN, END;
+        INIT, DELAY, DRIVE_ONE, STOP_DRIVING_AFTER_DRIVE_ONE, WAIT_AFTER_DRIVE_ONE, PREPARE_TO_DROP, STOP_DRIVING_BEFORE_DROP, WAIT_AFTER_DRIVE_TWO, DROP, LEAVE, STOP, WAIT_SPIN, SPIN, STOP_SPIN, END;
         }
 
     private static enum SPIN_STATE
@@ -918,6 +974,44 @@ public class Autonomous
     private static SPIN_STATE spinState;
 
     private static double delaySeconds;
+
+    public static Timer spinWaitTimer = new Timer();
+
+    private static double distanceToWallInches;
+
+    private static double distanceToWallFromOutsideTarmacInches;
+
+    private static double distanceToLeaveTarmacToStartInches;
+
+    private static double distanceToLeaveTarmacFromWallInches;
+
+    private static double driveSpeedPositive;
+
+    private static double driveSpeedNegative;
+
+    private static double brakePowerPositive;
+
+    private static double brakePowerNegative;
+
+    private static double accelerationSeconds;
+
+    private static boolean usingGyroForTurn;
+
+    private static boolean usingGyroForDrive;
+
+    private static double maxDelaySeconds;
+
+    private static double launchDelaySeconds;
+
+    private static double driveDelaySeconds;
+
+    private static double turnSpeed;
+
+    private static double pivotSpeed;
+
+    private static double turnAccelerationSeconds;
+
+    private static double spinDelaySeconds;
     /*
      * ========================================= Constants
      * =========================================
@@ -979,11 +1073,17 @@ public class Autonomous
 
     private static final double TURN_SPEED_PREV_YEAR = .45;
 
-    private static final double TURN_SPEED_CURRENT_YEAR = .45; // TODO
+    private static final double TURN_SPEED_CURRENT_YEAR = .65;
+
+    private static final double PIVOT_SPEED_CURRENT_YEAR = .35;
 
     private static final double TURN_ACCELERATION_SECONDS_PREV_YEAR = .5;
 
     private static final double TURN_ACCELERATION_SECONDS_CURRENT_YEAR = .5; // TODO
 
     private static final int TURN_AROUND_DEGREES = 180;
+
+    private static final double SPIN_DELAY_SECONDS_PREV = 0.65;
+
+    private static final double SPIN_DELAY_SECONDS_CURRENT = .65; // TODO
     }
