@@ -259,7 +259,7 @@ public class Hardware
         // --------------------------------------
         // Launch system
         // --------------------------------------
-        launcher = new Launcher(launchMotorGroup, launchMotorEncoder);
+        launcher = new Launcher(launchMotorGroup, launchMotorEncoder, yearIdentifier.CurrentYear);
 
     } // end of initializeCurrentYear()
 
@@ -377,7 +377,7 @@ public class Hardware
         // --------------------------------------
         // Launch system
         // --------------------------------------
-        launcher = new Launcher(launchMotorGroup, launchMotorEncoder);
+        launcher = new Launcher(launchMotorGroup, launchMotorEncoder, yearIdentifier.PrevYear);
     } // end of initializePrevYear()
 
     // **********************************************************

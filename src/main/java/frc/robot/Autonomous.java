@@ -131,6 +131,15 @@ public class Autonomous
         driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.INIT;
         spinState = SPIN_STATE.SPIN;
         launchAutoState = LAUNCH_AUTO_STATE.START_DROP;
+        // TODO initialize variables to either previous year or current year
+        if (Hardware.robotIdentity == Hardware.yearIdentifier.CurrentYear)
+            {
+
+            }
+        else if (Hardware.robotIdentity == Hardware.yearIdentifier.PrevYear)
+            {
+
+            }
     } // end Init
 
     /**
@@ -302,7 +311,7 @@ public class Autonomous
                     }
                 return false;
             case WAIT_SPIN:
-                if (spinWaitTimer.hasElapsed(SPIN_DELAY_SECONDS))
+                if (spinWaitTimer.hasElapsed(SPIN_DELAY_SECONDS_PREV))
                     {
                     spinWaitTimer.stop();
                     spinWaitTimer.reset();
@@ -393,7 +402,7 @@ public class Autonomous
                     }
                 return false;
             case WAIT_SPIN:
-                if (spinWaitTimer.hasElapsed(SPIN_DELAY_SECONDS))
+                if (spinWaitTimer.hasElapsed(SPIN_DELAY_SECONDS_PREV))
                     {
                     spinWaitTimer.stop();
                     spinWaitTimer.reset();
@@ -561,7 +570,7 @@ public class Autonomous
                     }
                 return false;
             case WAIT_SPIN:
-                if (spinWaitTimer.hasElapsed(SPIN_DELAY_SECONDS))
+                if (spinWaitTimer.hasElapsed(SPIN_DELAY_SECONDS_PREV))
                     {
                     spinWaitTimer.stop();
                     spinWaitTimer.reset();
@@ -758,7 +767,7 @@ public class Autonomous
                     }
                 return false;
             case WAIT_SPIN:
-                if (spinWaitTimer.hasElapsed(SPIN_DELAY_SECONDS))
+                if (spinWaitTimer.hasElapsed(SPIN_DELAY_SECONDS_PREV))
                     {
                     spinWaitTimer.stop();
                     spinWaitTimer.reset();
@@ -967,6 +976,42 @@ public class Autonomous
     private static double delaySeconds;
 
     public static Timer spinWaitTimer = new Timer();
+
+    private static double distanceToWallInches;
+
+    private static double distanceToWallFromOutsideTarmacInches;
+
+    private static double distanceToLeaveTarmacToStartInches;
+
+    private static double distanceToLeaveTarmacFromWallInches;
+
+    private static double driveSpeedPositive;
+
+    private static double driveSpeedNegative;
+
+    private static double brakePowerPositive;
+
+    private static double brakePowerNegative;
+
+    private static double accelerationSeconds;
+
+    private static boolean usingGyroForTurn;
+
+    private static boolean usingGyroForDrive;
+
+    private static double maxDelaySeconds;
+
+    private static double launchDelaySeconds;
+
+    private static double driveDelaySeconds;
+
+    private static double turnSpeed;
+
+    private static double pivotSpeed;
+
+    private static double turnAccelerationSeconds;
+
+    private static double spinDelaySeconds;
     /*
      * ========================================= Constants
      * =========================================
@@ -1038,5 +1083,7 @@ public class Autonomous
 
     private static final int TURN_AROUND_DEGREES = 180;
 
-    private static final double SPIN_DELAY_SECONDS = 0.65;
+    private static final double SPIN_DELAY_SECONDS_PREV = 0.65;
+
+    private static final double SPIN_DELAY_SECONDS_CURRENT = .65; // TODO
     }

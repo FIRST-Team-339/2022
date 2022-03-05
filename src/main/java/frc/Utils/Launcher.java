@@ -1,6 +1,7 @@
 package frc.Utils;
 
 import frc.Hardware.Hardware;
+import frc.Hardware.Hardware.yearIdentifier;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import frc.HardwareInterfaces.KilroyEncoder;
@@ -15,11 +16,36 @@ public class Launcher
      * @param launchEncoder
      *            - encoder used with the launch system
      */
-    public Launcher(MotorControllerGroup launchMotors, KilroyEncoder launchEncoder)
+    public Launcher(MotorControllerGroup launchMotors, KilroyEncoder launchEncoder, yearIdentifier year)
         {
             this.launchMotors = launchMotors;
             this.launchEncoder = launchEncoder;
-            this.launchEncoder.setDistancePerPulse(DISTANCE_PER_PULSE_PREV);
+            if (year == Hardware.yearIdentifier.CurrentYear)
+                {
+                this.targetMotorRPMLow = TARGET_MOTOR_RPM_LOW_CURRENT;
+                this.targetMotorRPMHigh = TARGET_MOTOR_RPM_HIGH_CURRENT;
+                this.targetMotorRPMAuto = TARGET_MOTOR_RPM_AUTO_CURRENT;
+                this.launchMotorSpeedLow = LAUNCH_MOTOR_SPEED_LOW_CURRENT;
+                this.launchMotorSpeedHigh = LAUNCH_MOTOR_SPEED_HIGH_CURRENT;
+                this.launchMotorSpeedAuto = LAUNCH_MOTOR_SPEED_AUTO_CURRENT;
+                this.launchDeadband = LAUNCH_DEADBAND_CURRENT;
+                this.correctionValue = CORRECTION_VALUE_CURRENT;
+                this.targetIterations = TARGET_ITERATIONS_CURRENT;
+                this.launchEncoder.setDistancePerPulse(DISTANCE_PER_PULSE_CURR);
+                }
+            else if (year == Hardware.yearIdentifier.PrevYear)
+                {
+                this.targetMotorRPMLow = TARGET_MOTOR_RPM_LOW_PREV;
+                this.targetMotorRPMHigh = TARGET_MOTOR_RPM_HIGH_PREV;
+                this.targetMotorRPMAuto = TARGET_MOTOR_RPM_AUTO_PREV;
+                this.launchMotorSpeedLow = LAUNCH_MOTOR_SPEED_LOW_PREV;
+                this.launchMotorSpeedHigh = LAUNCH_MOTOR_SPEED_HIGH_PREV;
+                this.launchMotorSpeedAuto = LAUNCH_MOTOR_SPEED_AUTO_PREV;
+                this.launchDeadband = LAUNCH_DEADBAND_PREV;
+                this.correctionValue = CORRECTION_VALUE_PREV;
+                this.targetIterations = TARGET_ITERATIONS_PREV;
+                this.launchEncoder.setDistancePerPulse(DISTANCE_PER_PULSE_PREV);
+                }
             this.launchEncoder.reset();
         }
 
@@ -36,21 +62,21 @@ public class Launcher
             {
             // Case for shooting the low goal from in front of the wall
             case LOW:
-                if (launchAuto(LAUNCH_MOTOR_SPEED_LOW_PREV, TARGET_MOTOR_RPM_LOW_PREV) == true)
+                if (launchAuto(this.launchMotorSpeedLow, this.targetMotorRPMLow) == true)
                     {
                     return true;
                     }
                 return false;
             // Case for shooting to the high goal
             case HIGH:
-                if (launchAuto(LAUNCH_MOTOR_SPEED_HIGH_PREV, TARGET_MOTOR_RPM_HIGH_PREV) == true)
+                if (launchAuto(this.launchMotorSpeedHigh, this.targetMotorRPMHigh) == true)
                     {
                     return true;
                     }
                 return false;
             // Case for shooting in the low goal from the starting position
             case AUTO:
-                if (launchAuto(LAUNCH_MOTOR_SPEED_AUTO_PREV, TARGET_MOTOR_RPM_AUTO_PREV) == true)
+                if (launchAuto(this.launchMotorSpeedAuto, this.targetMotorRPMAuto) == true)
                     {
                     return true;
                     }
@@ -78,21 +104,21 @@ public class Launcher
             {
             // Case for shooting in the low goal from the wall
             case LOW:
-                if (launchAuto(LAUNCH_MOTOR_SPEED_LOW_PREV, TARGET_MOTOR_RPM_LOW_PREV) == true)
+                if (launchAuto(this.launchMotorSpeedLow, this.targetMotorRPMLow) == true)
                     {
                     return true;
                     }
                 return false;
             // Case for shooting in the high goal
             case HIGH:
-                if (launchAuto(LAUNCH_MOTOR_SPEED_HIGH_PREV, TARGET_MOTOR_RPM_HIGH_PREV) == true)
+                if (launchAuto(this.launchMotorSpeedHigh, this.targetMotorRPMHigh) == true)
                     {
                     return true;
                     }
                 return false;
             // Case for shooting from the starting position
             case AUTO:
-                if (launchAuto(LAUNCH_MOTOR_SPEED_AUTO_PREV, TARGET_MOTOR_RPM_AUTO_PREV) == true)
+                if (launchAuto(this.launchMotorSpeedAuto, this.targetMotorRPMAuto) == true)
                     {
                     return true;
                     }
@@ -186,11 +212,11 @@ public class Launcher
             {
             // Case for launching from in front of the wall in teleop
             case LOW:
-                this.launchTeleop(state, LAUNCH_MOTOR_SPEED_LOW_PREV, TARGET_MOTOR_RPM_LOW_PREV);
+                this.launchTeleop(state, this.launchMotorSpeedLow, this.targetMotorRPMLow);
                 return this.launchStatusTeleop;
             // Case for scoring in the high goal in teleop
             case HIGH:
-                this.launchTeleop(state, LAUNCH_MOTOR_SPEED_HIGH_PREV, TARGET_MOTOR_RPM_HIGH_PREV);
+                this.launchTeleop(state, this.launchMotorSpeedHigh, this.targetMotorRPMHigh);
                 return this.launchStatusTeleop;
             default:
                 return this.launchStatusTeleop;
@@ -295,7 +321,7 @@ public class Launcher
             }
         // Checks if the motors have been within the deadband for a satisfactory amount
         // of time
-        if (this.maintainingIterations >= TARGET_ITERATIONS_PREV)
+        if (this.maintainingIterations >= this.targetIterations)
             {
             this.firstCorrectionInteration = true;
             // this.launchMotors.set(this.newMotorSpeed);
@@ -303,7 +329,7 @@ public class Launcher
             }
         // If the delta of the actual and target rpm is less than the
         // deadband, increase the counter that determines when the method can be exited
-        if (Math.abs(this.launchEncoder.getRPM() - targetRPM) <= LAUNCH_DEADBAND_PREV)
+        if (Math.abs(this.launchEncoder.getRPM() - targetRPM) <= this.launchDeadband)
             {
             this.maintainingIterations++;
             return false;
@@ -340,17 +366,17 @@ public class Launcher
         // If the actual rpm is outside of the acceptable range in the positive
         // direction, reduce the voltage by a
         // correction value
-        if (Hardware.launchMotorEncoder.getRPM() >= (target + LAUNCH_DEADBAND_PREV))
+        if (Hardware.launchMotorEncoder.getRPM() >= (target + this.launchDeadband))
             {
-            this.newMotorSpeed = this.newMotorSpeed - CORRECTION_VALUE_PREV;
+            this.newMotorSpeed = this.newMotorSpeed - this.correctionValue;
             return this.newMotorSpeed;
             }
         // If the actual rpm is outside of the acceptable range in the negative
         // direction, increase the voltage by a
         // correction value
-        if (Hardware.launchMotorEncoder.getRPM() <= (target - LAUNCH_DEADBAND_PREV))
+        if (Hardware.launchMotorEncoder.getRPM() <= (target - this.launchDeadband))
             {
-            this.newMotorSpeed = this.newMotorSpeed + CORRECTION_VALUE_PREV;
+            this.newMotorSpeed = this.newMotorSpeed + this.correctionValue;
             return this.newMotorSpeed;
             }
         return this.newMotorSpeed;
@@ -557,6 +583,24 @@ public class Launcher
 
     private boolean firstChecking = true;
 
+    private double targetMotorRPMLow;
+
+    private double targetMotorRPMHigh;
+
+    private double targetMotorRPMAuto;
+
+    private double launchMotorSpeedLow;
+
+    private double launchMotorSpeedHigh;
+
+    private double launchMotorSpeedAuto;
+
+    private double launchDeadband;
+
+    private double correctionValue;
+
+    private double targetIterations;
+
     // Constants
 
     private final double TARGET_MOTOR_RPM_LOW_PREV = 1000.0; // TODO find
@@ -592,6 +636,8 @@ public class Launcher
     private final double CORRECTION_VALUE_CURRENT = .0005; // TODO
 
     private final int TARGET_ITERATIONS_PREV = 10;
+
+    private final int TARGET_ITERATIONS_CURRENT = 10; // TODO
 
     private final double DISTANCE_PER_PULSE_PREV = 1.0 / 2048.0;
 
