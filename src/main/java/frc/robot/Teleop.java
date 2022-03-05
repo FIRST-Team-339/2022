@@ -230,7 +230,7 @@ public class Teleop
         // System.out.println("Launcher RPM = " + Hardware.launchMotorEncoder.getRPM());
 
         // Encoder Distances
-        // NEEDS TESTED
+        // DONE
         // System.out.println("LF Distance is " +
         // Hardware.leftDriveTopEncoder.getDistance());
         // System.out.println("LB Distance is " +
@@ -278,6 +278,10 @@ public class Teleop
         // System.out.println("Delay Pot max is " +
         // Hardware.delayPot.getFromRange());
 
+        // ----------- PWM -------------
+        // NEEDS FIXED
+        // System.out.println("CS Angle is " + Hardware.climbServo.getAngle());
+
         // ----------- CAN -------------
 
         // Wheel Motor Values
@@ -288,8 +292,13 @@ public class Teleop
         // System.out.println("LB Motor Voltage: " + Hardware.leftBottomMotor.get());
         // System.out.println("RB Motor Voltage: " + Hardware.rightBottomMotor.get());
 
-        // Climb Motor Values
+        // Conveyor Motor Values
         // NEEDS TESTED
+        // System.out.println("CMF Voltage is " + Hardware.conveyorMotorForward.get());
+        // System.out.println("CMB Voltage is " + Hardware.conveyorMotorBackward.get());
+
+        // Climb Motor Values
+        // DONE
         // System.out.println("Voltage of left climb motor is: " +
         // Hardware.leftClimbMotor.get());
         // System.out.println("Voltage of right climb motor is: " +
@@ -298,18 +307,15 @@ public class Teleop
         // Hardware.climbEncoder.get());
 
         // Launch Motor Values
-        // NEEDS TESTED
-        // System.out.println("Launch Motor Forward is: " +
-        // Hardware.launchMotorForward.get());
-        // System.out.println("Launch Motor Backward is: " +
-        // Hardware.launchMotorBackward.get());
+        // DONE
+        // System.out.println("LMF Voltage is: " + Hardware.launchMotorForward.get());
+        // System.out.println("LMB Voltage is: " + Hardware.launchMotorBackward.get());
+        // System.out.println("LM RPM is " + Hardware.launchMotorEncoder.getRPM());
 
         // Other Motor Values
-        // NEEDS TESTED
+        // DONE
         // System.out.println("Voltage of intake motor is: " +
         // Hardware.intakeMotor.get());
-        // System.out.println("Voltage of color wheel motor is: " +
-        // Hardware.colorWheelMotor.get());
 
         // -------- SUBSYSTEMS ---------
 
@@ -370,34 +376,30 @@ public class Teleop
                         && Hardware.ballCounter.BallCount > minNumBallsCarriable)
             {
             // Fires
-            // TODO launch high needs to reset the launcher before using
-            // if (Hardware.fireHigh.get() == true)
-            // {
-            // if (launchHighReset == false)
-            // {
-            // Hardware.ballHandler.processBallHandler(PROCESS.FIRE_STOP, LAUNCH_TYPE.HIGH);
-            // Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.RESTING,
-            // LAUNCH_TYPE.HIGH);
-            // Hardware.launcher.firstChecking = true;
-            // launchHighReset = true;
-            // }
-            // Hardware.ballHandler.processBallHandler(PROCESS.FIRE, LAUNCH_TYPE.HIGH);
-            // launchLowReset = false;
-            // }
-            // if (Hardware.fireHigh.get() == false)
-            // {
-            // if (launchLowReset == false)
-            // {
-            // Hardware.ballHandler.processBallHandler(PROCESS.FIRE_STOP, LAUNCH_TYPE.LOW);
-            // Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.RESTING,
-            // LAUNCH_TYPE.LOW);
-            // Hardware.launcher.firstChecking = true;
-            // launchLowReset = true;
-            // }
-            // Hardware.ballHandler.processBallHandler(PROCESS.FIRE, LAUNCH_TYPE.LOW);
-            // launchHighReset = false;
-            // }
-            Hardware.ballHandler.processBallHandler(PROCESS.FIRE, LAUNCH_TYPE.LOW);
+            if (Hardware.fireHigh.get() == true)
+                {
+                if (launchHighReset == false)
+                    {
+                    Hardware.ballHandler.processBallHandler(PROCESS.FIRE_STOP, LAUNCH_TYPE.HIGH);
+                    Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.RESTING, LAUNCH_TYPE.HIGH);
+                    Hardware.launcher.resetSpeedChecking();
+                    launchHighReset = true;
+                    }
+                Hardware.ballHandler.processBallHandler(PROCESS.FIRE, LAUNCH_TYPE.HIGH);
+                launchLowReset = false;
+                }
+            if (Hardware.fireHigh.get() == false)
+                {
+                if (launchLowReset == false)
+                    {
+                    Hardware.ballHandler.processBallHandler(PROCESS.FIRE_STOP, LAUNCH_TYPE.LOW);
+                    Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.RESTING, LAUNCH_TYPE.LOW);
+                    Hardware.launcher.resetSpeedChecking();
+                    launchLowReset = true;
+                    }
+                Hardware.ballHandler.processBallHandler(PROCESS.FIRE, LAUNCH_TYPE.LOW);
+                launchHighReset = false;
+                }
             }
         // Sees if button to intake is pressed
         else if (Hardware.leftOperator.getTrigger() == true)
