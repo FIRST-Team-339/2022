@@ -1510,6 +1510,17 @@ public class Drive
     }
 
     /**
+     * Sets the constant pivotDegreesStationaryPercentage to the value input
+     * 
+     * @param value
+     */
+    public void setPivotDegreesStationaryPercentage(double value)
+    {
+        // sets pivot degrees stationary percent constant to the input
+        this.pivotDegreesStationaryPercentage = value;
+    }
+
+    /**
      * Sets how far the robot has driven per pulse the encoder reads. This value
      * should be much lower than one, as there are usually hundreds of pulses per
      * rotation.
