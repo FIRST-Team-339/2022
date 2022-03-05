@@ -278,6 +278,10 @@ public class Teleop
         // System.out.println("Delay Pot max is " +
         // Hardware.delayPot.getFromRange());
 
+        // ----------- PWM -------------
+        // NEEDS FIXED
+        // System.out.println("CS Angle is " + Hardware.climbServo.getAngle());
+
         // ----------- CAN -------------
 
         // Wheel Motor Values
@@ -287,6 +291,11 @@ public class Teleop
         // System.out.println("RF Motor Voltage: " + Hardware.rightTopMotor.get());
         // System.out.println("LB Motor Voltage: " + Hardware.leftBottomMotor.get());
         // System.out.println("RB Motor Voltage: " + Hardware.rightBottomMotor.get());
+
+        // Conveyor Motor Values
+        // NEEDS TESTED
+        // System.out.println("CMF Voltage is " + Hardware.conveyorMotorForward.get());
+        // System.out.println("CMB Voltage is " + Hardware.conveyorMotorBackward.get());
 
         // Climb Motor Values
         // DONE
@@ -298,10 +307,10 @@ public class Teleop
         // Hardware.climbEncoder.get());
 
         // Launch Motor Values
-        // NEEDS TESTED
-        System.out.println("LMF Voltage is: " + Hardware.launchMotorForward.get());
-        System.out.println("LMB Voltage is: " + Hardware.launchMotorBackward.get());
-        System.out.println("LM RPM is " + Hardware.launchMotorEncoder.getRPM());
+        // DONE
+        // System.out.println("LMF Voltage is: " + Hardware.launchMotorForward.get());
+        // System.out.println("LMB Voltage is: " + Hardware.launchMotorBackward.get());
+        // System.out.println("LM RPM is " + Hardware.launchMotorEncoder.getRPM());
 
         // Other Motor Values
         // DONE
