@@ -149,13 +149,14 @@ public class Autonomous
     public static void periodic()
     {
         // System.out.println("AUTO_PATH = " + autoPath);
-        System.out.println("LEFT: " + Hardware.leftDriveEncoder.getRaw());
+        // System.out.println("LEFT: " + Hardware.leftDriveEncoder.getRaw());
         System.out.println("LEFT V: " + Hardware.leftDriveGroup.get());
-        System.out.println("RIGHT: " + Hardware.rightDriveEncoder.getRaw());
+        // System.out.println("RIGHT: " + Hardware.rightDriveEncoder.getRaw());
         System.out.println("RIGHT V: " + Hardware.rightDriveGroup.get());
 
         // System.out.println("GYRO V: " + Hardware.gyro);
-        // System.out.println("BOTH AVG: " + Hardware.drive.getEncoderDistanceAverage(MotorPosition.ALL));
+        // System.out.println("BOTH AVG: " +
+        // Hardware.drive.getEncoderDistanceAverage(MotorPosition.ALL));
         switch (autoPath)
             {
             case DRIVE_ONLY_BACKWARD:
