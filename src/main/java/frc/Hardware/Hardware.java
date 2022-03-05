@@ -476,12 +476,13 @@ public class Hardware
 
     public static JoystickButton rightOperatorCameraSwitchButton = new JoystickButton(rightOperator, 10);
     public static JoystickButton rightDriverCameraSwitchButton = new JoystickButton(rightDriver, 3);
-    public static JoystickButton closeClimbServo = new JoystickButton(rightOperator, 4);
-    public static JoystickButton openClimbServo = new JoystickButton(rightOperator, 5);
+    public static JoystickButton closeClimbServo = new JoystickButton(leftOperator, 4);
+    public static JoystickButton openClimbServo = new JoystickButton(leftOperator, 5);
     public static JoystickButton climbUpButton = new JoystickButton(rightOperator, 3);
     public static JoystickButton climbDownButton = new JoystickButton(rightOperator, 2);
     public static JoystickButton outtakeButton = new JoystickButton(leftOperator, 2);
     public static JoystickButton fireLow = new JoystickButton(rightOperator, 11);
+    public static JoystickButton fireHigh = new JoystickButton(rightOperator, 4);
     public static JoystickButton fireOverride = new JoystickButton(leftOperator, 11);
     public static MomentarySwitch subtractBallButton = new MomentarySwitch(rightOperator, 8, false);
     public static MomentarySwitch addBallButton = new MomentarySwitch(rightOperator, 9, false);

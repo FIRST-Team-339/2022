@@ -51,7 +51,7 @@ public class BallHandler
      *            Can be RESTING, OUTTAKE, or STOP called in Teleop
      * @return
      */
-    public PROCESS processBallHandler(PROCESS processNow)
+    public PROCESS processBallHandler(PROCESS processNow, LAUNCH_TYPE launchType)
     {
         // System.out.println(processNow);
         switch (processNow)
@@ -67,7 +67,7 @@ public class BallHandler
                 break;
             case FIRE:
                 // Calls process fire function
-                processFireFunc();
+                processFireFunc(launchType);
                 break;
             case INTAKE_AND_OUTTAKE_STOP:
                 Hardware.intakeMotor.set(motorRestingSpeed);
@@ -83,7 +83,7 @@ public class BallHandler
             // break;
             case FIRE_STOP:
                 fireState = FIRE.FIRE_END;
-                processFireFunc();
+                processFireFunc(launchType);
                 fireState = FIRE.FIRE_START_LAUNCHER;
                 break;
             case RESET_FIRE:
@@ -160,11 +160,14 @@ public class BallHandler
 
     private INTAKE processIntakeFunc()
     {
-        System.out.println("Intake state: " + intakeState);
-        Hardware.intakeMotor.set(intakeMotorIntakeSpeed);
+        // System.out.println("Intake state: " + intakeState);
         if (Hardware.ballCounter.BallCount >= Hardware.ballCounter.getMaximumBallCount())
             {
             intakeState = INTAKE.INTAKE_END;
+            }
+        else
+            {
+            Hardware.intakeMotor.set(intakeMotorIntakeSpeed);
             }
         switch (intakeState)
             {
@@ -188,9 +191,9 @@ public class BallHandler
                     }
                 break;
             case INTAKE_CONVEYOR_UP_RL1_ON:
-                if (Hardware.ballPickup1.isOn() == false)
+                if (Hardware.ballPickup1.isOn() == false && Hardware.ballPickup2.isOn() == false)
                     {
-                    Hardware.ballCounter.addCheckCount(1);
+                    // Hardware.ballCounter.addCheckCount(1);
                     intakeState = INTAKE.INTAKE_CONVEYOR_UP_CHECK_FOR_RL2;
                     }
                 Hardware.conveyorGroup.set(conveyerWheelIntakeSpeed);
@@ -198,6 +201,7 @@ public class BallHandler
             case INTAKE_CONVEYOR_UP_CHECK_FOR_RL2:
                 if (Hardware.ballPickup2.isOn() == true)
                     {
+                    Hardware.ballCounter.addCheckCount(1);
                     Hardware.conveyorGroup.set(motorRestingSpeed);
                     intakeState = INTAKE.INTAKE_INIT;
                     }
@@ -213,7 +217,7 @@ public class BallHandler
         return intakeState;
     }
 
-    private FIRE processFireFunc()
+    private FIRE processFireFunc(LAUNCH_TYPE type)
     {
         // System.out.println(fireState);
         switch (fireState)
@@ -222,14 +226,14 @@ public class BallHandler
                 Hardware.intakePiston.setReverse(true);
                 Hardware.intakeMotor.set(motorRestingSpeed);
                 Hardware.conveyorGroup.set(motorRestingSpeed);
-                Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.SPINNING_UP, LAUNCH_TYPE.LOW);
+                Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.SPINNING_UP, type);
                 if (Hardware.launcher.getStatusTeleop() == LAUNCH_STATUS_TELEOP.DONE_SPINNING_UP)
                     {
                     fireState = FIRE.FIRE_WAIT_FOR_LAUNCHER;
                     }
                 break;
             case FIRE_WAIT_FOR_LAUNCHER:
-                Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.AT_SPEED, LAUNCH_TYPE.LOW);
+                Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.AT_SPEED, type);
                 if (Hardware.launcher.getStatusTeleop() != LAUNCH_STATUS_TELEOP.DONE_CHECKING_SPEED)
                     {
                     break;
@@ -241,7 +245,7 @@ public class BallHandler
                 break;
             case FIRE_WORKING_LIGHT_OFF:
                 Hardware.conveyorGroup.set(conveyerWheelFireSpeed);
-                Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.AT_SPEED, LAUNCH_TYPE.LOW);
+                Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.AT_SPEED, type);
                 if (Hardware.ballPickup4.isOn() == true)
                     {
                     fireState = FIRE.FIRE_WORKING_LIGHT_ON;
@@ -252,7 +256,7 @@ public class BallHandler
                     }
                 break;
             case FIRE_WORKING_LIGHT_ON:
-                Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.AT_SPEED, LAUNCH_TYPE.LOW);
+                Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.AT_SPEED, type);
                 Hardware.conveyorGroup.set(conveyerWheelFireSpeed);
                 if (Hardware.ballPickup4.isOn() == false)
                     {

@@ -351,7 +351,7 @@ public class Teleop
         if (Hardware.outtakeButton.get() == true)
             {
             // Outtakes
-            Hardware.ballHandler.processBallHandler(BallHandler.PROCESS.OUTTAKE);
+            Hardware.ballHandler.processBallHandler(BallHandler.PROCESS.OUTTAKE, LAUNCH_TYPE.LOW);
             }
         // Sees if fire button is pressed
         else if (Hardware.launchButton.get() == true && Hardware.fireOverride.get() == true
@@ -359,21 +359,48 @@ public class Teleop
                         && Hardware.ballCounter.BallCount > minNumBallsCarriable)
             {
             // Fires
-            Hardware.ballHandler.processBallHandler(PROCESS.FIRE);
+            // TODO launch high needs to reset the launcher before using
+            // if (Hardware.fireHigh.get() == true)
+            // {
+            // if (launchHighReset == false)
+            // {
+            // Hardware.ballHandler.processBallHandler(PROCESS.FIRE_STOP, LAUNCH_TYPE.HIGH);
+            // Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.RESTING,
+            // LAUNCH_TYPE.HIGH);
+            // Hardware.launcher.firstChecking = true;
+            // launchHighReset = true;
+            // }
+            // Hardware.ballHandler.processBallHandler(PROCESS.FIRE, LAUNCH_TYPE.HIGH);
+            // launchLowReset = false;
+            // }
+            // if (Hardware.fireHigh.get() == false)
+            // {
+            // if (launchLowReset == false)
+            // {
+            // Hardware.ballHandler.processBallHandler(PROCESS.FIRE_STOP, LAUNCH_TYPE.LOW);
+            // Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.RESTING,
+            // LAUNCH_TYPE.LOW);
+            // Hardware.launcher.firstChecking = true;
+            // launchLowReset = true;
+            // }
+            // Hardware.ballHandler.processBallHandler(PROCESS.FIRE, LAUNCH_TYPE.LOW);
+            // launchHighReset = false;
+            // }
+            Hardware.ballHandler.processBallHandler(PROCESS.FIRE, LAUNCH_TYPE.LOW);
             }
         // Sees if button to intake is pressed
         else if (Hardware.leftOperator.getTrigger() == true)
             {
             // Intakes
-            Hardware.ballHandler.processBallHandler(BallHandler.PROCESS.INTAKE);
+            Hardware.ballHandler.processBallHandler(BallHandler.PROCESS.INTAKE, LAUNCH_TYPE.LOW);
             }
         // If fire button not pressed or balls = 0, stops firing; if intake and outtake
         // aren't pressed stops
         else
             {
             // Stops all things
-            Hardware.ballHandler.processBallHandler(BallHandler.PROCESS.INTAKE_AND_OUTTAKE_STOP);
-            Hardware.ballHandler.processBallHandler(PROCESS.FIRE_STOP);
+            Hardware.ballHandler.processBallHandler(BallHandler.PROCESS.INTAKE_AND_OUTTAKE_STOP, LAUNCH_TYPE.LOW);
+            Hardware.ballHandler.processBallHandler(PROCESS.FIRE_STOP, LAUNCH_TYPE.LOW);
             Hardware.launcher.launchTeleopGeneral(LAUNCH_STATE_TELEOP.RESTING, LAUNCH_TYPE.LOW);
             }
     }
@@ -410,5 +437,10 @@ public class Teleop
         Hardware.leftClimbMotor.set(Hardware.LEFT_CLIMB_ENCODER_SPEED);
         Hardware.rightClimbMotor.set(Hardware.RIGHT_CLIMB_ENCODER_SPEED);
     }
+
+    // Variables
+
+    private static boolean launchHighReset = false;
+    private static boolean launchLowReset = false;
 
     } // end class
