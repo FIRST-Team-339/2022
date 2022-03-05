@@ -213,13 +213,19 @@ public class Hardware
         // -----------------------------------
         // configure the drive system encoders
         // -----------------------------------
-        leftDriveEncoder = new KilroyEncoder((WPI_TalonFX) leftBottomMotor);
-        leftDriveEncoder.setDistancePerPulse(CURRENT_YEAR_DISTANCE_PER_TICK);
-        leftDriveEncoder.setReverseDirection(true);
+        leftDriveTopEncoder = new KilroyEncoder((WPI_TalonFX) leftTopMotor);
+        leftDriveTopEncoder.setDistancePerPulse(CURRENT_YEAR_DISTANCE_PER_TICK);
+        leftDriveTopEncoder.setReverseDirection(true);
+        leftDriveBottomEncoder = new KilroyEncoder((WPI_TalonFX) leftBottomMotor);
+        leftDriveBottomEncoder.setDistancePerPulse(CURRENT_YEAR_DISTANCE_PER_TICK);
+        leftDriveBottomEncoder.setReverseDirection(true);
 
-        rightDriveEncoder = new KilroyEncoder((WPI_TalonFX) rightBottomMotor);
-        rightDriveEncoder.setDistancePerPulse(CURRENT_YEAR_DISTANCE_PER_TICK);
-        rightDriveEncoder.setReverseDirection(true);
+        rightDriveTopEncoder = new KilroyEncoder((WPI_TalonFX) rightTopMotor);
+        rightDriveTopEncoder.setDistancePerPulse(CURRENT_YEAR_DISTANCE_PER_TICK);
+        rightDriveTopEncoder.setReverseDirection(true);
+        rightDriveBottomEncoder = new KilroyEncoder((WPI_TalonFX) rightBottomMotor);
+        rightDriveBottomEncoder.setDistancePerPulse(CURRENT_YEAR_DISTANCE_PER_TICK);
+        rightDriveBottomEncoder.setReverseDirection(true);
 
         // -----------------------------------
         // Configure launch encoders
@@ -237,7 +243,7 @@ public class Hardware
         // Drive System
         // ------------------------------------
         tankTransmission = new TankTransmission(leftDriveGroup, rightDriveGroup);
-        drive = new Drive(tankTransmission, leftDriveEncoder, rightDriveEncoder, gyro);
+        drive = new Drive(tankTransmission, leftDriveBottomEncoder, rightDriveBottomEncoder, gyro);
 
         gyro.calibrate();
 
@@ -325,13 +331,19 @@ public class Hardware
         // -----------------------------------
         // configure the drive system encoders
         // -----------------------------------
-        leftDriveEncoder = new KilroyEncoder((WPI_TalonFX) leftBottomMotor);
-        leftDriveEncoder.setDistancePerPulse(PREV_YEAR_DISTANCE_PER_TICK);
-        leftDriveEncoder.setReverseDirection(true);
+        leftDriveTopEncoder = new KilroyEncoder((WPI_TalonFX) leftTopMotor);
+        leftDriveTopEncoder.setDistancePerPulse(PREV_YEAR_DISTANCE_PER_TICK);
+        leftDriveTopEncoder.setReverseDirection(true);
+        leftDriveBottomEncoder = new KilroyEncoder((WPI_TalonFX) leftBottomMotor);
+        leftDriveBottomEncoder.setDistancePerPulse(PREV_YEAR_DISTANCE_PER_TICK);
+        leftDriveBottomEncoder.setReverseDirection(true);
 
-        rightDriveEncoder = new KilroyEncoder((WPI_TalonFX) rightBottomMotor);
-        rightDriveEncoder.setDistancePerPulse(PREV_YEAR_DISTANCE_PER_TICK);
-        rightDriveEncoder.setReverseDirection(true);
+        rightDriveTopEncoder = new KilroyEncoder((WPI_TalonFX) rightTopMotor);
+        rightDriveTopEncoder.setDistancePerPulse(PREV_YEAR_DISTANCE_PER_TICK);
+        rightDriveTopEncoder.setReverseDirection(true);
+        rightDriveBottomEncoder = new KilroyEncoder((WPI_TalonFX) rightBottomMotor);
+        rightDriveBottomEncoder.setDistancePerPulse(PREV_YEAR_DISTANCE_PER_TICK);
+        rightDriveBottomEncoder.setReverseDirection(true);
 
         // -----------------------------------
         // Configure launch encoders
@@ -349,7 +361,7 @@ public class Hardware
         // Drive System
         // ------------------------------------
         tankTransmission = new TankTransmission(leftDriveGroup, rightDriveGroup);
-        drive = new Drive(tankTransmission, leftDriveEncoder, rightDriveEncoder, gyro);
+        drive = new Drive(tankTransmission, leftDriveBottomEncoder, rightDriveBottomEncoder, gyro);
 
         gyro.calibrate();
 
@@ -387,8 +399,10 @@ public class Hardware
     public static MotorControllerGroup leftDriveGroup = null;
     public static MotorControllerGroup rightDriveGroup = null;
 
-    public static KilroyEncoder leftDriveEncoder = null;
-    public static KilroyEncoder rightDriveEncoder = null;
+    public static KilroyEncoder leftDriveTopEncoder = null;
+    public static KilroyEncoder leftDriveBottomEncoder = null;
+    public static KilroyEncoder rightDriveTopEncoder = null;
+    public static KilroyEncoder rightDriveBottomEncoder = null;
 
     public static MotorController conveyorMotorForward = null;
     public static MotorController conveyorMotorBackward = null;
