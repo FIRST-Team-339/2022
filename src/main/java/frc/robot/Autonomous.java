@@ -113,13 +113,62 @@ public class Autonomous
                 }
             }
 
+        if (Hardware.robotIdentity.equals(Hardware.yearIdentifier.CurrentYear))
+            {
+            distanceToWallInches = DISTANCE_TO_WALL_INCHES_CURRENT_YEAR;
+            distanceToWallFromOutsideTarmacInches = DISTANCE_TO_WALL_FROM_OUTSIDE_OF_TARMAC_INCHES_CURRENT_YEAR;
+            distanceToLeaveTarmacFromStartInches = DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_CURRENT_YEAR;
+            distanceToLeaveTarmacFromWallInches = DISTANCE_TO_LEAVE_TARMAC_FROM_WALL_INCHES_CURRENT_YEAR;
+            driveSpeedPositive = DRIVE_SPEED_POSITIVE_CURRENT_YEAR;
+            driveSpeedNegative = DRIVE_SPEED_NEGATIVE_CURRENT_YEAR;
+            brakePowerPositive = BRAKE_POWER_POSITIVE_CURRENT_YEAR;
+            brakePowerNegative = BRAKE_POWER_NEGATIVE_CURRENT_YEAR;
+            accelerationSeconds = ACCELERATION_SECONDS_CURRENT_YEAR;
+            usingGyroForTurn = USING_GYRO_FOR_TURN_CURRENT_YEAR;
+            usingGyroForDrive = USING_GYRO_FOR_DRIVE_CURRENT_YEAR;
+            maxDelaySeconds = MAX_DELAY_SECONDS_CURRENT_YEAR;
+            launchDelaySeconds = LAUNCH_DELAY_SECONDS_CURRENT_YEAR;
+            driveDelaySeconds = DRIVE_DELAY_SECONDS_CURRENT_YEAR;
+            turnSpeed = TURN_SPEED_CURRENT_YEAR;
+            pivotSpeed = PIVOT_SPEED_CURRENT_YEAR;
+            turnAccelerationSeconds = TURN_ACCELERATION_SECONDS_CURRENT_YEAR;
+            spinDelaySeconds = SPIN_DELAY_SECONDS_CURRENT;
+            turnDegrees = TURN_DEGREES_CURRENT;
+            conveyorSpeedPositive = CONVEYOR_SPEED_POSITIVE_CURRENT;
+            conveyorSpeedNegative = CONVEYOR_SPEED_NEGATIVE_CURRENT;
+            }
+        else if (Hardware.robotIdentity.equals(Hardware.yearIdentifier.PrevYear))
+            {
+            distanceToWallInches = DISTANCE_TO_WALL_INCHES_PREV_YEAR;
+            distanceToWallFromOutsideTarmacInches = DISTANCE_TO_WALL_FROM_OUTSIDE_OF_TARMAC_INCHES_PREV_YEAR;
+            distanceToLeaveTarmacFromStartInches = DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_PREV_YEAR;
+            distanceToLeaveTarmacFromWallInches = DISTANCE_TO_LEAVE_TARMAC_FROM_WALL_INCHES_PREV_YEAR;
+            driveSpeedPositive = DRIVE_SPEED_POSITIVE_PREV_YEAR;
+            driveSpeedNegative = DRIVE_SPEED_NEGATIVE_PREV_YEAR;
+            brakePowerPositive = BRAKE_POWER_POSITIVE_PREV_YEAR;
+            brakePowerNegative = BRAKE_POWER_NEGATIVE_PREV_YEAR;
+            accelerationSeconds = ACCELERATION_SECONDS_PREV_YEAR;
+            usingGyroForTurn = USING_GYRO_FOR_TURN_PREV_YEAR;
+            usingGyroForDrive = USING_GYRO_FOR_DRIVE_PREV_YEAR;
+            maxDelaySeconds = MAX_DELAY_SECONDS_PREV_YEAR;
+            launchDelaySeconds = LAUNCH_DELAY_SECONDS_PREV_YEAR;
+            driveDelaySeconds = DRIVE_DELAY_SECONDS_PREV_YEAR;
+            turnSpeed = TURN_SPEED_PREV_YEAR;
+            pivotSpeed = PIVOT_SPEED_PREV_YEAR;
+            turnAccelerationSeconds = TURN_ACCELERATION_SECONDS_PREV_YEAR;
+            spinDelaySeconds = SPIN_DELAY_SECONDS_PREV;
+            turnDegrees = TURN_DEGREES_PREV;
+            conveyorSpeedPositive = CONVEYOR_SPEED_POSITIVE_PREV;
+            conveyorSpeedNegative = CONVEYOR_SPEED_NEGATIVE_PREV;
+            }
+
         Hardware.autoTimer.stop();
         Hardware.autoTimer.reset();
         Hardware.launchDelayTimer.stop();
         Hardware.launchDelayTimer.reset();
         Hardware.driveDelayTimer.stop();
         Hardware.driveDelayTimer.reset();
-        delaySeconds = Hardware.delayPot.get(0, MAX_DELAY_SECONDS);
+        delaySeconds = Hardware.delayPot.get(0, maxDelaySeconds);
         // Hardware.drive.setDebugOnStatus(debugType.DEBUG_BRAKING);
         Hardware.drive.resetEncoders();
         Hardware.launcher.setDoneStates(false, false, false, false);
@@ -131,15 +180,7 @@ public class Autonomous
         driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.INIT;
         spinState = SPIN_STATE.SPIN;
         launchAutoState = LAUNCH_AUTO_STATE.START_DROP;
-        // TODO initialize variables to either previous year or current year
-        if (Hardware.robotIdentity == Hardware.yearIdentifier.CurrentYear)
-            {
 
-            }
-        else if (Hardware.robotIdentity == Hardware.yearIdentifier.PrevYear)
-            {
-
-            }
     } // end Init
 
     /**
@@ -248,13 +289,12 @@ public class Autonomous
                     }
                 return false;
             case PREPARE_TO_DROP:
-                if (Hardware.drive.driveStraightInches(DISTANCE_TO_WALL_INCHES_PREV_YEAR,
-                        DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_SECONDS_PREV_YEAR,
-                        USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
+                if (Hardware.drive.driveStraightInches(distanceToWallInches, driveSpeedPositive, accelerationSeconds,
+                        usingGyroForDrive) == true)
                     {
                     Hardware.drive.resetEncoders();
                     // Sets the brake power to the opposite of the drive direction
-                    Hardware.drive.setBrakePower(BRAKE_POWER_NEGATIVE, BrakeType.AFTER_DRIVE);
+                    Hardware.drive.setBrakePower(brakePowerNegative, BrakeType.AFTER_DRIVE);
                     dropAndDriveState = DROP_AND_DRIVE_STATE.STOP_DRIVING_BEFORE_DROP;
                     }
                 return false;
@@ -280,19 +320,18 @@ public class Autonomous
             case WAIT:
                 // Exists to let the motors rest before driving after braking
                 Hardware.driveDelayTimer.start();
-                if (Hardware.driveDelayTimer.get() >= DRIVE_DELAY_SECONDS_PREV_YEAR)
+                if (Hardware.driveDelayTimer.get() >= driveDelaySeconds)
                     {
                     dropAndDriveState = DROP_AND_DRIVE_STATE.DRIVE;
                     }
                 return false;
             case DRIVE:
-                if (Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_WALL_INCHES_PREV_YEAR,
-                        DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_SECONDS_PREV_YEAR,
-                        USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
+                if (Hardware.drive.driveStraightInches(distanceToLeaveTarmacFromWallInches, driveSpeedNegative,
+                        accelerationSeconds, usingGyroForDrive) == true)
                     {
                     Hardware.drive.resetEncoders();
                     // Set the brake power to opposite the drive direction
-                    Hardware.drive.setBrakePower(BRAKE_POWER_POSITIVE, BrakeType.AFTER_DRIVE);
+                    Hardware.drive.setBrakePower(brakePowerPositive, BrakeType.AFTER_DRIVE);
                     dropAndDriveState = DROP_AND_DRIVE_STATE.STOP;
                     }
                 return false;
@@ -311,7 +350,7 @@ public class Autonomous
                     }
                 return false;
             case WAIT_SPIN:
-                if (spinWaitTimer.hasElapsed(SPIN_DELAY_SECONDS_PREV))
+                if (spinWaitTimer.hasElapsed(spinDelaySeconds))
                     {
                     spinWaitTimer.stop();
                     spinWaitTimer.reset();
@@ -378,13 +417,12 @@ public class Autonomous
                     }
                 return false;
             case DRIVE:
-                if (Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_WALL_INCHES_PREV_YEAR,
-                        DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_SECONDS_PREV_YEAR,
-                        USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
+                if (Hardware.drive.driveStraightInches(distanceToLeaveTarmacFromStartInches, driveSpeedNegative,
+                        accelerationSeconds, usingGyroForDrive) == true)
                     {
                     Hardware.drive.resetEncoders();
                     // Sets the brake power to opposite the drive direction
-                    Hardware.drive.setBrakePower(BRAKE_POWER_POSITIVE, BrakeType.AFTER_DRIVE);
+                    Hardware.drive.setBrakePower(brakePowerPositive, BrakeType.AFTER_DRIVE);
                     dropFromStartAndDriveState = DROP_FROM_START_AND_DRIVE_STATE.STOP;
                     }
                 return false;
@@ -402,7 +440,7 @@ public class Autonomous
                     }
                 return false;
             case WAIT_SPIN:
-                if (spinWaitTimer.hasElapsed(SPIN_DELAY_SECONDS_PREV))
+                if (spinWaitTimer.hasElapsed(spinDelaySeconds))
                     {
                     spinWaitTimer.stop();
                     spinWaitTimer.reset();
@@ -451,13 +489,12 @@ public class Autonomous
                     }
                 return false;
             case DRIVE:
-                if (Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_PREV_YEAR,
-                        DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_SECONDS_PREV_YEAR,
-                        USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
+                if (Hardware.drive.driveStraightInches(distanceToLeaveTarmacFromStartInches, driveSpeedNegative,
+                        accelerationSeconds, usingGyroForDrive) == true)
                     {
                     Hardware.drive.resetEncoders();
                     // Sets the brake power to be in the opposite direction of the drive direction
-                    Hardware.drive.setBrakePower(BRAKE_POWER_POSITIVE, BrakeType.AFTER_DRIVE);
+                    Hardware.drive.setBrakePower(brakePowerPositive, BrakeType.AFTER_DRIVE);
                     driveAndDropState = DRIVE_AND_DROP_STATE.STOP_DRIVING_AFTER_DRIVE;
                     }
                 return false;
@@ -471,7 +508,7 @@ public class Autonomous
             case WAIT:
                 // Delays the robot to allow the motors to rest before driving after braking
                 Hardware.driveDelayTimer.start();
-                if (Hardware.driveDelayTimer.get() >= DRIVE_DELAY_SECONDS_PREV_YEAR)
+                if (Hardware.driveDelayTimer.get() >= driveDelaySeconds)
                     {
                     driveAndDropState = DRIVE_AND_DROP_STATE.PREPARE_TO_DROP;
                     }
@@ -481,13 +518,12 @@ public class Autonomous
                     {
                     Hardware.launcher.setDoneStates(true, true, true, false);
                     }
-                if (Hardware.drive.driveStraightInches(DISTANCE_TO_WALL_FROM_OUTSIDE_OF_TARMAC_INCHES_PREV_YEAR,
-                        DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_SECONDS_PREV_YEAR,
-                        USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
+                if (Hardware.drive.driveStraightInches(distanceToWallFromOutsideTarmacInches, driveSpeedPositive,
+                        accelerationSeconds, usingGyroForDrive) == true)
                     {
                     Hardware.drive.resetEncoders();
                     // Sets the brake power to be opposite the drive direction
-                    Hardware.drive.setBrakePower(BRAKE_POWER_NEGATIVE, BrakeType.AFTER_DRIVE);
+                    Hardware.drive.setBrakePower(brakePowerNegative, BrakeType.AFTER_DRIVE);
                     driveAndDropState = DRIVE_AND_DROP_STATE.STOP_DRIVING_BEFORE_DROP;
                     }
                 return false;
@@ -546,13 +582,12 @@ public class Autonomous
                     }
                 return false;
             case DRIVE:
-                if (Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_PREV_YEAR,
-                        DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_SECONDS_PREV_YEAR,
-                        USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
+                if (Hardware.drive.driveStraightInches(distanceToLeaveTarmacFromStartInches, driveSpeedNegative,
+                        accelerationSeconds, usingGyroForDrive) == true)
                     {
                     Hardware.drive.resetEncoders();
                     // Sets the brake power to be opposite the drive direction
-                    Hardware.drive.setBrakePower(BRAKE_POWER_POSITIVE, BrakeType.AFTER_DRIVE);
+                    Hardware.drive.setBrakePower(brakePowerPositive, BrakeType.AFTER_DRIVE);
                     onlyDriveBackwardsState = ONLY_DRIVE_BACKWARDS_STATE.STOP;
                     }
                 return false;
@@ -570,7 +605,7 @@ public class Autonomous
                     }
                 return false;
             case WAIT_SPIN:
-                if (spinWaitTimer.hasElapsed(SPIN_DELAY_SECONDS_PREV))
+                if (spinWaitTimer.hasElapsed(spinDelaySeconds))
                     {
                     spinWaitTimer.stop();
                     spinWaitTimer.reset();
@@ -617,13 +652,12 @@ public class Autonomous
                     }
                 return false;
             case DRIVE:
-                if (Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_PREV_YEAR,
-                        DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_SECONDS_PREV_YEAR,
-                        USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
+                if (Hardware.drive.driveStraightInches(distanceToLeaveTarmacFromStartInches, driveSpeedPositive,
+                        accelerationSeconds, usingGyroForDrive) == true)
                     {
                     Hardware.drive.resetEncoders();
                     // Sets the brake power to be opposite the drive direction
-                    Hardware.drive.setBrakePower(BRAKE_POWER_NEGATIVE, BrakeType.AFTER_DRIVE);
+                    Hardware.drive.setBrakePower(brakePowerNegative, BrakeType.AFTER_DRIVE);
                     onlyDriveForwardState = ONLY_DRIVE_FORWARD_STATE.STOP;
                     }
                 return false;
@@ -670,13 +704,12 @@ public class Autonomous
                     }
                 return false;
             case DRIVE_ONE:
-                if (Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_PREV_YEAR,
-                        DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_SECONDS_PREV_YEAR,
-                        USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
+                if (Hardware.drive.driveStraightInches(distanceToLeaveTarmacFromStartInches, driveSpeedNegative,
+                        accelerationSeconds, usingGyroForDrive) == true)
                     {
                     Hardware.drive.resetEncoders();
                     // Sets the brake power to be opposite the drive direction
-                    Hardware.drive.setBrakePower(BRAKE_POWER_POSITIVE, BrakeType.AFTER_DRIVE);
+                    Hardware.drive.setBrakePower(brakePowerPositive, BrakeType.AFTER_DRIVE);
                     driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.STOP_DRIVING_AFTER_DRIVE_ONE;
                     }
                 return false;
@@ -695,20 +728,19 @@ public class Autonomous
                 // Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW);
                 // Brief delay to let the motors rest after braking
                 Hardware.driveDelayTimer.start();
-                if (Hardware.driveDelayTimer.get() >= DRIVE_DELAY_SECONDS_PREV_YEAR)
+                if (Hardware.driveDelayTimer.get() >= driveDelaySeconds)
                     {
                     driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.PREPARE_TO_DROP;
                     }
                 return false;
             case PREPARE_TO_DROP:
                 // Hardware.launcher.launchGeneral(LAUNCH_TYPE.LOW);
-                if (Hardware.drive.driveStraightInches(DISTANCE_TO_WALL_FROM_OUTSIDE_OF_TARMAC_INCHES_PREV_YEAR,
-                        DRIVE_SPEED_POSITIVE_PREV_YEAR, ACCELERATION_SECONDS_PREV_YEAR,
-                        USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
+                if (Hardware.drive.driveStraightInches(distanceToWallFromOutsideTarmacInches, driveSpeedPositive,
+                        accelerationSeconds, usingGyroForDrive) == true)
                     {
                     Hardware.drive.resetEncoders();
                     // Sets the brake power to be opposite the drive direction
-                    Hardware.drive.setBrakePower(BRAKE_POWER_NEGATIVE, BrakeType.AFTER_DRIVE);
+                    Hardware.drive.setBrakePower(brakePowerNegative, BrakeType.AFTER_DRIVE);
                     driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.STOP_DRIVING_BEFORE_DROP;
                     }
                 return false;
@@ -738,18 +770,17 @@ public class Autonomous
                 // Short delay after driving if the launch does not run to let the motors rest
                 // after braking
                 Hardware.driveDelayTimer.start();
-                if (Hardware.driveDelayTimer.get() >= DRIVE_DELAY_SECONDS_PREV_YEAR)
+                if (Hardware.driveDelayTimer.get() >= driveDelaySeconds)
                     {
                     driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.LEAVE;
                     }
                 return false;
             case LEAVE:
-                if (Hardware.drive.driveStraightInches(DISTANCE_TO_LEAVE_TARMAC_FROM_WALL_INCHES_PREV_YEAR,
-                        DRIVE_SPEED_NEGATIVE_PREV_YEAR, ACCELERATION_SECONDS_PREV_YEAR,
-                        USING_GYRO_FOR_DRIVE_PREV_YEAR) == true)
+                if (Hardware.drive.driveStraightInches(distanceToLeaveTarmacFromWallInches, driveSpeedNegative,
+                        accelerationSeconds, usingGyroForDrive) == true)
                     {
                     // Sets the brake power to be opposite the drive direction
-                    Hardware.drive.setBrakePower(BRAKE_POWER_POSITIVE, BrakeType.AFTER_DRIVE);
+                    Hardware.drive.setBrakePower(brakePowerPositive, BrakeType.AFTER_DRIVE);
                     driveDropAndDriveAgainState = DRIVE_DROP_AND_DRIVE_AGAIN_STATE.STOP;
                     }
                 return false;
@@ -767,7 +798,7 @@ public class Autonomous
                     }
                 return false;
             case WAIT_SPIN:
-                if (spinWaitTimer.hasElapsed(SPIN_DELAY_SECONDS_PREV))
+                if (spinWaitTimer.hasElapsed(spinDelaySeconds))
                     {
                     spinWaitTimer.stop();
                     spinWaitTimer.reset();
@@ -802,9 +833,9 @@ public class Autonomous
             {
             // Executes the turn method
             case SPIN:
-                Hardware.drive.setPivotDegreesStationaryPercentage(PIVOT_SPEED_CURRENT_YEAR);
-                if (Hardware.drive.pivotTurnDegrees(TURN_AROUND_DEGREES, TURN_SPEED_CURRENT_YEAR,
-                        TURN_ACCELERATION_SECONDS_PREV_YEAR, USING_GYRO_FOR_TURN_PREV_YEAR) == true)
+                Hardware.drive.setPivotDegreesStationaryPercentage(pivotSpeed);
+                if (Hardware.drive.pivotTurnDegrees(turnDegrees, turnSpeed, turnAccelerationSeconds,
+                        usingGyroForTurn) == true)
                     {
                     spinState = SPIN_STATE.STOP_SPIN;
                     }
@@ -837,6 +868,7 @@ public class Autonomous
      *            - the type of launch
      * @return true when finished
      */
+    // TODO is the launch method from ball handler used here?
     private static boolean launchAuto(LAUNCH_TYPE type)
     {
         // System.out.println("Launch auto state: " + launchAutoState);
@@ -890,7 +922,7 @@ public class Autonomous
                 // Delay to turn off the launcher after we assume enough time has passed to fire
                 // the stored ball
                 Hardware.launchDelayTimer.start();
-                if (Hardware.launchDelayTimer.get() >= LAUNCH_DELAY_SECONDS_PREV_YEAR)
+                if (Hardware.launchDelayTimer.get() >= launchDelaySeconds)
                     {
                     // TODO Stop moving the conveyor here
                     Hardware.launcher.stopFiring();
@@ -981,7 +1013,7 @@ public class Autonomous
 
     private static double distanceToWallFromOutsideTarmacInches;
 
-    private static double distanceToLeaveTarmacToStartInches;
+    private static double distanceToLeaveTarmacFromStartInches;
 
     private static double distanceToLeaveTarmacFromWallInches;
 
@@ -1009,9 +1041,15 @@ public class Autonomous
 
     private static double pivotSpeed;
 
+    private static int turnDegrees;
+
     private static double turnAccelerationSeconds;
 
     private static double spinDelaySeconds;
+
+    private static double conveyorSpeedPositive;
+
+    private static double conveyorSpeedNegative;
     /*
      * ========================================= Constants
      * =========================================
@@ -1019,7 +1057,7 @@ public class Autonomous
 
     private static final double DISTANCE_TO_WALL_INCHES_PREV_YEAR = 10.0; // TODO test
 
-    private static final double DISTANCE_TO_WALL_INCHES_CURRECT_YEAR = 10.0; // TODO
+    private static final double DISTANCE_TO_WALL_INCHES_CURRENT_YEAR = 10.0; // TODO
 
     private static final double DISTANCE_TO_WALL_FROM_OUTSIDE_OF_TARMAC_INCHES_PREV_YEAR = 90.0; // TODO test
 
@@ -1045,9 +1083,13 @@ public class Autonomous
 
     private static final double DRIVE_SPEED_NEGATIVE_CURRENT_YEAR = -.4; // TODO
 
-    private static final double BRAKE_POWER_POSITIVE = .9;
+    private static final double BRAKE_POWER_POSITIVE_PREV_YEAR = .9;
 
-    private static final double BRAKE_POWER_NEGATIVE = -.9;
+    private static final double BRAKE_POWER_POSITIVE_CURRENT_YEAR = .9; // TODO
+
+    private static final double BRAKE_POWER_NEGATIVE_PREV_YEAR = -.9;
+
+    private static final double BRAKE_POWER_NEGATIVE_CURRENT_YEAR = -.9; // TODO
 
     private static final double ACCELERATION_SECONDS_PREV_YEAR = .5;
 
@@ -1061,7 +1103,9 @@ public class Autonomous
 
     private static final boolean USING_GYRO_FOR_DRIVE_CURRENT_YEAR = false; // TODO
 
-    private static final double MAX_DELAY_SECONDS = 5.0;
+    private static final double MAX_DELAY_SECONDS_PREV_YEAR = 5.0;
+
+    private static final double MAX_DELAY_SECONDS_CURRENT_YEAR = 5.0; // TODO
 
     private static final double LAUNCH_DELAY_SECONDS_PREV_YEAR = 1.0;
 
@@ -1077,13 +1121,25 @@ public class Autonomous
 
     private static final double PIVOT_SPEED_CURRENT_YEAR = .35;
 
+    private static final double PIVOT_SPEED_PREV_YEAR = .35;
+
     private static final double TURN_ACCELERATION_SECONDS_PREV_YEAR = .5;
 
     private static final double TURN_ACCELERATION_SECONDS_CURRENT_YEAR = .5; // TODO
 
-    private static final int TURN_AROUND_DEGREES = 180;
+    private static final int TURN_DEGREES_PREV = 180;
+
+    private static final int TURN_DEGREES_CURRENT = 180;
 
     private static final double SPIN_DELAY_SECONDS_PREV = 0.65;
 
     private static final double SPIN_DELAY_SECONDS_CURRENT = .65; // TODO
+
+    private static final double CONVEYOR_SPEED_POSITIVE_PREV = .4;
+
+    private static final double CONVEYOR_SPEED_POSITIVE_CURRENT = .4;
+
+    private static final double CONVEYOR_SPEED_NEGATIVE_PREV = -.4;
+
+    private static final double CONVEYOR_SPEED_NEGATIVE_CURRENT = -.4;
     }

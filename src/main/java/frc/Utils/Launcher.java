@@ -20,7 +20,7 @@ public class Launcher
         {
             this.launchMotors = launchMotors;
             this.launchEncoder = launchEncoder;
-            if (year == Hardware.yearIdentifier.CurrentYear)
+            if (year.equals(Hardware.yearIdentifier.CurrentYear))
                 {
                 this.targetMotorRPMLow = TARGET_MOTOR_RPM_LOW_CURRENT;
                 this.targetMotorRPMHigh = TARGET_MOTOR_RPM_HIGH_CURRENT;
@@ -33,7 +33,7 @@ public class Launcher
                 this.targetIterations = TARGET_ITERATIONS_CURRENT;
                 this.launchEncoder.setDistancePerPulse(DISTANCE_PER_PULSE_CURR);
                 }
-            else if (year == Hardware.yearIdentifier.PrevYear)
+            else if (year.equals(Hardware.yearIdentifier.PrevYear))
                 {
                 this.targetMotorRPMLow = TARGET_MOTOR_RPM_LOW_PREV;
                 this.targetMotorRPMHigh = TARGET_MOTOR_RPM_HIGH_PREV;
@@ -134,13 +134,11 @@ public class Launcher
             }
     }
 
-    // TODO may need to run through the whole launcher method each time a ball is
-    // launched
     /**
      * Launch the ball based on a given speed and target rpm for use in autonomous
      * 
      * @param motorSpeed
-     *            - the inital speed to send to the launch motors
+     *            - the initial speed to send to the launch motors
      * @param target
      *            - the target rpm of the motors
      * @return true when done firing
@@ -159,7 +157,8 @@ public class Launcher
                     this.launchStateAuto = LAUNCH_STATE_AUTO.SPINNING_UP;
                     }
                 return false;
-            // State when the launch motors are running at the inital speed until they reach
+            // State when the launch motors are running at the initial speed until they
+            // reach
             // the target speed
             case SPINNING_UP:
                 this.launchMotors.set(motorSpeed);
@@ -228,12 +227,12 @@ public class Launcher
      * 
      * @param state
      *            - the state the launcher should be in
-     * @param initalSpeed
-     *            - the inital speed to use for the motors
+     * @param initialSpeed
+     *            - the initial speed to use for the motors
      * @param targetRPM
      *            - the target rpm that the motors should reach
      */
-    private void launchTeleop(LAUNCH_STATE_TELEOP state, double initalSpeed, double targetRPM)
+    private void launchTeleop(LAUNCH_STATE_TELEOP state, double initialSpeed, double targetRPM)
     {
         // System.out.println("Launch teleop state: " + state);
         // System.out.println("Launch teleop status: " + this.launchStatusTeleop);
@@ -248,10 +247,10 @@ public class Launcher
                 launchMotors.set(0.0);
                 this.launchStatusTeleop = LAUNCH_STATUS_TELEOP.RESTING;
                 break;
-            // The motors are supplied the inital voltage and waits until the rpm of the
+            // The motors are supplied the initial voltage and waits until the rpm of the
             // wheels reaches the target
             case SPINNING_UP:
-                this.launchMotors.set(initalSpeed);
+                this.launchMotors.set(initialSpeed);
                 if (this.launchEncoder.getRPM() >= targetRPM)
                     {
                     this.launchStatusTeleop = LAUNCH_STATUS_TELEOP.DONE_SPINNING_UP;
@@ -265,15 +264,14 @@ public class Launcher
             // Ensures that the launch wheels spin consistently within the deadband
             case AT_SPEED:
                 // Checks if the motor voltage is correct
-                // TODO need to set the motors to the inital speed the first time through
                 if (this.firstChecking == true)
                     {
-                    this.launchMotors.set(initalSpeed);
+                    this.launchMotors.set(initialSpeed);
                     this.firstChecking = false;
                     }
                 // TODO this may create a problem if you attempt to verify voltage twice without
                 // changing the status
-                if (maintainSpeed(initalSpeed, targetRPM) == true
+                if (maintainSpeed(initialSpeed, targetRPM) == true
                         || this.launchStatusTeleop == LAUNCH_STATUS_TELEOP.DONE_CHECKING_SPEED)
                     {
                     this.maintainingIterations = 0;
@@ -299,21 +297,21 @@ public class Launcher
     /**
      * Checks if the launch motors remain within an rpm deadband
      * 
-     * @param initalSpeed
-     *            - the inital speed of the motors
+     * @param initialSpeed
+     *            - the initial speed of the motors
      * @param targetRPM
      *            - the target rpm of the motors
      * @return true when the motors have been running within the deadband for a
      *         certain amount of time
      */
-    private boolean maintainSpeed(double initalSpeed, double targetRPM)
+    private boolean maintainSpeed(double initialSpeed, double targetRPM)
     {
         // System.out.println("Maintaining speed iterations: " +
         // this.maintainingIterations);
         // System.out.println("Motor RPM: " + this.launchEncoder.getRPM());
         if (this.newMotorSpeed == 0.0)
             {
-            // System.out.println("Motor speed: " + initalSpeed);
+            // System.out.println("Motor speed: " + initialSpeed);
             }
         if (this.newMotorSpeed != 0.0)
             {
@@ -323,7 +321,7 @@ public class Launcher
         // of time
         if (this.maintainingIterations >= this.targetIterations)
             {
-            this.firstCorrectionInteration = true;
+            this.firstCorrectionIteration = true;
             // this.launchMotors.set(this.newMotorSpeed);
             return true;
             }
@@ -338,7 +336,7 @@ public class Launcher
         // deadband, change the motor voltage
         else
             {
-            this.launchMotors.set(correctSpeed(initalSpeed, targetRPM));
+            this.launchMotors.set(correctSpeed(initialSpeed, targetRPM));
             this.maintainingIterations = 0;
             }
         return false;
@@ -347,21 +345,21 @@ public class Launcher
     /**
      * Corrects the voltage being sent to the motors to be within the rpm deadband
      * 
-     * @param initalSpeed
+     * @param initialSpeed
      *            - the intial speed of the motors that needs to be corrected
      * @param target
      *            - the target rpm of the motors
      * @return the corrected motor speed
      */
-    private double correctSpeed(double initalSpeed, double target)
+    private double correctSpeed(double initialSpeed, double target)
     {
         // System.out.println("Correcting speed");
         // If this is the first time calling the function, set a local variable to the
-        // inital speed passed in
-        if (this.firstCorrectionInteration == true)
+        // initial speed passed in
+        if (this.firstCorrectionIteration == true)
             {
-            this.newMotorSpeed = initalSpeed;
-            this.firstCorrectionInteration = false;
+            this.newMotorSpeed = initialSpeed;
+            this.firstCorrectionIteration = false;
             }
         // If the actual rpm is outside of the acceptable range in the positive
         // direction, reduce the voltage by a
@@ -515,7 +513,7 @@ public class Launcher
      */
     public boolean resetSpeedChecking()
     {
-        this.firstCorrectionInteration = true;
+        this.firstCorrectionIteration = true;
         this.firstChecking = true;
         return true;
     }
@@ -569,7 +567,7 @@ public class Launcher
 
     private double newMotorSpeed;
 
-    private boolean firstCorrectionInteration = true;
+    private boolean firstCorrectionIteration = true;
 
     private boolean doneSpinning = true;
 
