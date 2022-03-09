@@ -3,7 +3,6 @@ package frc.Utils;
 import frc.Hardware.Hardware;
 import frc.Hardware.Hardware.yearIdentifier;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import frc.HardwareInterfaces.KilroyEncoder;
 
 public class Launcher
@@ -383,7 +382,7 @@ public class Launcher
     /**
      * @return the launch state
      */
-    private LAUNCH_STATE_AUTO getStateAuto()
+    public LAUNCH_STATE_AUTO getStateAuto()
     {
         return this.launchStateAuto;
     }
@@ -547,21 +546,13 @@ public class Launcher
 
     private LAUNCH_STATE_AUTO launchStateAuto = LAUNCH_STATE_AUTO.RESTING;
 
-    private LAUNCH_STATE_TELEOP launchStateTeleop = LAUNCH_STATE_TELEOP.RESTING;
-
     private LAUNCH_STATUS_AUTO launchStatusAuto;
 
     private LAUNCH_STATUS_TELEOP launchStatusTeleop;
 
     private int maintainingIterations = 0;
 
-    private double launchMotorSpeed;
-
     private MotorControllerGroup launchMotors;
-
-    private MotorController launchMotorTop;
-
-    private MotorController launchMotorBottom;
 
     private KilroyEncoder launchEncoder;
 
