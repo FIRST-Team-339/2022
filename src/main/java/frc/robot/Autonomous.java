@@ -428,10 +428,10 @@ public class Autonomous
                     // false
                     if (Hardware.spinSwitch.isOn() == true)
                         {
-                        dropFromStartAndDriveState = DROP_FROM_START_AND_DRIVE_STATE.SPIN;
+                        dropFromStartAndDriveState = DROP_FROM_START_AND_DRIVE_STATE.WAIT_SPIN;
                         return false;
                         }
-                    dropFromStartAndDriveState = DROP_FROM_START_AND_DRIVE_STATE.WAIT_SPIN;
+                    dropFromStartAndDriveState = DROP_FROM_START_AND_DRIVE_STATE.END;
                     }
                 return false;
             case WAIT_SPIN:
