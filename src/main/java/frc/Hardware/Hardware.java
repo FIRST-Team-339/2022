@@ -504,6 +504,7 @@ public class Hardware
     public static JoystickButton fireLow = new JoystickButton(rightOperator, 11);
     public static JoystickButton fireHigh = new JoystickButton(rightOperator, 4);
     public static JoystickButton fireOverride = new JoystickButton(leftOperator, 11);
+    public static JoystickButton testButton = new JoystickButton(leftDriver, 6);
     public static MomentarySwitch subtractBallButton = new MomentarySwitch(rightOperator, 8, false);
     public static MomentarySwitch addBallButton = new MomentarySwitch(rightOperator, 9, false);
 

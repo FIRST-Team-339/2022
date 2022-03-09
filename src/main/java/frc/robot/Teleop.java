@@ -273,14 +273,15 @@ public class Teleop
         // ---------- ANALOG -----------
         // DONE
         // Inputs/Outputs
-        // System.out.println("Delay Pot is" +
+        // System.out.println("Delay Pot is " +
         // Hardware.delayPot.get(0.0, 5.0));
         // System.out.println("Delay Pot max is " +
         // Hardware.delayPot.getFromRange());
+        // System.out.println("IPiston is " + Hardware.intakePiston.get());
 
         // ----------- PWM -------------
-        // NEEDS FIXED
-        // System.out.println("CS Angle is " + Hardware.climbServo.getAngle());
+        // DONE
+        // System.out.println("CS Angle is " + Hardware.climbServo.get());
 
         // ----------- CAN -------------
 
@@ -293,7 +294,7 @@ public class Teleop
         // System.out.println("RB Motor Voltage: " + Hardware.rightBottomMotor.get());
 
         // Conveyor Motor Values
-        // NEEDS TESTED
+        // DONE
         // System.out.println("CMF Voltage is " + Hardware.conveyorMotorForward.get());
         // System.out.println("CMB Voltage is " + Hardware.conveyorMotorBackward.get());
 
@@ -341,7 +342,7 @@ public class Teleop
 
         // ---------- ANALOG -----------
         // DONE
-        // System.out.println("SPI Gyro Angle is:" + Hardware.gyro.getAngle());
+        // System.out.println("SPI Gyro Angle is: " + Hardware.gyro.getAngle());
 
         // ----------- CAN -------------
 
