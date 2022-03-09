@@ -31,15 +31,12 @@
 // ====================================================================
 package frc.robot;
 
-import javax.swing.DropMode;
-
 import edu.wpi.first.wpilibj.Timer;
+
 import frc.Hardware.Hardware;
-import frc.HardwareInterfaces.Transmission.TransmissionBase.MotorPosition;
 import frc.Utils.Launcher.LAUNCH_STATUS_AUTO;
 import frc.Utils.Launcher.LAUNCH_TYPE;
 import frc.Utils.drive.Drive.BrakeType;
-import frc.Utils.drive.Drive.debugType;
 
 /**
  * An Autonomous class. This class <b>beautifully</b> uses state machines in
@@ -1070,10 +1067,6 @@ public class Autonomous
     private static final double DISTANCE_TO_LEAVE_TARMAC_FROM_WALL_INCHES_PREV_YEAR = 100.0; // TODO test
 
     private static final double DISTANCE_TO_LEAVE_TARMAC_FROM_WALL_INCHES_CURRENT_YEAR = 110.0;
-
-    private static final double DISTANCE_AFTER_RED_LIGHT_PREV_YEAR_INCHES = 40.0; // TODO test
-
-    private static final double DISTANCE_AFTER_RED_LIGHT_CURRENT_YEAR_INCHES = 40.0; // TODO
 
     private static final double DRIVE_SPEED_POSITIVE_PREV_YEAR = .4; // TODO test
 

@@ -5,7 +5,6 @@ import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 
 import frc.HardwareInterfaces.KilroyEncoder;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
@@ -23,7 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  *
  */
 public class KilroyPID
-{
+	{
 
 	private final BaseMotorController offBoardController;
 
@@ -51,48 +50,49 @@ public class KilroyPID
 	 *            If position, then the setpoint will move to a certain position.
 	 */
 	public KilroyPID(MotorController motorCont, PIDSource sensor)
-	{
-		if (sensor instanceof KilroyEncoder && ((KilroyEncoder) sensor).getAttachedCANDevice() == motorCont)
 		{
-			initCAN();
-		} else
-		{
-			initOnBoard();
+			if (sensor instanceof KilroyEncoder && ((KilroyEncoder) sensor).getAttachedCANDevice() == motorCont)
+				{
+				initCAN();
+				}
+			else
+				{
+				initOnBoard();
+				}
+
+			this.sensor = sensor;
+
+			if (pidType == PIDType.POSITION)
+				sensor.setPIDSourceType(PIDSourceType.kDisplacement);
+			else if (pidType == PIDType.VELOCITY)
+				sensor.setPIDSourceType(PIDSourceType.kRate);
+
+			onBoardController = new PIDSubsystem(0, 0, 0)
+				{
+				@Override
+				protected double returnPIDInput()
+				{
+					if (isSensorReversed == true)
+						return -sensor.pidGet();
+					// else
+					return sensor.pidGet();
+				}
+
+				@Override
+				protected void usePIDOutput(double output)
+				{
+					motorCont.set(output);
+				}
+
+				@Override
+				protected void initDefaultCommand()
+				{
+
+				}
+				};
+			offBoardController = null;
+			type = ControllerType.ONBOARD;
 		}
-
-		this.sensor = sensor;
-
-		if (pidType == PIDType.POSITION)
-			sensor.setPIDSourceType(PIDSourceType.kDisplacement);
-		else if (pidType == PIDType.VELOCITY)
-			sensor.setPIDSourceType(PIDSourceType.kRate);
-
-		onBoardController = new PIDSubsystem(0, 0, 0)
-		{
-			@Override
-			protected double returnPIDInput()
-			{
-				if (isSensorReversed == true)
-					return -sensor.pidGet();
-				// else
-				return sensor.pidGet();
-			}
-
-			@Override
-			protected void usePIDOutput(double output)
-			{
-				motorCont.set(output);
-			}
-
-			@Override
-			protected void initDefaultCommand()
-			{
-
-			}
-		};
-		offBoardController = null;
-		type = ControllerType.ONBOARD;
-	}
 
 	private void initCAN()
 	{
@@ -139,19 +139,19 @@ public class KilroyPID
 		this.d = d;
 		this.f = f;
 		switch (type)
-		{
-		case CAN:
-			this.offBoardController.config_kP(0, p, 0);
-			this.offBoardController.config_kI(0, i, 0);
-			this.offBoardController.config_kD(0, d, 0);
-			this.offBoardController.config_kF(0, f, 0);
-			break;
-		case ONBOARD:
-			this.onBoardController.getPIDController().setPID(p, i, d, f);
-			break;
-		default:
-			break;
-		}
+			{
+			case CAN:
+				this.offBoardController.config_kP(0, p, 0);
+				this.offBoardController.config_kI(0, i, 0);
+				this.offBoardController.config_kD(0, d, 0);
+				this.offBoardController.config_kF(0, f, 0);
+				break;
+			case ONBOARD:
+				this.onBoardController.getPIDController().setPID(p, i, d, f);
+				break;
+			default:
+				break;
+			}
 	}
 
 	/**
@@ -164,13 +164,13 @@ public class KilroyPID
 	{
 		this.tolerance = tolerance;
 		switch (type)
-		{
-		case ONBOARD:
-			this.onBoardController.getPIDController().setAbsoluteTolerance(tolerance);
-			return;
-		default:
-			return;
-		}
+			{
+			case ONBOARD:
+				this.onBoardController.getPIDController().setAbsoluteTolerance(tolerance);
+				return;
+			default:
+				return;
+			}
 	}
 
 	/**
@@ -180,7 +180,8 @@ public class KilroyPID
 	 * @param value
 	 *            The value (in correct units based on the type) the motor will move
 	 *            to.
-	 * @param runSensorReversed TODO
+	 * @param runSensorReversed
+	 *            TODO
 	 * @param pidType
 	 *            What the PID loop will see the value as. If it's position, then it
 	 *            is a move and stop. If it's velocity, it will try to go the speed
@@ -191,21 +192,21 @@ public class KilroyPID
 		this.setpoint = value;
 		this.setSensorInverted(runSensorReversed);
 		switch (type)
-		{
-		case CAN:
-			// Set the type of movement and the setpoint.
-			if (pidType == PIDType.POSITION)
-				offBoardController.set(ControlMode.Position, value);
-			else if (pidType == PIDType.VELOCITY)
-				offBoardController.set(ControlMode.Velocity, value);
-			break;
-		case ONBOARD:
-			// Set the setpoint
-			this.onBoardController.setSetpoint(value);
-			break;
-		default:
-			break;
-		}
+			{
+			case CAN:
+				// Set the type of movement and the setpoint.
+				if (pidType == PIDType.POSITION)
+					offBoardController.set(ControlMode.Position, value);
+				else if (pidType == PIDType.VELOCITY)
+					offBoardController.set(ControlMode.Velocity, value);
+				break;
+			case ONBOARD:
+				// Set the setpoint
+				this.onBoardController.setSetpoint(value);
+				break;
+			default:
+				break;
+			}
 	}
 
 	/**
@@ -234,22 +235,23 @@ public class KilroyPID
 	public void setEnabled(boolean enabled)
 	{
 		switch (type)
-		{
-		case CAN:
-			if (enabled == false)
 			{
-				this.offBoardController.set(ControlMode.PercentOutput, 0);
-			} else
-			{
-				this.setSetpoint(setpoint, false);
+			case CAN:
+				if (enabled == false)
+					{
+					this.offBoardController.set(ControlMode.PercentOutput, 0);
+					}
+				else
+					{
+					this.setSetpoint(setpoint, false);
+					}
+				break;
+			case ONBOARD:
+				this.onBoardController.getPIDController().setEnabled(enabled);
+				break;
+			default:
+				break;
 			}
-			break;
-		case ONBOARD:
-			this.onBoardController.getPIDController().setEnabled(enabled);
-			break;
-		default:
-			break;
-		}
 	}
 
 	/**
@@ -263,17 +265,17 @@ public class KilroyPID
 	public void setSensorInverted(boolean inverted)
 	{
 		switch (type)
-		{
-		case CAN:
-			this.offBoardController.setSensorPhase(inverted);
-			break;
-		case ONBOARD:
-			this.isSensorReversed = inverted;
-			break;
-		default:
-			break;
+			{
+			case CAN:
+				this.offBoardController.setSensorPhase(inverted);
+				break;
+			case ONBOARD:
+				this.isSensorReversed = inverted;
+				break;
+			default:
+				break;
 
-		}
+			}
 	}
 
 	/**
@@ -286,16 +288,16 @@ public class KilroyPID
 	public void setSpeed(double velocity)
 	{
 		switch (type)
-		{
-		case CAN:
-			this.offBoardController.configPeakOutputForward(Math.abs(velocity), 0);
-			this.offBoardController.configPeakOutputReverse(Math.abs(velocity), 0);
-			return;
-		case ONBOARD:
-			this.onBoardController.getPIDController().setOutputRange(-Math.abs(velocity), Math.abs(velocity));
-		default:
-			break;
-		}
+			{
+			case CAN:
+				this.offBoardController.configPeakOutputForward(Math.abs(velocity), 0);
+				this.offBoardController.configPeakOutputReverse(Math.abs(velocity), 0);
+				return;
+			case ONBOARD:
+				this.onBoardController.getPIDController().setOutputRange(-Math.abs(velocity), Math.abs(velocity));
+			default:
+				break;
+			}
 	}
 
 	/**
@@ -333,14 +335,14 @@ public class KilroyPID
 	public void tetherCANMotorControllers(BaseMotorController... controller)
 	{
 		switch (type)
-		{
-		case CAN:
-			for (BaseMotorController bmc : controller)
-				bmc.follow(this.offBoardController);
-			break;
-		default:
-			break;
-		}
+			{
+			case CAN:
+				for (BaseMotorController bmc : controller)
+					bmc.follow(this.offBoardController);
+				break;
+			default:
+				break;
+			}
 	}
 
 	/**
@@ -349,16 +351,16 @@ public class KilroyPID
 	public void resetPID()
 	{
 		switch (type)
-		{
-		case CAN:
-			this.offBoardController.setIntegralAccumulator(0, 0, 0);
-			break;
-		case ONBOARD:
-			this.onBoardController.getPIDController().reset();
-			break;
-		default:
-			break;
-		}
+			{
+			case CAN:
+				this.offBoardController.setIntegralAccumulator(0, 0, 0);
+				break;
+			case ONBOARD:
+				this.onBoardController.getPIDController().reset();
+				break;
+			default:
+				break;
+			}
 	}
 
 	/**
@@ -368,14 +370,14 @@ public class KilroyPID
 	public boolean isOnTarget()
 	{
 		switch (type)
-		{
-		case CAN:
-			return (Math.abs(this.offBoardController.getClosedLoopError(0)) < this.tolerance);
-		case ONBOARD:
-			return this.onBoardController.onTarget();
-		default:
-			return true;
-		}
+			{
+			case CAN:
+				return (Math.abs(this.offBoardController.getClosedLoopError(0)) < this.tolerance);
+			case ONBOARD:
+				return this.onBoardController.onTarget();
+			default:
+				return true;
+			}
 	}
 
 	/**
@@ -388,7 +390,7 @@ public class KilroyPID
 	public void tunePIDSmartDashboard(String pidName)
 	{
 		if (initTune == false)
-		{
+			{
 			SmartDashboard.putNumber(pidName + "_p", 0);
 			SmartDashboard.putNumber(pidName + "_i", 0);
 			SmartDashboard.putNumber(pidName + "_d", 0);
@@ -396,7 +398,7 @@ public class KilroyPID
 			SmartDashboard.putNumber(pidName + "_Tolerance", 0);
 			SmartDashboard.putNumber(pidName + "_setPoint", 0);
 			initTune = true;
-		}
+			}
 		p = SmartDashboard.getNumber(pidName + "_p", 0);
 		i = SmartDashboard.getNumber(pidName + "_i", 0);
 		d = SmartDashboard.getNumber(pidName + "_d", 0);
@@ -415,7 +417,7 @@ public class KilroyPID
 	 *
 	 */
 	public enum ControllerType
-	{
+		{
 		/**
 		 * We are using the PID built into the CAN motor controller
 		 */
@@ -424,7 +426,7 @@ public class KilroyPID
 		 * We are calculating the PID values on the roboRIO
 		 */
 		ONBOARD
-	}
+		}
 
 	/**
 	 * What kind of PID is being used
@@ -433,7 +435,7 @@ public class KilroyPID
 	 *
 	 */
 	public enum PIDType
-	{
+		{
 		/**
 		 * Going to a set position / displacement
 		 */
@@ -442,7 +444,7 @@ public class KilroyPID
 		 * Going at a fixed rate, continuous
 		 */
 		VELOCITY
-	}
+		}
 
 	private double p, i, d, f, setpoint, tolerance;
 
@@ -451,4 +453,4 @@ public class KilroyPID
 	private boolean isSensorReversed = false;
 
 	private PIDType pidType = PIDType.POSITION;
-}
+	}

@@ -15,7 +15,6 @@
 package frc.Hardware;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -23,7 +22,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import frc.HardwareInterfaces.BallHandler;
 import frc.HardwareInterfaces.DoubleSolenoid;
 import frc.HardwareInterfaces.DoubleThrowSwitch;
-import frc.HardwareInterfaces.KilroyCamera;
 import frc.HardwareInterfaces.KilroyEncoder;
 import frc.HardwareInterfaces.KilroyServo;
 import frc.HardwareInterfaces.KilroyUSBCamera;
@@ -34,12 +32,11 @@ import frc.HardwareInterfaces.SingleThrowSwitch;
 import frc.HardwareInterfaces.SixPositionSwitch;
 import frc.HardwareInterfaces.UltraSonic;
 import frc.HardwareInterfaces.Transmission.TankTransmission;
-import frc.HardwareInterfaces.Transmission.TransmissionBase;
-import edu.wpi.first.cscore.UsbCamera;
-import edu.wpi.first.cscore.UsbCameraInfo;
-import edu.wpi.first.util.sendable.SendableRegistry;
+import frc.Utils.drive.Drive;
+import frc.Utils.Launcher;
+import frc.Utils.BallCounter;
+
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -47,12 +44,8 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import frc.Utils.drive.DrivePID;
-import frc.Utils.drive.Drive;
-import frc.Utils.Launcher;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import frc.Utils.BallCounter;
 
 /**
  * ------------------------------------------------------- puts all of the
@@ -152,8 +145,6 @@ public class Hardware
         leftTopMotor.setInverted(false);
         rightBottomMotor = new WPI_TalonFX(12);
         rightBottomMotor.setInverted(true);
-
-        colorWheelMotor = new WPI_TalonSRX(25);
 
         launchMotorForward = new CANSparkMax(27, MotorType.kBrushless);
         launchMotorBackward = new CANSparkMax(26, MotorType.kBrushless);
@@ -280,8 +271,6 @@ public class Hardware
         rightBottomMotor = new WPI_TalonFX(12);
         rightBottomMotor.setInverted(true);
 
-        colorWheelMotor = new WPI_TalonSRX(25);
-
         launchMotorForward = new WPI_TalonFX(17);
         launchMotorBackward = new WPI_TalonFX(18);
 
@@ -394,8 +383,6 @@ public class Hardware
     public static MotorControllerGroup launchMotorGroup = null;
 
     public static Launcher launcher = null;
-
-    public static MotorController colorWheelMotor = null; // TODO replace with conveyor motor
 
     public static KilroyEncoder launchMotorEncoder = null;
 

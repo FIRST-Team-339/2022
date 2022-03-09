@@ -29,19 +29,12 @@
 // ====================================================================
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Timer;
 import frc.Hardware.Hardware;
-
 import frc.HardwareInterfaces.BallHandler;
-import frc.HardwareInterfaces.BallHandler.FIRE;
 import frc.HardwareInterfaces.BallHandler.PROCESS;
-import frc.Utils.BallCounter;
 import frc.Utils.Launcher.LAUNCH_STATE_TELEOP;
-import frc.Utils.Launcher.LAUNCH_STATUS_AUTO;
-import frc.Utils.Launcher.LAUNCH_STATUS_TELEOP;
 import frc.Utils.Launcher.LAUNCH_TYPE;
-import frc.Utils.drive.Drive.debugType;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -114,15 +107,10 @@ public class Teleop
         boolean closeClimbServoButtonPressed = Hardware.closeClimbServo.get();
 
         // Joystick Ball Add/Sub Variables
-        boolean addBallButtonOn = Hardware.addBallButton.isOn();
         boolean addBallButtonOnNow = Hardware.addBallButton.isOnCheckNow();
-        boolean subBallButtonOn = Hardware.subtractBallButton.isOn();
         boolean subBallButtonOnNow = Hardware.subtractBallButton.isOnCheckNow();
-        int minNumBallsCarriable = 0;
 
         // Drive Variables
-        double leftDriverJoystickY = Hardware.leftDriver.getY() * Hardware.invertControllerAxis;
-        double rightDriverJoystickY = Hardware.rightDriver.getY() * Hardware.invertControllerAxis;
 
         int currentGear = Hardware.drive.getCurrentGear();
 

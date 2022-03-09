@@ -4,12 +4,10 @@ import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 // import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
-import edu.wpi.first.wpilibj2.command.PIDSubsystem;
-import edu.wpi.first.wpilibj.PIDSource;
 
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDSourceType;
+import edu.wpi.first.wpilibj.PIDSource;
 
 /**
  * A sensor class that is able to use both CAN features and DIO features
@@ -226,6 +224,11 @@ public class KilroyEncoder implements PIDSource
         switch (type)
             {
             case CAN:
+                // -----------------------
+                // The TalonFX motor controller/encoder
+                // in a rate of 100 milliseocnds (which is
+                // why we are multiplying by 10)
+                // ----------------------
                 return (canSensor.getSelectedSensorVelocity(0) * 10) * distancePerTick;
             case D_IO:
                 return dioSensor.getRate();
