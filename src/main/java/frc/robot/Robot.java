@@ -40,6 +40,11 @@ public class Robot extends TimedRobot
         // INITALIZE CLIMB SERVO
         Hardware.climbServo.set(Hardware.CLIMB_SERVO_POS_OUT);
 
+        Hardware.leftDriveTopEncoder.reset();
+        Hardware.leftDriveBottomEncoder.reset();
+        Hardware.rightDriveTopEncoder.reset();
+        Hardware.rightDriveBottomEncoder.reset();
+
         // ---------------------------------------
         // done setup - tell the user we are complete
         // setup

@@ -213,18 +213,26 @@ public class Hardware
         // -----------------------------------
         // configure the drive system encoders
         // -----------------------------------
-        leftDriveEncoder = new KilroyEncoder((WPI_TalonFX) leftBottomMotor);
-        leftDriveEncoder.setDistancePerPulse(CURRENT_YEAR_DISTANCE_PER_TICK);
-        leftDriveEncoder.setReverseDirection(true);
+        leftDriveTopEncoder = new KilroyEncoder((WPI_TalonFX) leftTopMotor);
+        leftDriveTopEncoder.setDistancePerPulse(CURRENT_YEAR_DISTANCE_PER_TICK);
+        leftDriveTopEncoder.setReverseDirection(true);
+        leftDriveBottomEncoder = new KilroyEncoder((WPI_TalonFX) leftBottomMotor);
+        leftDriveBottomEncoder.setDistancePerPulse(CURRENT_YEAR_DISTANCE_PER_TICK);
+        leftDriveBottomEncoder.setReverseDirection(true);
 
-        rightDriveEncoder = new KilroyEncoder((WPI_TalonFX) rightBottomMotor);
-        rightDriveEncoder.setDistancePerPulse(CURRENT_YEAR_DISTANCE_PER_TICK);
-        rightDriveEncoder.setReverseDirection(true);
+        rightDriveTopEncoder = new KilroyEncoder((WPI_TalonFX) rightTopMotor);
+        rightDriveTopEncoder.setDistancePerPulse(CURRENT_YEAR_DISTANCE_PER_TICK);
+        rightDriveTopEncoder.setReverseDirection(true);
+        rightDriveBottomEncoder = new KilroyEncoder((WPI_TalonFX) rightBottomMotor);
+        rightDriveBottomEncoder.setDistancePerPulse(CURRENT_YEAR_DISTANCE_PER_TICK);
+        rightDriveBottomEncoder.setReverseDirection(true);
+        rightDriveBottomEncoder.getRPM();
 
         // -----------------------------------
         // Configure launch encoders
         // -----------------------------------
         launchMotorEncoder = new KilroyEncoder((CANSparkMax) launchMotorForward, 1);
+        launchMotorEncoder.setDistancePerPulse(LAUNCHER_DISTANCE_PER_PULSE_CURR);
 
         // ------------------------------------
         // configure climb encoders
@@ -237,7 +245,7 @@ public class Hardware
         // Drive System
         // ------------------------------------
         tankTransmission = new TankTransmission(leftDriveGroup, rightDriveGroup);
-        drive = new Drive(tankTransmission, leftDriveEncoder, rightDriveEncoder, gyro);
+        drive = new Drive(tankTransmission, leftDriveBottomEncoder, rightDriveBottomEncoder, gyro);
 
         gyro.calibrate();
 
@@ -251,7 +259,7 @@ public class Hardware
         // --------------------------------------
         // Launch system
         // --------------------------------------
-        launcher = new Launcher(launchMotorGroup, launchMotorEncoder);
+        launcher = new Launcher(launchMotorGroup, launchMotorEncoder, yearIdentifier.CurrentYear);
 
     } // end of initializeCurrentYear()
 
@@ -274,8 +282,8 @@ public class Hardware
 
         colorWheelMotor = new WPI_TalonSRX(25);
 
-        launchMotorForward = new CANSparkMax(27, MotorType.kBrushless);
-        launchMotorBackward = new CANSparkMax(26, MotorType.kBrushless);
+        launchMotorForward = new WPI_TalonFX(17);
+        launchMotorBackward = new WPI_TalonFX(18);
 
         launchMotorGroup = new MotorControllerGroup(launchMotorForward, launchMotorBackward);
 
@@ -325,18 +333,25 @@ public class Hardware
         // -----------------------------------
         // configure the drive system encoders
         // -----------------------------------
-        leftDriveEncoder = new KilroyEncoder((WPI_TalonFX) leftBottomMotor);
-        leftDriveEncoder.setDistancePerPulse(PREV_YEAR_DISTANCE_PER_TICK);
-        leftDriveEncoder.setReverseDirection(true);
+        leftDriveTopEncoder = new KilroyEncoder((WPI_TalonFX) leftTopMotor);
+        leftDriveTopEncoder.setDistancePerPulse(PREV_YEAR_DISTANCE_PER_TICK);
+        leftDriveTopEncoder.setReverseDirection(true);
+        leftDriveBottomEncoder = new KilroyEncoder((WPI_TalonFX) leftBottomMotor);
+        leftDriveBottomEncoder.setDistancePerPulse(PREV_YEAR_DISTANCE_PER_TICK);
+        leftDriveBottomEncoder.setReverseDirection(true);
 
-        rightDriveEncoder = new KilroyEncoder((WPI_TalonFX) rightBottomMotor);
-        rightDriveEncoder.setDistancePerPulse(PREV_YEAR_DISTANCE_PER_TICK);
-        rightDriveEncoder.setReverseDirection(true);
+        rightDriveTopEncoder = new KilroyEncoder((WPI_TalonFX) rightTopMotor);
+        rightDriveTopEncoder.setDistancePerPulse(PREV_YEAR_DISTANCE_PER_TICK);
+        rightDriveTopEncoder.setReverseDirection(true);
+        rightDriveBottomEncoder = new KilroyEncoder((WPI_TalonFX) rightBottomMotor);
+        rightDriveBottomEncoder.setDistancePerPulse(PREV_YEAR_DISTANCE_PER_TICK);
+        rightDriveBottomEncoder.setReverseDirection(true);
 
         // -----------------------------------
         // Configure launch encoders
         // -----------------------------------
-        launchMotorEncoder = new KilroyEncoder((CANSparkMax) launchMotorForward, 1);
+        launchMotorEncoder = new KilroyEncoder((WPI_TalonFX) launchMotorForward);
+        launchMotorEncoder.setDistancePerPulse(LAUNCHER_DISTANCE_PER_PULSE_PREV);
 
         // ------------------------------------
         // configure climb encoders
@@ -349,7 +364,7 @@ public class Hardware
         // Drive System
         // ------------------------------------
         tankTransmission = new TankTransmission(leftDriveGroup, rightDriveGroup);
-        drive = new Drive(tankTransmission, leftDriveEncoder, rightDriveEncoder, gyro);
+        drive = new Drive(tankTransmission, leftDriveBottomEncoder, rightDriveBottomEncoder, gyro);
 
         gyro.calibrate();
 
@@ -362,7 +377,7 @@ public class Hardware
         // --------------------------------------
         // Launch system
         // --------------------------------------
-        launcher = new Launcher(launchMotorGroup, launchMotorEncoder);
+        launcher = new Launcher(launchMotorGroup, launchMotorEncoder, yearIdentifier.PrevYear);
     } // end of initializePrevYear()
 
     // **********************************************************
@@ -387,8 +402,10 @@ public class Hardware
     public static MotorControllerGroup leftDriveGroup = null;
     public static MotorControllerGroup rightDriveGroup = null;
 
-    public static KilroyEncoder leftDriveEncoder = null;
-    public static KilroyEncoder rightDriveEncoder = null;
+    public static KilroyEncoder leftDriveTopEncoder = null;
+    public static KilroyEncoder leftDriveBottomEncoder = null;
+    public static KilroyEncoder rightDriveTopEncoder = null;
+    public static KilroyEncoder rightDriveBottomEncoder = null;
 
     public static MotorController conveyorMotorForward = null;
     public static MotorController conveyorMotorBackward = null;
@@ -413,6 +430,9 @@ public class Hardware
 
     public static int PREV_YEAR_CLIMB_SERVO_PWM_PORT = 2;
     public static int CURRENT_YEAR_CLIMB_SERVO_PWM_PORT = 2;
+
+    public static double LAUNCHER_DISTANCE_PER_PULSE_PREV = 1.0 / 2048.0;
+    public static double LAUNCHER_DISTANCE_PER_PULSE_CURR = 1.0;
 
     public static double CLIMB_SERVO_MAX_DEGREES = 0.0;
     public static double CLIMB_SERVO_POS_OUT = 0.0;
@@ -476,12 +496,13 @@ public class Hardware
 
     public static JoystickButton rightOperatorCameraSwitchButton = new JoystickButton(rightOperator, 10);
     public static JoystickButton rightDriverCameraSwitchButton = new JoystickButton(rightDriver, 3);
-    public static JoystickButton closeClimbServo = new JoystickButton(rightOperator, 4);
-    public static JoystickButton openClimbServo = new JoystickButton(rightOperator, 5);
+    public static JoystickButton closeClimbServo = new JoystickButton(leftOperator, 4);
+    public static JoystickButton openClimbServo = new JoystickButton(leftOperator, 5);
     public static JoystickButton climbUpButton = new JoystickButton(rightOperator, 3);
     public static JoystickButton climbDownButton = new JoystickButton(rightOperator, 2);
     public static JoystickButton outtakeButton = new JoystickButton(leftOperator, 2);
     public static JoystickButton fireLow = new JoystickButton(rightOperator, 11);
+    public static JoystickButton fireHigh = new JoystickButton(rightOperator, 4);
     public static JoystickButton fireOverride = new JoystickButton(leftOperator, 11);
     public static MomentarySwitch subtractBallButton = new MomentarySwitch(rightOperator, 8, false);
     public static MomentarySwitch addBallButton = new MomentarySwitch(rightOperator, 9, false);
