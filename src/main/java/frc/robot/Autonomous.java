@@ -35,6 +35,8 @@ import javax.swing.DropMode;
 
 import edu.wpi.first.wpilibj.Timer;
 import frc.Hardware.Hardware;
+import frc.HardwareInterfaces.BallHandler.FIRE;
+import frc.HardwareInterfaces.BallHandler.PROCESS;
 import frc.HardwareInterfaces.Transmission.TransmissionBase.MotorPosition;
 import frc.Utils.Launcher.LAUNCH_STATUS_AUTO;
 import frc.Utils.Launcher.LAUNCH_TYPE;
@@ -134,7 +136,6 @@ public class Autonomous
             turnAccelerationSeconds = TURN_ACCELERATION_SECONDS_CURRENT_YEAR;
             spinDelaySeconds = SPIN_DELAY_SECONDS_CURRENT;
             turnDegrees = TURN_DEGREES_CURRENT;
-            conveyorSpeedPositive = CONVEYOR_SPEED_POSITIVE_CURRENT;
             conveyorSpeedNegative = CONVEYOR_SPEED_NEGATIVE_CURRENT;
             }
         else if (Hardware.robotIdentity.equals(Hardware.yearIdentifier.PrevYear))
@@ -158,7 +159,6 @@ public class Autonomous
             turnAccelerationSeconds = TURN_ACCELERATION_SECONDS_PREV_YEAR;
             spinDelaySeconds = SPIN_DELAY_SECONDS_PREV;
             turnDegrees = TURN_DEGREES_PREV;
-            conveyorSpeedPositive = CONVEYOR_SPEED_POSITIVE_PREV;
             conveyorSpeedNegative = CONVEYOR_SPEED_NEGATIVE_PREV;
             }
 
@@ -200,9 +200,9 @@ public class Autonomous
     {
         // System.out.println("AUTO_PATH = " + autoPath);
         // System.out.println("LEFT: " + Hardware.leftDriveEncoder.getRaw());
-        System.out.println("LEFT V: " + Hardware.leftDriveGroup.get());
+        // System.out.println("LEFT V: " + Hardware.leftDriveGroup.get());
         // System.out.println("RIGHT: " + Hardware.rightDriveEncoder.getRaw());
-        System.out.println("RIGHT V: " + Hardware.rightDriveGroup.get());
+        // System.out.println("RIGHT V: " + Hardware.rightDriveGroup.get());
 
         // System.out.println("GYRO V: " + Hardware.gyro);
         // System.out.println("BOTH AVG: " +
@@ -345,7 +345,7 @@ public class Autonomous
                         dropAndDriveState = DROP_AND_DRIVE_STATE.SPIN;
                         return false;
                         }
-                    dropAndDriveState = DROP_AND_DRIVE_STATE.WAIT_SPIN;
+                    dropAndDriveState = DROP_AND_DRIVE_STATE.END;
                     spinWaitTimer.start();
                     }
                 return false;
@@ -417,6 +417,7 @@ public class Autonomous
                     }
                 return false;
             case DRIVE:
+                Hardware.ballHandler.processBallHandler(PROCESS.FIRE_STOP, LAUNCH_TYPE.AUTO);
                 if (Hardware.drive.driveStraightInches(distanceToLeaveTarmacFromStartInches, driveSpeedNegative,
                         accelerationSeconds, usingGyroForDrive) == true)
                     {
@@ -833,17 +834,23 @@ public class Autonomous
             {
             // Executes the turn method
             case SPIN:
-                Hardware.drive.setPivotDegreesStationaryPercentage(pivotSpeed);
-                if (Hardware.drive.pivotTurnDegrees(turnDegrees, turnSpeed, turnAccelerationSeconds,
-                        usingGyroForTurn) == true)
-                    {
-                    spinState = SPIN_STATE.STOP_SPIN;
-                    }
+                // Hardware.drive.setPivotDegreesStationaryPercentage(pivotSpeed);
+                // if (Hardware.drive.pivotTurnDegrees(turnDegrees, turnSpeed,
+                // turnAccelerationSeconds,
+                // usingGyroForTurn) == true)
+                // {
+                // spinState = SPIN_STATE.STOP_SPIN;
+                // }
                 // if (Hardware.drive.arc(TURN_SPEED_CURRENT_YEAR, 10, TURN_AROUND_DEGREES,
                 // TURN_ACCELERATION_SECONDS_PREV_YEAR) == true)
                 // {
                 // spinState = SPIN_STATE.STOP_SPIN;
                 // }
+                if (Hardware.drive.turnDegrees(turnDegrees, turnSpeed, turnAccelerationSeconds,
+                        usingGyroForTurn) == true)
+                    {
+                    spinState = SPIN_STATE.STOP_SPIN;
+                    }
                 return false;
             // Executes the braking
             case STOP_SPIN:
@@ -868,7 +875,6 @@ public class Autonomous
      *            - the type of launch
      * @return true when finished
      */
-    // TODO is the launch method from ball handler used here?
     private static boolean launchAuto(LAUNCH_TYPE type)
     {
         // System.out.println("Launch auto state: " + launchAutoState);
@@ -890,7 +896,7 @@ public class Autonomous
                 return false;
             // Moves the conveyor until the rl is triggered
             case RL_OFF1:
-                // TODO Move the conveyor in this state
+                Hardware.conveyorGroup.set(conveyorSpeedNegative);
                 if (Hardware.ballPickup4.isOn() == true)
                     {
                     launchAutoState = LAUNCH_AUTO_STATE.RL_TRIGGERED;
@@ -901,7 +907,7 @@ public class Autonomous
             case RL_TRIGGERED:
                 // If the rl is off and the launcher is ready to fire, move the conveyor to fire
                 // the ball
-                // TODO stop the conveyor
+                Hardware.conveyorGroup.set(motorSpeedOff);
                 if (Hardware.launcher.getStatusAuto() == LAUNCH_STATUS_AUTO.READY_TO_FIRE)
                     {
                     launchAutoState = LAUNCH_AUTO_STATE.FIRING;
@@ -911,9 +917,10 @@ public class Autonomous
             case FIRING:
                 // Wait until the top rl does not see the ball to move on to a short delay to
                 // ensure that the ball has been fired
-                // TODO move the conveyor here
+                Hardware.conveyorGroup.set(conveyorSpeedNegative);
                 if (Hardware.ballPickup4.isOn() == false)
                     {
+                    Hardware.ballCounter.subtractCheckCount(1);
                     launchAutoState = LAUNCH_AUTO_STATE.FIRING_DELAY;
                     }
                 return false;
@@ -924,7 +931,7 @@ public class Autonomous
                 Hardware.launchDelayTimer.start();
                 if (Hardware.launchDelayTimer.get() >= launchDelaySeconds)
                     {
-                    // TODO Stop moving the conveyor here
+                    Hardware.conveyorGroup.set(motorSpeedOff);
                     Hardware.launcher.stopFiring();
                     Hardware.launchDelayTimer.stop();
                     Hardware.launchDelayTimer.reset();
@@ -1047,9 +1054,9 @@ public class Autonomous
 
     private static double spinDelaySeconds;
 
-    private static double conveyorSpeedPositive;
-
     private static double conveyorSpeedNegative;
+
+    private static double motorSpeedOff = 0.0;
     /*
      * ========================================= Constants
      * =========================================
@@ -1115,9 +1122,9 @@ public class Autonomous
 
     private static final double DRIVE_DELAY_SECONDS_CURRENT_YEAR = .5; // TODO
 
-    private static final double TURN_SPEED_PREV_YEAR = .45;
+    private static final double TURN_SPEED_PREV_YEAR = .4;
 
-    private static final double TURN_SPEED_CURRENT_YEAR = .65;
+    private static final double TURN_SPEED_CURRENT_YEAR = .4;
 
     private static final double PIVOT_SPEED_CURRENT_YEAR = .35;
 
@@ -1131,13 +1138,9 @@ public class Autonomous
 
     private static final int TURN_DEGREES_CURRENT = 180;
 
-    private static final double SPIN_DELAY_SECONDS_PREV = 0.65;
+    private static final double SPIN_DELAY_SECONDS_PREV = 0.0;
 
-    private static final double SPIN_DELAY_SECONDS_CURRENT = .65; // TODO
-
-    private static final double CONVEYOR_SPEED_POSITIVE_PREV = .4;
-
-    private static final double CONVEYOR_SPEED_POSITIVE_CURRENT = .4;
+    private static final double SPIN_DELAY_SECONDS_CURRENT = 0.0; // TODO
 
     private static final double CONVEYOR_SPEED_NEGATIVE_PREV = -.4;
 

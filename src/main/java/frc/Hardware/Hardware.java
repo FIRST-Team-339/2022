@@ -231,7 +231,7 @@ public class Hardware
         // -----------------------------------
         // Configure launch encoders
         // -----------------------------------
-        launchMotorEncoder = new KilroyEncoder((CANSparkMax) launchMotorForward, 1);
+        launchMotorEncoder = new KilroyEncoder((CANSparkMax) launchMotorForward);
         launchMotorEncoder.setDistancePerPulse(LAUNCHER_DISTANCE_PER_PULSE_CURR);
 
         // ------------------------------------
