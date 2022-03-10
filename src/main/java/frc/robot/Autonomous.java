@@ -32,7 +32,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Timer;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Hardware.Hardware;
 import frc.Utils.Launcher.LAUNCH_STATUS_AUTO;
 import frc.Utils.Launcher.LAUNCH_TYPE;
@@ -157,6 +157,14 @@ public class Autonomous
             conveyorSpeedNegative = CONVEYOR_SPEED_NEGATIVE_PREV;
             }
 
+        Hardware.ballCounter.BallCount = 0;
+        SmartDashboard.putString("DB/String 0", "     Ball Count");
+        if (Hardware.ballCountInitSwitch.isOn())
+            {
+            Hardware.ballCounter.uncheckedAdd(1);
+            }
+        SmartDashboard.putString("DB/String 5", "     " + Hardware.ballCounter.BallCount + " ball(s)");
+
         Hardware.autoTimer.stop();
         Hardware.autoTimer.reset();
         Hardware.launchDelayTimer.stop();
@@ -202,6 +210,9 @@ public class Autonomous
         // System.out.println("GYRO V: " + Hardware.gyro);
         // System.out.println("BOTH AVG: " +
         // Hardware.drive.getEncoderDistanceAverage(MotorPosition.ALL));
+
+        SmartDashboard.putString("DB/String 5", " " + Hardware.ballCounter.BallCount + " ball(s)");
+
         switch (autoPath)
             {
             case DRIVE_ONLY_BACKWARD:

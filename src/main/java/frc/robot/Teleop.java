@@ -74,13 +74,13 @@ public class Teleop
         Hardware.climbTimer.reset();
 
         // Sets the ball count initalized on the robot
-        Hardware.ballCounter.BallCount = 0;
-        SmartDashboard.putString("DB/String 0", "     Ball Count");
-        if (Hardware.ballCountInitSwitch.isOn())
-            {
-            Hardware.ballCounter.uncheckedAdd(1);
-            }
-        SmartDashboard.putString("DB/String 5", "     " + Hardware.ballCounter.BallCount + " ball(s)");
+        // Hardware.ballCounter.BallCount = 0;
+        SmartDashboard.putString("DB/String 0", " Ball Count");
+        // if (Hardware.ballCountInitSwitch.isOn())
+        // {
+        // Hardware.ballCounter.uncheckedAdd(1);
+        // }
+        SmartDashboard.putString("DB/String 5", " " + Hardware.ballCounter.BallCount + " ball(s)");
 
         // Initialize launcher
         Hardware.launchMotorGroup.set(0.0);
@@ -292,8 +292,7 @@ public class Teleop
         // Hardware.leftClimbMotor.get());
         // System.out.println("Voltage of right climb motor is: " +
         // Hardware.rightClimbMotor.get());
-        // System.out.println("Voltage of climb encoder is: " +
-        // Hardware.climbEncoder.get());
+        System.out.println("Voltage of climb encoder is: " + Hardware.climbEncoder.get());
 
         // Launch Motor Values
         // DONE
@@ -315,6 +314,9 @@ public class Teleop
         // Joystick Values
 
         // Operator Controls
+
+        // System.out.println("Right operator throttle: " +
+        // Hardware.rightOperator.getThrottle());
 
         // ========== OUTPUTS ==========
 

@@ -30,6 +30,7 @@ public class Launcher
                 this.launchDeadband = LAUNCH_DEADBAND_CURRENT;
                 this.correctionValue = CORRECTION_VALUE_CURRENT;
                 this.targetIterations = TARGET_ITERATIONS_CURRENT;
+                this.RPMAdjustmentFactor = RPM_ADJUSTMENT_FACTOR_CURRENT;
                 this.launchEncoder.setDistancePerPulse(DISTANCE_PER_PULSE_CURR);
                 }
             else if (year.equals(Hardware.yearIdentifier.PrevYear))
@@ -43,6 +44,7 @@ public class Launcher
                 this.launchDeadband = LAUNCH_DEADBAND_PREV;
                 this.correctionValue = CORRECTION_VALUE_PREV;
                 this.targetIterations = TARGET_ITERATIONS_PREV;
+                this.RPMAdjustmentFactor = RPM_ADJUSTMENT_FACTOR_PREV;
                 this.launchEncoder.setDistancePerPulse(DISTANCE_PER_PULSE_PREV);
                 }
             this.launchEncoder.reset();
@@ -145,6 +147,18 @@ public class Launcher
     private boolean launchAuto(double motorSpeed, double target)
     {
         // System.out.println("Launch state: " + this.launchState);
+
+        // target becomes the target plus the opposite of the throttle value on
+        // the right operator times the amount that is desired to be the maximum
+        // RPM added to the initial target.
+
+        // The throttle ranges from 1 at the lowest point to -1 at the highest point, so
+        // the value given by getThrottle() is negated to have the target RPM increase
+        // when moving up away from the center and decrease when moving down away from
+        // the center.
+        target = target + -(Hardware.rightOperator.getThrottle() * RPMAdjustmentFactor);
+        // System.out.println("Launch motor RPM: " +
+        // Hardware.launchMotorEncoder.getRPM());
         switch (this.launchStateAuto)
             {
             // State where the launcher is off
@@ -239,6 +253,16 @@ public class Launcher
         // System.out.println("Launch motor ticks: " + this.launchEncoder.getRaw());
         // System.out.println("Launch motor voltage: " + this.launchMotors.get());
         // System.out.println("Launch motor RPS: " + this.launchEncoder.getRate());
+
+        // TargetRPM becomes the targetRPM plus the opposite of the throttle value on
+        // the right operator times the amount that is desired to be the maximum
+        // RPM added to the initial target.
+
+        // The throttle ranges from 1 at the lowest point to -1 at the highest point, so
+        // the value given by getThrottle() is negated to have the target RPM increase
+        // when moving up away from the center and decrease when moving down away from
+        // the center.
+        targetRPM = targetRPM + -(Hardware.rightOperator.getThrottle() * RPMAdjustmentFactor);
         switch (state)
             {
             // The launch motors are off
@@ -590,6 +614,8 @@ public class Launcher
 
     private double targetIterations;
 
+    private double RPMAdjustmentFactor;
+
     // Constants
 
     private final double TARGET_MOTOR_RPM_LOW_PREV = 1000.0; // TODO find
@@ -631,4 +657,8 @@ public class Launcher
     private final double DISTANCE_PER_PULSE_PREV = 1.0 / 2048.0;
 
     private final double DISTANCE_PER_PULSE_CURR = 1.0;
+
+    private final double RPM_ADJUSTMENT_FACTOR_PREV = 100.0;
+
+    private final double RPM_ADJUSTMENT_FACTOR_CURRENT = 100.0;
     }

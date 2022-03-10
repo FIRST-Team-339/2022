@@ -102,6 +102,12 @@ public class Hardware
         // ANALOG I/O
         // **********************************************************
 
+        // Right operator throttle configuration
+        // Sets the throttle to get from the second channel on the operator joysticks
+        // because the throttle is on the second channel because of the lack of Z
+        // movement on the operator joysticks
+        Hardware.rightOperator.setThrottleChannel(2);
+
         // **********************************************************
         // PNEUMATIC DEVICES
         // **********************************************************
@@ -175,6 +181,7 @@ public class Hardware
         climbEncoder = new KilroyEncoder((WPI_TalonSRX) leftClimbMotor);
         climbEncoder.setDistancePerPulse(CURRENT_YEAR_CLIMB_DISTANCE_PER_TICK);
         climbEncoder.setReverseDirection(true);
+        climbEncoder.reset();
 
         // -----------------------------------
         // initialize the drive speed controllers and servo
@@ -231,6 +238,7 @@ public class Hardware
         climbEncoder = new KilroyEncoder((WPI_TalonSRX) leftClimbMotor);
         climbEncoder.setDistancePerPulse(CURRENT_YEAR_CLIMB_DISTANCE_PER_TICK);
         climbEncoder.setReverseDirection(true);
+        climbEncoder.reset();
 
         // ------------------------------------
         // Drive System
@@ -348,7 +356,7 @@ public class Hardware
         climbEncoder = new KilroyEncoder((WPI_TalonSRX) leftClimbMotor);
         climbEncoder.setDistancePerPulse(PREV_YEAR_CLIMB_DISTANCE_PER_TICK);
         climbEncoder.setReverseDirection(true);
-
+        climbEncoder.reset();
         // ------------------------------------
         // Drive System
         // ------------------------------------
@@ -367,6 +375,7 @@ public class Hardware
         // Launch system
         // --------------------------------------
         launcher = new Launcher(launchMotorGroup, launchMotorEncoder, yearIdentifier.PrevYear);
+
     } // end of initializePrevYear()
 
     // **********************************************************
