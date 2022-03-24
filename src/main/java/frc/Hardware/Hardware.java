@@ -86,7 +86,7 @@ public class Hardware
         }
         };
 
-    public static yearIdentifier robotIdentity = yearIdentifier.PrevYear;
+    public static yearIdentifier robotIdentity = yearIdentifier.CurrentYear;
 
     /**********************************************
      * generalInit() function initializes all Hardware items that REQUIRE
@@ -147,13 +147,13 @@ public class Hardware
         // ==============CAN INIT=============
         // Motor Controllers
         // ====================================
-        leftTopMotor = new WPI_TalonFX(6);
+        leftTopMotor = new WPI_TalonFX(9);
         leftTopMotor.setInverted(false);
-        rightBottomMotor = new WPI_TalonFX(12);
+        rightBottomMotor = new WPI_TalonFX(16);
         rightBottomMotor.setInverted(true);
 
-        launchMotorForward = new CANSparkMax(27, MotorType.kBrushless);
-        launchMotorBackward = new CANSparkMax(26, MotorType.kBrushless);
+        launchMotorForward = new WPI_TalonFX(7);
+        launchMotorBackward = new WPI_TalonFX(5);
 
         launchMotorGroup = new MotorControllerGroup(launchMotorForward, launchMotorBackward);
 
@@ -164,9 +164,9 @@ public class Hardware
 
         conveyorGroup = new MotorControllerGroup(conveyorMotorForward, conveyorMotorBackward);
 
-        leftBottomMotor = new WPI_TalonFX(15);
+        leftBottomMotor = new WPI_TalonFX(8);
         leftBottomMotor.setInverted(false);
-        rightTopMotor = new WPI_TalonFX(14);
+        rightTopMotor = new WPI_TalonFX(19);
         rightTopMotor.setInverted(true);
 
         leftClimbMotor = new WPI_TalonSRX(25);
@@ -229,7 +229,7 @@ public class Hardware
         // -----------------------------------
         // Configure launch encoders
         // -----------------------------------
-        launchMotorEncoder = new KilroyEncoder((CANSparkMax) launchMotorForward);
+        launchMotorEncoder = new KilroyEncoder((WPI_TalonFX) launchMotorForward);
         launchMotorEncoder.setDistancePerPulse(LAUNCHER_DISTANCE_PER_PULSE_CURR);
 
         // ------------------------------------
@@ -446,15 +446,17 @@ public class Hardware
     public static SingleThrowSwitch autoDisableSwitch = new SingleThrowSwitch(10);
     public static SingleThrowSwitch ballCountInitSwitch = new SingleThrowSwitch(4);
 
-    public static SingleThrowSwitch spinSwitch = new SingleThrowSwitch(25);
+    public static SingleThrowSwitch demoSwitch = new SingleThrowSwitch(9);
+
+    public static SingleThrowSwitch spinSwitch = new SingleThrowSwitch(23);
     public static SingleThrowSwitch unknown1Switch = new SingleThrowSwitch(11);
     public static SingleThrowSwitch unknown2Switch = new SingleThrowSwitch(12);
     public static DoubleThrowSwitch unknownSwitch = new DoubleThrowSwitch(unknown1Switch, unknown2Switch);
 
     public static LightSensor ballPickup1 = new LightSensor(21);
-    public static LightSensor ballPickup2 = new LightSensor(22, true);
-    public static LightSensor ballPickup3 = new LightSensor(23);
-    public static LightSensor ballPickup4 = new LightSensor(24);
+    public static LightSensor ballPickup2 = new LightSensor(22);
+    public static LightSensor ballPickup3 = new LightSensor(24);
+    public static LightSensor ballPickup4 = new LightSensor(25);
 
     // **********************************************************
     // ANALOG I/O
@@ -503,6 +505,7 @@ public class Hardware
     public static JoystickButton testButton = new JoystickButton(leftDriver, 6);
     public static MomentarySwitch subtractBallButton = new MomentarySwitch(rightOperator, 8, false);
     public static MomentarySwitch addBallButton = new MomentarySwitch(rightOperator, 9, false);
+    public static double rightOperatorThrottleValue = rightOperator.getThrottle();
 
     public static JoystickButton launchButton = new JoystickButton(rightOperator, 1);
 

@@ -240,8 +240,7 @@ public class Teleop
         // System.out.println("Auto Disable Switch is " +
         // Hardware.autoDisableSwitch.isOn());
 
-        // System.out.println("Six Pos is " +
-        // Hardware.autoSixPosSwitch.getPosition());
+        // System.out.println("Six Pos is " + Hardware.autoSixPosSwitch.getPosition());
 
         // True = 1; False = 0;
         // System.out.println("Ball Counter Switch is " +
@@ -258,11 +257,12 @@ public class Teleop
         // System.out.println("Double Throw is " +
         // Hardware.unknownSwitch.isOn());
 
+        // System.out.println("Demo ST is" + Hardware.demoSwitch.isOn());
+
         // ---------- ANALOG -----------
         // DONE
         // Inputs/Outputs
-        // System.out.println("Delay Pot is " +
-        // Hardware.delayPot.get(0.0, 5.0));
+        // System.out.println("Delay Pot is " + Hardware.delayPot.get(0.0, 5.0));
         // System.out.println("Delay Pot max is " +
         // Hardware.delayPot.getFromRange());
         // System.out.println("IPiston is " + Hardware.intakePiston.get());
@@ -292,7 +292,8 @@ public class Teleop
         // Hardware.leftClimbMotor.get());
         // System.out.println("Voltage of right climb motor is: " +
         // Hardware.rightClimbMotor.get());
-        System.out.println("Voltage of climb encoder is: " + Hardware.climbEncoder.get());
+        // System.out.println("Voltage of climb encoder is: " +
+        // Hardware.climbEncoder.get());
 
         // Launch Motor Values
         // DONE
