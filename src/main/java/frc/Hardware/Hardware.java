@@ -86,7 +86,7 @@ public class Hardware
         }
         };
 
-    public static yearIdentifier robotIdentity = yearIdentifier.PrevYear;
+    public static yearIdentifier robotIdentity = yearIdentifier.CurrentYear;
 
     /**********************************************
      * generalInit() function initializes all Hardware items that REQUIRE
@@ -147,13 +147,13 @@ public class Hardware
         // ==============CAN INIT=============
         // Motor Controllers
         // ====================================
-        leftTopMotor = new WPI_TalonFX(6);
+        leftTopMotor = new WPI_TalonFX(9);
         leftTopMotor.setInverted(false);
-        rightBottomMotor = new WPI_TalonFX(12);
+        rightBottomMotor = new WPI_TalonFX(16);
         rightBottomMotor.setInverted(true);
 
-        launchMotorForward = new WPI_TalonFX(27);
-        launchMotorBackward = new WPI_TalonFX(26);
+        launchMotorForward = new WPI_TalonFX(7);
+        launchMotorBackward = new WPI_TalonFX(5);
 
         launchMotorGroup = new MotorControllerGroup(launchMotorForward, launchMotorBackward);
 
@@ -164,12 +164,12 @@ public class Hardware
 
         conveyorGroup = new MotorControllerGroup(conveyorMotorForward, conveyorMotorBackward);
 
-        leftBottomMotor = new WPI_TalonFX(15);
+        leftBottomMotor = new WPI_TalonFX(8);
         leftBottomMotor.setInverted(false);
-        rightTopMotor = new WPI_TalonFX(14);
+        rightTopMotor = new WPI_TalonFX(19);
         rightTopMotor.setInverted(true);
 
-        leftClimbMotor = new WPI_TalonSRX(10);
+        leftClimbMotor = new WPI_TalonSRX(25);
         rightClimbMotor = new WPI_TalonSRX(24);
 
         intakeMotor = new WPI_TalonSRX(23);
@@ -446,15 +446,17 @@ public class Hardware
     public static SingleThrowSwitch autoDisableSwitch = new SingleThrowSwitch(10);
     public static SingleThrowSwitch ballCountInitSwitch = new SingleThrowSwitch(4);
 
-    public static SingleThrowSwitch spinSwitch = new SingleThrowSwitch(25);
+    public static SingleThrowSwitch demoSwitch = new SingleThrowSwitch(9);
+
+    public static SingleThrowSwitch spinSwitch = new SingleThrowSwitch(23);
     public static SingleThrowSwitch unknown1Switch = new SingleThrowSwitch(11);
     public static SingleThrowSwitch unknown2Switch = new SingleThrowSwitch(12);
     public static DoubleThrowSwitch unknownSwitch = new DoubleThrowSwitch(unknown1Switch, unknown2Switch);
 
     public static LightSensor ballPickup1 = new LightSensor(21);
-    public static LightSensor ballPickup2 = new LightSensor(22, true);
-    public static LightSensor ballPickup3 = new LightSensor(23);
-    public static LightSensor ballPickup4 = new LightSensor(24);
+    public static LightSensor ballPickup2 = new LightSensor(22);
+    public static LightSensor ballPickup3 = new LightSensor(24);
+    public static LightSensor ballPickup4 = new LightSensor(25);
 
     // **********************************************************
     // ANALOG I/O
