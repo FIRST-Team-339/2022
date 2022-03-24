@@ -169,7 +169,7 @@ public class Hardware
         rightTopMotor = new WPI_TalonFX(14);
         rightTopMotor.setInverted(true);
 
-        leftClimbMotor = new WPI_TalonSRX(10);
+        leftClimbMotor = new WPI_TalonSRX(25);
         rightClimbMotor = new WPI_TalonSRX(24);
 
         intakeMotor = new WPI_TalonSRX(23);

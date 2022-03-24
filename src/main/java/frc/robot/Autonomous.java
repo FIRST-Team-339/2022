@@ -1075,11 +1075,11 @@ public class Autonomous
 
     private static final double DISTANCE_TO_WALL_FROM_OUTSIDE_OF_TARMAC_INCHES_CURRENT_YEAR = 90.0; // TODO
 
-    private static final double DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_PREV_YEAR = 90.0; // TODO test
+    private static final double DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_PREV_YEAR = 80.0; // TODO test
 
-    private static final double DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_CURRENT_YEAR = 90;
+    private static final double DISTANCE_TO_LEAVE_TARMAC_FROM_START_INCHES_CURRENT_YEAR = 90.0;
 
-    private static final double DISTANCE_TO_LEAVE_TARMAC_FROM_WALL_INCHES_PREV_YEAR = 100.0; // TODO test
+    private static final double DISTANCE_TO_LEAVE_TARMAC_FROM_WALL_INCHES_PREV_YEAR = 90.0; // TODO test
 
     private static final double DISTANCE_TO_LEAVE_TARMAC_FROM_WALL_INCHES_CURRENT_YEAR = 110.0;
 
