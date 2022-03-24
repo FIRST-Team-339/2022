@@ -152,8 +152,8 @@ public class Hardware
         rightBottomMotor = new WPI_TalonFX(12);
         rightBottomMotor.setInverted(true);
 
-        launchMotorForward = new CANSparkMax(27, MotorType.kBrushless);
-        launchMotorBackward = new CANSparkMax(26, MotorType.kBrushless);
+        launchMotorForward = new WPI_TalonFX(27);
+        launchMotorBackward = new WPI_TalonFX(26);
 
         launchMotorGroup = new MotorControllerGroup(launchMotorForward, launchMotorBackward);
 
@@ -229,7 +229,7 @@ public class Hardware
         // -----------------------------------
         // Configure launch encoders
         // -----------------------------------
-        launchMotorEncoder = new KilroyEncoder((CANSparkMax) launchMotorForward);
+        launchMotorEncoder = new KilroyEncoder((WPI_TalonFX) launchMotorForward);
         launchMotorEncoder.setDistancePerPulse(LAUNCHER_DISTANCE_PER_PULSE_CURR);
 
         // ------------------------------------
@@ -503,6 +503,7 @@ public class Hardware
     public static JoystickButton testButton = new JoystickButton(leftDriver, 6);
     public static MomentarySwitch subtractBallButton = new MomentarySwitch(rightOperator, 8, false);
     public static MomentarySwitch addBallButton = new MomentarySwitch(rightOperator, 9, false);
+    public static double rightOperatorThrottleValue = rightOperator.getThrottle();
 
     public static JoystickButton launchButton = new JoystickButton(rightOperator, 1);
 
