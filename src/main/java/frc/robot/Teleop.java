@@ -324,7 +324,7 @@ public class Teleop
         // ---------- DIGITAL ----------
 
         // DONE
-        // System.out.println("Ball PickUp 1 is " + Hardware.ballPickup1.isOn());
+        // System.out.println("Ball Pickup 1 is " + Hardware.ballPickup1.isOn());
         // System.out.println("Ball Pickup 2 is " + Hardware.ballPickup2.isOn());
         // System.out.println("Ball Pickup 3 is " + Hardware.ballPickup3.isOn());
         // System.out.println("Ball Pickup 4 is " + Hardware.ballPickup4.isOn());

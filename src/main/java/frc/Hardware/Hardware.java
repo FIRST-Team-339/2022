@@ -252,9 +252,13 @@ public class Hardware
         // Pnuematics
         // ------------------------------------
 
-        intakePiston = new DoubleSolenoid(5, 4);
+        intakePiston = new DoubleSolenoid(4, 5);
         intakePiston.setReverse(true);
 
+        ballPickup1 = new LightSensor(21, true);
+        ballPickup2 = new LightSensor(22, true);
+        ballPickup3 = new LightSensor(24, true);
+        ballPickup4 = new LightSensor(25, true);
         // --------------------------------------
         // Launch system
         // --------------------------------------
@@ -350,6 +354,10 @@ public class Hardware
         launchMotorEncoder = new KilroyEncoder((WPI_TalonFX) launchMotorForward);
         launchMotorEncoder.setDistancePerPulse(LAUNCHER_DISTANCE_PER_PULSE_PREV);
 
+        ballPickup1 = new LightSensor(21);
+        ballPickup2 = new LightSensor(22, true);
+        ballPickup3 = new LightSensor(23);
+        ballPickup4 = new LightSensor(24);
         // ------------------------------------
         // configure climb encoders
         // ------------------------------------
@@ -453,10 +461,10 @@ public class Hardware
     public static SingleThrowSwitch unknown2Switch = new SingleThrowSwitch(12);
     public static DoubleThrowSwitch unknownSwitch = new DoubleThrowSwitch(unknown1Switch, unknown2Switch);
 
-    public static LightSensor ballPickup1 = new LightSensor(21);
-    public static LightSensor ballPickup2 = new LightSensor(22);
-    public static LightSensor ballPickup3 = new LightSensor(24);
-    public static LightSensor ballPickup4 = new LightSensor(25);
+    public static LightSensor ballPickup1 = null;
+    public static LightSensor ballPickup2 = null;
+    public static LightSensor ballPickup3 = null;
+    public static LightSensor ballPickup4 = null;
 
     // **********************************************************
     // ANALOG I/O
