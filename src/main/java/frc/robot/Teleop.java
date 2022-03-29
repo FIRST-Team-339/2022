@@ -219,8 +219,7 @@ public class Teleop
 
         // Encoder Distances
         // DONE
-        // System.out.println("LF Distance is " +
-        // Hardware.leftDriveTopEncoder.getDistance());
+        System.out.println("LF Distance is " + Hardware.leftDriveTopEncoder.getDistance());
         // System.out.println("LB Distance is " +
         // Hardware.leftDriveBottomEncoder.getDistance());
         // System.out.println("RF Distance is " +
@@ -230,7 +229,7 @@ public class Teleop
 
         // Encoder Raw Values
         // DONE
-        // System.out.println("LF RPM is " + Hardware.leftDriveTopEncoder.getRaw());
+        System.out.println("LF RPM is " + Hardware.leftDriveTopEncoder.getRaw());
         // System.out.println("LB RPM is " + Hardware.leftDriveBottomEncoder.getRaw());
         // System.out.println("RF RPM is " + Hardware.rightDriveTopEncoder.getRaw());
         // System.out.println("RB RPM is " + Hardware.rightDriveBottomEncoder.getRaw());
@@ -257,7 +256,7 @@ public class Teleop
         // System.out.println("Double Throw is " +
         // Hardware.unknownSwitch.isOn());
 
-        // System.out.println("Demo ST is" + Hardware.demoSwitch.isOn());
+        // System.out.println("Demo ST is " + Hardware.demoSwitch.isOn());
 
         // ---------- ANALOG -----------
         // DONE

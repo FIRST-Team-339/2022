@@ -255,10 +255,10 @@ public class Hardware
         intakePiston = new DoubleSolenoid(4, 5);
         intakePiston.setReverse(true);
 
-        ballPickup1 = new LightSensor(21, true);
-        ballPickup2 = new LightSensor(22, true);
-        ballPickup3 = new LightSensor(24, true);
-        ballPickup4 = new LightSensor(25, true);
+        ballPickup1 = new LightSensor(21, false);
+        ballPickup2 = new LightSensor(22, false);
+        ballPickup3 = new LightSensor(24, false);
+        ballPickup4 = new LightSensor(25, false);
         // --------------------------------------
         // Launch system
         // --------------------------------------
@@ -540,7 +540,7 @@ public class Hardware
     // Drive system
     // ------------------------------------
     public final static double PREV_YEAR_DISTANCE_PER_TICK = .000746;
-    public final static double CURRENT_YEAR_DISTANCE_PER_TICK = .000746;
+    public final static double CURRENT_YEAR_DISTANCE_PER_TICK = .000847;
 
     public static Drive drive = null;
 
