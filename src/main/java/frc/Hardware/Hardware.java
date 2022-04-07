@@ -152,17 +152,17 @@ public class Hardware
         rightBottomMotor = new WPI_TalonFX(16);
         rightBottomMotor.setInverted(true);
 
-        launchMotorForward = new WPI_TalonFX(7);
-        launchMotorBackward = new WPI_TalonFX(5);
+        launchMotorFront = new WPI_TalonFX(7);
+        launchMotorBack = new WPI_TalonFX(5);
 
-        launchMotorGroup = new MotorControllerGroup(launchMotorForward, launchMotorBackward);
+        launchMotorGroup = new MotorControllerGroup(launchMotorFront, launchMotorBack);
 
-        conveyorMotorForward = new WPI_TalonSRX(21);
-        conveyorMotorForward.setInverted(false);
-        conveyorMotorBackward = new WPI_TalonSRX(22);
-        conveyorMotorBackward.setInverted(true);
+        conveyorMotorFront = new WPI_TalonSRX(26);
+        conveyorMotorFront.setInverted(false);
+        conveyorMotorBack = new WPI_TalonSRX(22);
+        conveyorMotorBack.setInverted(true);
 
-        conveyorGroup = new MotorControllerGroup(conveyorMotorForward, conveyorMotorBackward);
+        conveyorGroup = new MotorControllerGroup(conveyorMotorFront, conveyorMotorBack);
 
         leftBottomMotor = new WPI_TalonFX(8);
         leftBottomMotor.setInverted(false);
@@ -229,7 +229,7 @@ public class Hardware
         // -----------------------------------
         // Configure launch encoders
         // -----------------------------------
-        launchMotorEncoder = new KilroyEncoder((WPI_TalonFX) launchMotorForward);
+        launchMotorEncoder = new KilroyEncoder((WPI_TalonFX) launchMotorFront);
         launchMotorEncoder.setDistancePerPulse(LAUNCHER_DISTANCE_PER_PULSE_CURR);
 
         // ------------------------------------
@@ -283,17 +283,17 @@ public class Hardware
         rightBottomMotor = new WPI_TalonFX(12);
         rightBottomMotor.setInverted(true);
 
-        launchMotorForward = new WPI_TalonFX(17);
-        launchMotorBackward = new WPI_TalonFX(18);
+        launchMotorFront = new WPI_TalonFX(17);
+        launchMotorBack = new WPI_TalonFX(18);
 
-        launchMotorGroup = new MotorControllerGroup(launchMotorForward, launchMotorBackward);
+        launchMotorGroup = new MotorControllerGroup(launchMotorFront, launchMotorBack);
 
-        conveyorMotorForward = new WPI_TalonSRX(21);
-        conveyorMotorForward.setInverted(false);
-        conveyorMotorBackward = new WPI_TalonSRX(22);
-        conveyorMotorBackward.setInverted(true);
+        conveyorMotorFront = new WPI_TalonSRX(21);
+        conveyorMotorFront.setInverted(false);
+        conveyorMotorBack = new WPI_TalonSRX(22);
+        conveyorMotorBack.setInverted(true);
 
-        conveyorGroup = new MotorControllerGroup(conveyorMotorForward, conveyorMotorBackward);
+        conveyorGroup = new MotorControllerGroup(conveyorMotorFront, conveyorMotorBack);
 
         leftBottomMotor = new WPI_TalonFX(15);
         leftBottomMotor.setInverted(false);
@@ -351,7 +351,7 @@ public class Hardware
         // -----------------------------------
         // Configure launch encoders
         // -----------------------------------
-        launchMotorEncoder = new KilroyEncoder((WPI_TalonFX) launchMotorForward);
+        launchMotorEncoder = new KilroyEncoder((WPI_TalonFX) launchMotorFront);
         launchMotorEncoder.setDistancePerPulse(LAUNCHER_DISTANCE_PER_PULSE_PREV);
 
         ballPickup1 = new LightSensor(21);
@@ -394,8 +394,8 @@ public class Hardware
     public static MotorController leftTopMotor = null;
     public static MotorController rightBottomMotor = null;
 
-    public static MotorController launchMotorForward = null;
-    public static MotorController launchMotorBackward = null;
+    public static MotorController launchMotorFront = null;
+    public static MotorController launchMotorBack = null;
 
     public static MotorControllerGroup launchMotorGroup = null;
 
@@ -411,8 +411,8 @@ public class Hardware
     public static KilroyEncoder rightDriveTopEncoder = null;
     public static KilroyEncoder rightDriveBottomEncoder = null;
 
-    public static MotorController conveyorMotorForward = null;
-    public static MotorController conveyorMotorBackward = null;
+    public static MotorController conveyorMotorFront = null;
+    public static MotorController conveyorMotorBack = null;
 
     public static MotorControllerGroup conveyorGroup = null;
 
