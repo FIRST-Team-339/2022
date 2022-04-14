@@ -184,8 +184,8 @@ public class Teleop
             Hardware.climbGroup.set(0);
             }
 
-        processFireOuttakeIntake();
-
+        // processFireOuttakeIntake();
+        Hardware.intakeMotor.set(.75);
         // Operator Dashboard Variables
         SmartDashboard.putString("DB/String 5", " " + Hardware.ballCounter.BallCount + " ball(s)");
         // System.out.println("BALL COUNT: " + BallCounter.BallCount);
