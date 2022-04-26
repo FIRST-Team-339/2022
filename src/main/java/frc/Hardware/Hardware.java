@@ -263,6 +263,7 @@ public class Hardware
         // Launch system
         // --------------------------------------
         launcher = new Launcher(launchMotorGroup, launchMotorEncoder, yearIdentifier.CurrentYear);
+        inDemoMode = false;
 
     } // end of initializeCurrentYear()
 
@@ -455,6 +456,7 @@ public class Hardware
     public static SingleThrowSwitch ballCountInitSwitch = new SingleThrowSwitch(4);
 
     public static SingleThrowSwitch demoSwitch = new SingleThrowSwitch(9);
+    public static boolean inDemoMode = false;
 
     public static SingleThrowSwitch spinSwitch = new SingleThrowSwitch(23);
     public static SingleThrowSwitch unknown1Switch = new SingleThrowSwitch(11);
@@ -477,7 +479,8 @@ public class Hardware
     // PNEUMATIC DEVICES
     // **********************************************************
 
-    public static Compressor compressor = new Compressor(PneumaticsModuleType.CTREPCM);
+    // public static Compressor compressor = new
+    // Compressor(PneumaticsModuleType.CTREPCM);
 
     public static DoubleSolenoid intakePiston = null;
 

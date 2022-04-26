@@ -86,6 +86,16 @@ public class Teleop
         Hardware.launchMotorGroup.set(0.0);
         Hardware.drive.stop();
 
+        if (Hardware.demoSwitch.isOn() == true)
+            {
+            Hardware.inDemoMode = true;
+            demoMaxDriveSpeed = Hardware.delayPot.get(0.0, MAX_DRIVE_SPEED);
+            }
+        else
+            {
+            Hardware.inDemoMode = false;
+            }
+
     } // end Init
 
     /**
@@ -115,8 +125,18 @@ public class Teleop
         int currentGear = Hardware.drive.getCurrentGear();
 
         // Setting Gears
-        Hardware.tankTransmission.setGearPercentage(Hardware.PREV_YEAR_GEAR_1, Hardware.PREV_YEAR_GEAR_1_PERCENTAGE);
-        Hardware.tankTransmission.setGearPercentage(Hardware.PREV_YEAR_GEAR_2, Hardware.PREV_YEAR_GEAR_2_PERCENTAGE);
+        if (Hardware.inDemoMode == true)
+            {
+            Hardware.tankTransmission.setGearPercentage(Hardware.PREV_YEAR_GEAR_1, demoMaxDriveSpeed);
+            Hardware.tankTransmission.setGearPercentage(Hardware.PREV_YEAR_GEAR_2, demoMaxDriveSpeed);
+            }
+        else
+            {
+            Hardware.tankTransmission.setGearPercentage(Hardware.PREV_YEAR_GEAR_1,
+                    Hardware.PREV_YEAR_GEAR_1_PERCENTAGE);
+            Hardware.tankTransmission.setGearPercentage(Hardware.PREV_YEAR_GEAR_2,
+                    Hardware.PREV_YEAR_GEAR_2_PERCENTAGE);
+            }
         if (currentGear < Hardware.PREV_YEAR_GEAR_1)
             {
             Hardware.tankTransmission.setGear(Hardware.PREV_YEAR_GEAR_1);
@@ -129,11 +149,11 @@ public class Teleop
             }
 
         // Ball Count
-        if (subBallButtonOnNow == true)
+        if (subBallButtonOnNow == true && Hardware.inDemoMode == false)
             {
             Hardware.ballCounter.subtractCheckCount(1);
             }
-        if (addBallButtonOnNow == true)
+        if (addBallButtonOnNow == true && Hardware.inDemoMode == false)
             {
             Hardware.ballCounter.addCheckCount(1);
             }
@@ -142,49 +162,55 @@ public class Teleop
         // addBallButtonOnNow);
         // System.out.println(Hardware.climbServo.getAngle());
 
-        // CLIMB SERVO OVERRIDE BUTTON
-        if (openClimbServoButtonPressed == true)
-            Hardware.climbServo.set(Hardware.CLIMB_SERVO_POS_OUT);
-        if (closeClimbServoButtonPressed == true && openClimbServoButtonPressed == false)
-            Hardware.climbServo.set(Hardware.CLIMB_SERVO_POS_IN);
-
-        // CLIMB UP/DOWN FUNCTIONALITY
-        if (climbUpButtonPressed == true && climbDownButtonPressed == false)
+        if (Hardware.inDemoMode == false)
             {
-            if (Hardware.climbEncoder.getDistance() >= Hardware.CLIMB_ENCODER_MAX_HEIGHT)
-                Hardware.climbGroup.set(0); // SET SPEED TO ZERO/STOP
-            else
+            // CLIMB SERVO OVERRIDE BUTTON
+            if (openClimbServoButtonPressed == true)
+                Hardware.climbServo.set(Hardware.CLIMB_SERVO_POS_OUT);
+            if (closeClimbServoButtonPressed == true && openClimbServoButtonPressed == false)
+                Hardware.climbServo.set(Hardware.CLIMB_SERVO_POS_IN);
+
+            // CLIMB UP/DOWN FUNCTIONALITY
+            if (climbUpButtonPressed == true && climbDownButtonPressed == false)
                 {
-                // CHECK IF THE SERVO IS DISENGAGED
-                if (Hardware.climbServo.get() == Hardware.CLIMB_SERVO_POS_IN)
-                    resetClimbTimerAndSetOut();
+                if (Hardware.climbEncoder.getDistance() >= Hardware.CLIMB_ENCODER_MAX_HEIGHT)
+                    Hardware.climbGroup.set(0); // SET SPEED TO ZERO/STOP
                 else
                     {
-                    // CHECK IF TIME HAS MOVED AT ALL (MEANS TIMER IS ACTIVATED) & IF IT HAS PASSED
-                    // THE REQUIRED WAIT TIME
-                    if (Hardware.climbTimer.hasElapsed(Hardware.climbTimerWait) && Hardware.climbTimer.get() != 0.0)
-                        resetClimbTimerAndSetSpeeds();
-                    else if (Hardware.climbTimer.get() == 0.0)
-                        setClimbSpeeds();
+                    // CHECK IF THE SERVO IS DISENGAGED
+                    if (Hardware.climbServo.get() == Hardware.CLIMB_SERVO_POS_IN)
+                        resetClimbTimerAndSetOut();
+                    else
+                        {
+                        // CHECK IF TIME HAS MOVED AT ALL (MEANS TIMER IS ACTIVATED) & IF IT HAS PASSED
+                        // THE REQUIRED WAIT TIME
+                        if (Hardware.climbTimer.hasElapsed(Hardware.climbTimerWait) && Hardware.climbTimer.get() != 0.0)
+                            resetClimbTimerAndSetSpeeds();
+                        else if (Hardware.climbTimer.get() == 0.0)
+                            setClimbSpeeds();
+                        }
+                    // Hardware.climbGroup.set(.3);
                     }
-                // Hardware.climbGroup.set(.3);
+                }
+            else if (climbDownButtonPressed == true)
+                {
+                Hardware.climbGroup.set(-Hardware.BOTH_CLIMB_ENCODER_SPEED);
+                // CHECK IF THE CLIMB ENCODERS ARE BELOW AT LEAST 2 INCHES OF THE MAX HEIGHT,
+                // AND THEN MOVE THE CLIMB SERVO IN
+                if (Hardware.climbEncoder.getDistance() <= Hardware.CLIMB_ENCODER_MAX_HEIGHT - 2)
+                    Hardware.climbServo.set(Hardware.CLIMB_SERVO_POS_IN);
+                }
+            else
+                {
+                // SET SPEED TO ZERO
+                Hardware.climbGroup.set(0);
                 }
             }
-        else if (climbDownButtonPressed == true)
-            {
-            Hardware.climbGroup.set(-Hardware.BOTH_CLIMB_ENCODER_SPEED);
-            // CHECK IF THE CLIMB ENCODERS ARE BELOW AT LEAST 2 INCHES OF THE MAX HEIGHT,
-            // AND THEN MOVE THE CLIMB SERVO IN
-            if (Hardware.climbEncoder.getDistance() <= Hardware.CLIMB_ENCODER_MAX_HEIGHT - 2)
-                Hardware.climbServo.set(Hardware.CLIMB_SERVO_POS_IN);
-            }
-        else
-            {
-            // SET SPEED TO ZERO
-            Hardware.climbGroup.set(0);
-            }
 
-        processFireOuttakeIntake();
+        if (Hardware.inDemoMode == false)
+            {
+            processFireOuttakeIntake();
+            }
 
         // Operator Dashboard Variables
         SmartDashboard.putString("DB/String 5", " " + Hardware.ballCounter.BallCount + " ball(s)");
@@ -194,11 +220,14 @@ public class Teleop
         // ================= OPERATOR CONTROLS ================
         // ================== DRIVER CONTROLS =================
         // Shifts Gears
-        Hardware.tankTransmission.shiftGears(Hardware.rightDriver.getTrigger(), Hardware.leftDriver.getTrigger());
+        if (Hardware.inDemoMode == false)
+            {
+            Hardware.tankTransmission.shiftGears(Hardware.rightDriver.getTrigger(), Hardware.leftDriver.getTrigger());
+            }
 
         Hardware.drive.drive(Hardware.leftDriver, Hardware.rightDriver);
 
-        printStatements();
+        // printStatements();
         // individualTest();
     } // end Periodic()
 
@@ -240,7 +269,7 @@ public class Teleop
         // System.out.println("Auto Disable Switch is " +
         // Hardware.autoDisableSwitch.isOn());
 
-        System.out.println("Six Pos is " + Hardware.autoSixPosSwitch.getPosition());
+        // System.out.println("Six Pos is " + Hardware.autoSixPosSwitch.getPosition());
 
         // True = 1; False = 0;
         // System.out.println("Ball Counter Switch is " +
@@ -447,5 +476,7 @@ public class Teleop
 
     private static boolean launchHighReset = false;
     private static boolean launchLowReset = false;
+    private static double demoMaxDriveSpeed;
+    private static final double MAX_DRIVE_SPEED = .70;
 
     } // end class
