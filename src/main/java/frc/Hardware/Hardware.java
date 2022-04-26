@@ -160,7 +160,7 @@ public class Hardware
         conveyorMotorFront = new WPI_TalonSRX(26);
         conveyorMotorFront.setInverted(false);
         conveyorMotorBack = new WPI_TalonSRX(22);
-        conveyorMotorBack.setInverted(true);
+        conveyorMotorBack.setInverted(false);
 
         conveyorGroup = new MotorControllerGroup(conveyorMotorFront, conveyorMotorBack);
 
@@ -245,6 +245,7 @@ public class Hardware
         // ------------------------------------
         tankTransmission = new TankTransmission(leftDriveGroup, rightDriveGroup);
         drive = new Drive(tankTransmission, leftDriveBottomEncoder, rightDriveBottomEncoder, gyro);
+        drive.setJoystickDeadband(JOYSTICK_DEADBAND);
 
         gyro.calibrate();
 
@@ -550,6 +551,8 @@ public class Hardware
     public static TankTransmission tankTransmission = null;
 
     public static ADXRS450_Gyro gyro = new ADXRS450_Gyro();
+
+    public static double JOYSTICK_DEADBAND = 0.2;
 
     // Gear Variables
     public static int PREV_YEAR_GEAR_1 = 1;
