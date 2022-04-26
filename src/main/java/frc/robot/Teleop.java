@@ -207,16 +207,11 @@ public class Teleop
                 }
             }
 
-<<<<<<< HEAD
         if (Hardware.inDemoMode == false)
             {
             processFireOuttakeIntake();
             }
 
-=======
-        processFireOuttakeIntake();
-        // Hardware.intakeMotor.set(.75);
->>>>>>> d53ad85ff128501dae15806dbaddecd4275b82ac
         // Operator Dashboard Variables
         SmartDashboard.putString("DB/String 5", " " + Hardware.ballCounter.BallCount + " ball(s)");
         // System.out.println("BALL COUNT: " + BallCounter.BallCount);
