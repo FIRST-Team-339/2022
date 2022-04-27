@@ -438,7 +438,7 @@ public class Hardware
     public static int CURRENT_YEAR_CLIMB_SERVO_PWM_PORT = 2;
 
     public static double LAUNCHER_DISTANCE_PER_PULSE_PREV = 1.0 / 2048.0;
-    public static double LAUNCHER_DISTANCE_PER_PULSE_CURR = 1.0;
+    public static double LAUNCHER_DISTANCE_PER_PULSE_CURR = 1.0 / 2048.0;
 
     public static double CLIMB_SERVO_MAX_DEGREES = 0.0;
     public static double CLIMB_SERVO_POS_OUT = 0.0;

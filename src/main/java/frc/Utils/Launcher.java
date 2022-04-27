@@ -632,7 +632,7 @@ public class Launcher
 
     private final double LAUNCH_MOTOR_SPEED_LOW_PREV = .2; // TODO find
 
-    private final double LAUNCH_MOTOR_SPEED_LOW_CURRENT = .21; // TODO
+    private final double LAUNCH_MOTOR_SPEED_LOW_CURRENT = .3; // TODO
 
     private final double LAUNCH_MOTOR_SPEED_HIGH_PREV = .5; // TODO find
 
@@ -656,7 +656,7 @@ public class Launcher
 
     private final double DISTANCE_PER_PULSE_PREV = 1.0 / 2048.0;
 
-    private final double DISTANCE_PER_PULSE_CURR = 1.0;
+    private final double DISTANCE_PER_PULSE_CURR = 1.0 / 2048.0;
 
     private final double RPM_ADJUSTMENT_FACTOR_PREV = 100.0;
 
