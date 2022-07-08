@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 /**
  * Class for controlling the USB cameras on the robot
  *
- * @Author Dion Marchant
+ * @Author Alice Marchant
  * @Written Feb 15th, 2020
  */
 public class KilroyUSBCamera
@@ -29,7 +29,7 @@ public class KilroyUSBCamera
      * @param twoFeeds
      *            - states whether we are using two camera feeds
      *
-     * @Author Dion Marchant
+     * @Author Alice Marchant
      * @Written Feb 15th, 2020
      */
     public KilroyUSBCamera(boolean twoFeeds)
@@ -67,7 +67,7 @@ public class KilroyUSBCamera
      * @param compression
      *            - the compression rate
      *
-     * @Author Dion Marchant
+     * @Author Alice Marchant
      * @Written Feb 15th, 2020
      */
     public KilroyUSBCamera(boolean twoFeeds, int width, int height, int FPS, int compression)
@@ -96,7 +96,7 @@ public class KilroyUSBCamera
      *
      * @param button
      *
-     * @Author Dion Marchant
+     * @Author Alice Marchant
      * @Written Feb 15th, 2020
      */
     public KilroyUSBCamera(MomentarySwitch button)
@@ -123,7 +123,7 @@ public class KilroyUSBCamera
      * @param compression
      *            - the compression rate
      *
-     * @Author Dion Marchant
+     * @Author Alice Marchant
      * @Written Feb 15th, 2020
      */
     public KilroyUSBCamera(MomentarySwitch button, int width, int height, int FPS, int compression)
@@ -146,7 +146,7 @@ public class KilroyUSBCamera
      * @param switch2
      *            - button
      *
-     * @Author Dion Marchant
+     * @Author Alice Marchant
      * @Written Feb 15th, 2020
      */
     public KilroyUSBCamera(MomentarySwitch switch1, MomentarySwitch switch2)
@@ -177,7 +177,7 @@ public class KilroyUSBCamera
      * @param compression
      *            - the compression rate
      *
-     * @Author Dion Marchant
+     * @Author Alice Marchant
      * @Written Feb 15th, 2020
      */
     public KilroyUSBCamera(MomentarySwitch switch1, MomentarySwitch switch2, int width, int height, int FPS,
@@ -199,7 +199,7 @@ public class KilroyUSBCamera
      * @param button1
      * @param button2
      *
-     * @Author Dion Marchant
+     * @Author Alice Marchant
      * @Written Feb 15th, 2020
      */
     public KilroyUSBCamera(JoystickButton button1, JoystickButton button2)
@@ -229,7 +229,7 @@ public class KilroyUSBCamera
      * @param compression
      *            - the compression rate
      *
-     * @Author Dion Marchant
+     * @Author Alice Marchant
      * @Written Feb 15th, 2020
      */
     public KilroyUSBCamera(JoystickButton button1, JoystickButton button2, int width, int height, int FPS,
@@ -250,7 +250,7 @@ public class KilroyUSBCamera
      *
      * @return the compression rate
      * 
-     * @Author Dion Marchant
+     * @Author Alice Marchant
      * @Written Feb 15th, 2020
      */
     public int getCompression()
@@ -265,7 +265,7 @@ public class KilroyUSBCamera
      *            - which camera the method gets the value for
      * @return the fps of the camera
      *
-     * @Author Dion Marchant
+     * @Author Alice Marchant
      * @Written Feb 15th, 2020
      */
     public double getFPS(int cameraNum)
@@ -276,16 +276,15 @@ public class KilroyUSBCamera
             return this.cam0.getActualFPS();
             }
         // If camNum is one, get the fps of cam1
+        else if (cameraNum == 1)
+            {
+            return this.cam1.getActualFPS();
+            }
+        // If neither, return 0
         else
-            if (cameraNum == 1)
-                {
-                return this.cam1.getActualFPS();
-                }
-            // If neither, return 0
-            else
-                {
-                return 0.0;
-                }
+            {
+            return 0.0;
+            }
     }
 
     /**
@@ -294,7 +293,7 @@ public class KilroyUSBCamera
      * @param cameraNum
      *            - which camera to set the source to
      *
-     * @Author Dion Marchant
+     * @Author Alice Marchant
      * @Written Feb 15th, 2020
      */
     public void setCamera(int cameraNum)
@@ -317,7 +316,7 @@ public class KilroyUSBCamera
      * @param numCameras
      *            - the amount of cameras to set the values for
      *
-     * @Author Dion Marchant
+     * @Author Alice Marchant
      * @Written Feb 15th, 2020
      */
     public void setCameraValues(int numCameras)
@@ -328,15 +327,14 @@ public class KilroyUSBCamera
             this.cam0.setFPS(CAMERA_FPS);
             this.server.getProperty("compression").set(COMPRESSION);
             }
-        else
-            if (numCameras == 2)
-                {
-                this.cam0.setResolution(RESOLUTION_WIDTH, RESOLUTION_HEIGHT);
-                this.cam1.setResolution(RESOLUTION_WIDTH, RESOLUTION_HEIGHT);
-                this.cam0.setFPS(CAMERA_FPS);
-                this.cam1.setFPS(CAMERA_FPS);
-                this.server.getProperty("compression").set(COMPRESSION);
-                }
+        else if (numCameras == 2)
+            {
+            this.cam0.setResolution(RESOLUTION_WIDTH, RESOLUTION_HEIGHT);
+            this.cam1.setResolution(RESOLUTION_WIDTH, RESOLUTION_HEIGHT);
+            this.cam0.setFPS(CAMERA_FPS);
+            this.cam1.setFPS(CAMERA_FPS);
+            this.server.getProperty("compression").set(COMPRESSION);
+            }
     }
 
     /**
@@ -353,7 +351,7 @@ public class KilroyUSBCamera
      * @param numCameras
      *            - the amount of cameras to set the values for
      *
-     * @Author Dion Marchant
+     * @Author Alice Marchant
      * @Written Feb 15th, 2020
      */
     public void setCameraValues(int width, int height, int FPS, int compression, int numCameras)
@@ -364,21 +362,20 @@ public class KilroyUSBCamera
             this.cam0.setFPS(FPS);
             this.server.getProperty("compression").set(compression);
             }
-        else
-            if (numCameras == 2)
-                {
-                this.cam0.setResolution(width, height);
-                this.cam1.setResolution(width, height);
-                this.cam0.setFPS(FPS);
-                this.cam1.setFPS(FPS);
-                this.server.getProperty("compression").set(compression);
-                }
+        else if (numCameras == 2)
+            {
+            this.cam0.setResolution(width, height);
+            this.cam1.setResolution(width, height);
+            this.cam0.setFPS(FPS);
+            this.cam1.setFPS(FPS);
+            this.server.getProperty("compression").set(compression);
+            }
     }
 
     /**
      * Toggles which camera is being displayed on the driver's station
      *
-     * @Author Dion Marchant
+     * @Author Alice Marchant
      * @Written Feb 15th, 2020
      */
     public void switchCameras()
@@ -404,7 +401,7 @@ public class KilroyUSBCamera
      * @param button
      *            - button used to switch the cameras
      *
-     * @Author Dion Marchant
+     * @Author Alice Marchant
      * @Written Feb 15th, 2020
      */
     public void switchCameras(MomentarySwitch button)
@@ -431,7 +428,7 @@ public class KilroyUSBCamera
      * @param switch2
      *            - other button used to toggle the cameras\
      *
-     * @Author Dion Marchant
+     * @Author Alice Marchant
      * @Written Feb 15th, 2020
      */
     public void switchCameras(MomentarySwitch switch1, MomentarySwitch switch2)
@@ -469,7 +466,7 @@ public class KilroyUSBCamera
      * @param button2
      *            - button used to switch the source to cam0
      *
-     * @Author Dion Marchant
+     * @Author Alice Marchant
      * @Written Feb 15th, 2020
      */
     public void switchCameras(JoystickButton button1, JoystickButton button2)

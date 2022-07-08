@@ -269,7 +269,7 @@ public class Autonomous
      * 
      * @return true when the method finishes
      * 
-     * @Author Dion Marchant
+     * @Author Alice Marchant
      * @Written February 16th, 2022
      */
     private static boolean dropAndDrive()
@@ -383,7 +383,7 @@ public class Autonomous
      * 
      * @return true when the path completes
      * 
-     * @Author Dion Marchant
+     * @Author Alice Marchant
      * @Written February 16th, 2022
      */
     private static boolean dropFromStartAndDrive()
@@ -473,7 +473,7 @@ public class Autonomous
      * 
      * @return true when the path completes
      * 
-     * @Author Dion Marchant
+     * @Author Alice Marchant
      * @Written February 16th, 2022
      */
     private static boolean driveAndDrop()
@@ -567,7 +567,7 @@ public class Autonomous
      * 
      * @return true when the path finishes
      * 
-     * @Author Dion Marchant
+     * @Author Alice Marchant
      * @Written February 16th, 2022
      */
     private static boolean driveOnlyBackwards()
@@ -637,7 +637,7 @@ public class Autonomous
      * 
      * @return true when the path completes
      * 
-     * @Author Dion Marchant
+     * @Author Alice Marchant
      * @Written February 16th, 2022
      */
     private static boolean driveOnlyForward()
@@ -687,7 +687,7 @@ public class Autonomous
      * 
      * @return true when the path in completed
      * 
-     * @Author Dion Marchant
+     * @Author Alice Marchant
      * @Written February 16th, 2022
      */
     private static boolean driveDropAndDriveAgain()
@@ -830,7 +830,7 @@ public class Autonomous
      * 
      * @return true when the robot has turned 180 degrees
      * 
-     * @Author Dion Marchant
+     * @Author Alice Marchant
      * @Written February 16th, 2022
      */
     private static boolean spin()
