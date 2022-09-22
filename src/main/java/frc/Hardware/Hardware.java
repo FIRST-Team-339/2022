@@ -558,7 +558,7 @@ public class Hardware
     public static int PREV_YEAR_GEAR_1 = 1;
     public static double PREV_YEAR_GEAR_1_PERCENTAGE = 0.5;
     public static int PREV_YEAR_GEAR_2 = 2;
-    public static double PREV_YEAR_GEAR_2_PERCENTAGE = 0.7;
+    public static double PREV_YEAR_GEAR_2_PERCENTAGE = 1;
 
     // ------------------------------------------
     // Vision stuff

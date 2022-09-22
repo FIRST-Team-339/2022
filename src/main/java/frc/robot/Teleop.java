@@ -477,6 +477,6 @@ public class Teleop
     private static boolean launchHighReset = false;
     private static boolean launchLowReset = false;
     private static double demoMaxDriveSpeed;
-    private static final double MAX_DRIVE_SPEED = .70;
+    private static final double MAX_DRIVE_SPEED = .75;
 
     } // end class
