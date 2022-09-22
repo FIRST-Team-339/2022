@@ -152,8 +152,8 @@ public class Hardware
         rightBottomMotor = new WPI_TalonFX(16);
         rightBottomMotor.setInverted(true);
 
-        launchMotorFront = new WPI_TalonFX(7);
-        launchMotorBack = new WPI_TalonFX(5);
+        launchMotorFront = new CANSparkMax(27, MotorType.kBrushless);
+        launchMotorBack = new CANSparkMax(13, MotorType.kBrushless);
 
         launchMotorGroup = new MotorControllerGroup(launchMotorFront, launchMotorBack);
 
@@ -229,7 +229,7 @@ public class Hardware
         // -----------------------------------
         // Configure launch encoders
         // -----------------------------------
-        launchMotorEncoder = new KilroyEncoder((WPI_TalonFX) launchMotorFront);
+        launchMotorEncoder = new KilroyEncoder((CANSparkMax) launchMotorFront);
         launchMotorEncoder.setDistancePerPulse(LAUNCHER_DISTANCE_PER_PULSE_CURR);
 
         // ------------------------------------
