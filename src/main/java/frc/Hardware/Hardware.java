@@ -4,6 +4,7 @@
 // CREATED ON: Jan 2, 2011
 // CREATED BY: Bob Brown
 // MODIFIED ON: June 24, 2019
+
 // MODIFIED BY: Ryan McGee
 // ABSTRACT:
 // This file contains all of the global definitions for the
@@ -152,8 +153,8 @@ public class Hardware
         rightBottomMotor = new WPI_TalonFX(16);
         rightBottomMotor.setInverted(true);
 
-        launchMotorFront = new CANSparkMax(27, MotorType.kBrushless);
-        launchMotorBack = new CANSparkMax(13, MotorType.kBrushless);
+        launchMotorFront = new WPI_TalonFX(18);
+        launchMotorBack = new WPI_TalonFX(17);
 
         launchMotorGroup = new MotorControllerGroup(launchMotorFront, launchMotorBack);
 
@@ -229,7 +230,7 @@ public class Hardware
         // -----------------------------------
         // Configure launch encoders
         // -----------------------------------
-        launchMotorEncoder = new KilroyEncoder((CANSparkMax) launchMotorFront);
+        launchMotorEncoder = new KilroyEncoder((WPI_TalonFX) launchMotorFront);
         launchMotorEncoder.setDistancePerPulse(LAUNCHER_DISTANCE_PER_PULSE_CURR);
 
         // ------------------------------------
