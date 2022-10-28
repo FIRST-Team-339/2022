@@ -107,7 +107,7 @@ public class Teleop
      */
     public static void periodic()
     {
-
+        System.out.println("the switch = " + Hardware.autoSixPosSwitch.getPosition());
         // Joystick Button/Trigger Variables
         boolean rightDriverCameraSwitchButtonPressed = Hardware.rightDriverCameraSwitchButton.get();
         boolean rightOperatorCameraSwitchButtonPressed = Hardware.rightOperatorCameraSwitchButton.get();

@@ -618,9 +618,9 @@ public class Launcher
 
     // Constants
 
-    private final double TARGET_MOTOR_RPM_LOW_PREV = 1000.0; // TODO find
+    private final double TARGET_MOTOR_RPM_LOW_PREV = 1500.0; // TODO find
 
-    private final double TARGET_MOTOR_RPM_LOW_CURRENT = 1000.0; // TODO
+    private final double TARGET_MOTOR_RPM_LOW_CURRENT = 1500.0; // TODO
 
     private final double TARGET_MOTOR_RPM_HIGH_PREV = 3000.0; // TODO find
 

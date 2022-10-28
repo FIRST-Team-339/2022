@@ -159,7 +159,7 @@ public class Hardware
         launchMotorGroup = new MotorControllerGroup(launchMotorFront, launchMotorBack);
 
         conveyorMotorFront = new WPI_TalonSRX(26);
-        conveyorMotorFront.setInverted(false);
+        conveyorMotorFront.setInverted(true);
         conveyorMotorBack = new WPI_TalonSRX(22);
         conveyorMotorBack.setInverted(false);
 
@@ -557,9 +557,9 @@ public class Hardware
 
     // Gear Variables
     public static int PREV_YEAR_GEAR_1 = 1;
-    public static double PREV_YEAR_GEAR_1_PERCENTAGE = 0.5;
+    public static double PREV_YEAR_GEAR_1_PERCENTAGE = 0.4;
     public static int PREV_YEAR_GEAR_2 = 2;
-    public static double PREV_YEAR_GEAR_2_PERCENTAGE = 1;
+    public static double PREV_YEAR_GEAR_2_PERCENTAGE = .5;
 
     // ------------------------------------------
     // Vision stuff
