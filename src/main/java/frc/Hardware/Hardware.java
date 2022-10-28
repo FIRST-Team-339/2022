@@ -161,7 +161,7 @@ public class Hardware
         conveyorMotorFront = new WPI_TalonSRX(26);
         conveyorMotorFront.setInverted(true);
         conveyorMotorBack = new WPI_TalonSRX(22);
-        conveyorMotorBack.setInverted(false);
+        conveyorMotorBack.setInverted(true);
 
         conveyorGroup = new MotorControllerGroup(conveyorMotorFront, conveyorMotorBack);
 

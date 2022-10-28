@@ -173,6 +173,9 @@ public class BallHandler
             {
             Hardware.intakeMotor.set(intakeMotorIntakeSpeed);
             }
+
+//        System.out.println("INTAKE STATE = " + intakeState);
+//        System.out.println("INTAKE MOTOR SPEED IS CURRENTLY " + Hardware.intakeMotor.get());
         switch (intakeState)
             {
             case INTAKE_INIT:
