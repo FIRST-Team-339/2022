@@ -215,37 +215,37 @@ public class Autonomous
 
         switch (autoPath)
             {
-            case DRIVE_ONLY_BACKWARD:
+            case DRIVE_ONLY_BACKWARD:      //Six Position state 1
                 if (driveOnlyBackwards() == true)
                     {
                     autoPath = AUTO_PATH.DISABLE;
                     }
                 break;
-            case DRIVE_AND_DROP:
+            case DRIVE_AND_DROP:    //Six Position state 5
                 if (driveAndDrop() == true)
                     {
                     autoPath = AUTO_PATH.DISABLE;
                     }
                 break;
-            case DROP_AND_DRIVE:
+            case DROP_AND_DRIVE:    //Six Position state 4
                 if (dropAndDrive() == true)
                     {
                     autoPath = AUTO_PATH.DISABLE;
                     }
                 break;
-            case DROP_FROM_START_AND_DRIVE:
+            case DROP_FROM_START_AND_DRIVE:     //Six Position state 3
                 if (dropFromStartAndDrive() == true)
                     {
                     autoPath = AUTO_PATH.DISABLE;
                     }
                 break;
-            case DRIVE_ONLY_FORWARD:
+            case DRIVE_ONLY_FORWARD:      //Six Position state 2
                 if (driveOnlyForward() == true)
                     {
                     autoPath = AUTO_PATH.DISABLE;
                     }
                 break;
-            case DRIVE_AND_DROP_AND_DRIVE_AGAIN:
+            case DRIVE_AND_DROP_AND_DRIVE_AGAIN:       //Six Position state 6
                 if (driveDropAndDriveAgain() == true)
                     {
                     autoPath = AUTO_PATH.DISABLE;
@@ -274,7 +274,7 @@ public class Autonomous
      */
     private static boolean dropAndDrive()
     {
-        // System.out.println("DROP_AND_DRIVE_STATE = " + dropAndDriveState);
+        System.out.println("DROP_AND_DRIVE_STATE = " + dropAndDriveState);
         Hardware.launcher.launchAutoGeneral(LAUNCH_TYPE.LOW);
         switch (dropAndDriveState)
             {
