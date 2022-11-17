@@ -31,6 +31,7 @@ package frc.robot;
 
 import frc.Hardware.Hardware;
 import frc.HardwareInterfaces.BallHandler;
+import frc.HardwareInterfaces.Potentiometer;
 import frc.HardwareInterfaces.BallHandler.PROCESS;
 import frc.Utils.Launcher.LAUNCH_STATE_TELEOP;
 import frc.Utils.Launcher.LAUNCH_TYPE;
@@ -107,7 +108,8 @@ public class Teleop
      */
     public static void periodic()
     {
-        System.out.println("the switch = " + Hardware.autoSixPosSwitch.getPosition());
+        // System.out.println("the switch = " +
+        // Hardware.autoSixPosSwitch.getPosition());
 
         // Joystick Button/Trigger Variables
         boolean rightDriverCameraSwitchButtonPressed = Hardware.rightDriverCameraSwitchButton.get();
@@ -150,11 +152,11 @@ public class Teleop
             }
 
         // Ball Count
-        if (subBallButtonOnNow == true && Hardware.inDemoMode == false)
+        if (subBallButtonOnNow == true)
             {
             Hardware.ballCounter.subtractCheckCount(1);
             }
-        if (addBallButtonOnNow == true && Hardware.inDemoMode == false)
+        if (addBallButtonOnNow == true)
             {
             Hardware.ballCounter.addCheckCount(1);
             }
@@ -227,6 +229,10 @@ public class Teleop
             }
 
         Hardware.drive.drive(Hardware.leftDriver, Hardware.rightDriver);
+        // Prints the Value of the delayPot
+        // System.out.println("value of " + Hardware.delayPot.get());
+        // System.out.println("value of " + Hardware.rightDriver);
+        // System.out.println("value of " + Hardware.leftDriver);
 
         // printStatements();
         // individualTest();
@@ -292,7 +298,7 @@ public class Teleop
         // ---------- ANALOG -----------
         // DONE
         // Inputs/Outputs
-        // System.out.println("Delay Pot is " + Hardware.delayPot.get(0.0, 5.0));
+        System.out.println("Delay Pot is " + Hardware.delayPot.get(0.0, 5.0));
         // System.out.println("Delay Pot max is " +
         // Hardware.delayPot.getFromRange());
         // System.out.println("IPiston is " + Hardware.intakePiston.get());
