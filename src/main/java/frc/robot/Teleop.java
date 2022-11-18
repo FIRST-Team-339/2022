@@ -210,10 +210,7 @@ public class Teleop
                 }
             }
 
-        if (Hardware.inDemoMode == false)
-            {
-            processFireOuttakeIntake();
-            }
+        processFireOuttakeIntake();
 
         // Operator Dashboard Variables
         SmartDashboard.putString("DB/String 5", " " + Hardware.ballCounter.BallCount + " ball(s)");
@@ -230,7 +227,7 @@ public class Teleop
 
         Hardware.drive.drive(Hardware.leftDriver, Hardware.rightDriver);
         // Prints the Value of the delayPot
-        // System.out.println("value of " + Hardware.delayPot.get());
+        System.out.println("value of " + Hardware.delayPot.get(0, 270));
         // System.out.println("value of " + Hardware.rightDriver);
         // System.out.println("value of " + Hardware.leftDriver);
 
@@ -298,7 +295,7 @@ public class Teleop
         // ---------- ANALOG -----------
         // DONE
         // Inputs/Outputs
-        System.out.println("Delay Pot is " + Hardware.delayPot.get(0.0, 5.0));
+        System.out.println("Delay Pot is " + Hardware.delayPot.get(0.0, MAX_DRIVE_SPEED));
         // System.out.println("Delay Pot max is " +
         // Hardware.delayPot.getFromRange());
         // System.out.println("IPiston is " + Hardware.intakePiston.get());

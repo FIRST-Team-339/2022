@@ -630,9 +630,9 @@ public class Launcher
 
     private final double TARGET_MOTOR_RPM_AUTO_CURRENT = 2100.0; // TODO
 
-    private final double LAUNCH_MOTOR_SPEED_LOW_PREV = .55; // TODO find
+    private final double LAUNCH_MOTOR_SPEED_LOW_PREV = .4; // TODO find
 
-    private final double LAUNCH_MOTOR_SPEED_LOW_CURRENT = .55; // TODO
+    private final double LAUNCH_MOTOR_SPEED_LOW_CURRENT = .4; // TODO
 
     private final double LAUNCH_MOTOR_SPEED_HIGH_PREV = .5; // TODO find
 
