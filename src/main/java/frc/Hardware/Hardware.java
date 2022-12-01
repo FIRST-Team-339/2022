@@ -473,7 +473,7 @@ public class Hardware
     // **********************************************************
     // ANALOG I/O
     // **********************************************************
-    public static Potentiometer delayPot = new Potentiometer(3);
+    public static Potentiometer delayPot = new Potentiometer(2);
 
     public static UltraSonic ultraSonic = null;
 
